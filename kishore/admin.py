@@ -2,18 +2,18 @@ from django.contrib import admin
 
 from models import *
 
-class SlugAdmin(admin.ModelAdmin):
+class SlugTitleAdmin(admin.ModelAdmin):
         prepopulated_fields = {'slug': ('title',)}
 
-class ArtistAdmin(admin.ModelAdmin):
+class SlugNameAdmin(admin.ModelAdmin):
         prepopulated_fields = {'slug': ('name',)}
 
-admin.site.register(Artist, ArtistAdmin)
+admin.site.register(Artist, SlugNameAdmin)
 admin.site.register(Image)
-admin.site.register(Song, SlugAdmin)
-admin.site.register(Release, SlugAdmin)
-admin.site.register(DigitalSong)
-admin.site.register(DigitalRelease)
-admin.site.register(PhysicalRelease)
-admin.site.register(Merch)
+admin.site.register(Song, SlugTitleAdmin)
+admin.site.register(Release, SlugTitleAdmin)
+admin.site.register(DigitalSong, SlugNameAdmin)
+admin.site.register(DigitalRelease, SlugNameAdmin)
+admin.site.register(PhysicalRelease, SlugNameAdmin)
+admin.site.register(Merch, SlugNameAdmin)
 admin.site.register(MerchVariant)

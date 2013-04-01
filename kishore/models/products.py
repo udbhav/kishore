@@ -1,19 +1,35 @@
 from datetime import datetime
 
 from django.db import models
-
+from django.core.urlresolvers import reverse
 from music import Song, Release
 from image import Image
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField(blank=True)
     inventory = models.IntegerField(default=-1)
     images = models.ManyToManyField(Image, blank=True, null=True)
+    visible = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return self.name
+        if self.subclass:
+            return self.subclass.__unicode__()
+        else:
+            return self.name
+
+    @property
+    def subclass(self):
+        subclasses = ('digitalsong', 'digitalrelease', 'physicalrelease', 'merch')
+        for s in subclasses:
+            if hasattr(self, s):
+                return getattr(self, s)
+        return None
+
+    def get_absolute_url(self):
+        return reverse('kishore_product_detail',kwargs={'slug':self.slug})
 
     def formatted_price(self):
         return "%01.2f" % self.price

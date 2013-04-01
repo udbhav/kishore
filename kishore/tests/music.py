@@ -1,9 +1,7 @@
-from django.test import TestCase
 from django.core.urlresolvers import reverse
-from kishore.models import Artist, Song, Release
 
-class KishoreTestCase(TestCase):
-    fixtures = ['kishore_testdata.json']
+from kishore.models import Artist, Song, Release
+from base import KishoreTestCase
 
 class ArtistTestCase(KishoreTestCase):
     def test_index(self):
@@ -15,10 +13,6 @@ class ArtistTestCase(KishoreTestCase):
         resp = self.client.get(a.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
 
-        # try artist that doesn't exist
-        resp = self.client.get(reverse('kishore_artist_detail', kwargs={'slug': 'abcd'}))
-        self.assertEqual(resp.status_code, 404)
-
 class SongTestCase(KishoreTestCase):
     def test_index(self):
         resp = self.client.get(reverse('kishore_songs_index'))
@@ -28,10 +22,6 @@ class SongTestCase(KishoreTestCase):
         s = Song.objects.get(pk=1)
         resp = self.client.get(s.get_absolute_url())
         self.assertEqual(resp.status_code, 200)
-
-        # try song that doesn't exist
-        resp = self.client.get(reverse('kishore_song_detail', kwargs={'slug': 'abcd'}))
-        self.assertEqual(resp.status_code, 404)
 
     def test_player_html(self):
         with self.settings(KISHORE_AUDIO_PLAYER="kishore.models.SoundcloudPlayer"):

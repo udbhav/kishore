@@ -1,5 +1,16 @@
 from django.http import HttpResponse
-from kishore.models import Cart
+from django.views.generic import DetailView, ListView
+from kishore.models import Cart, Product
+
+class ProductIndex(ListView):
+    queryset = Product.objects.filter(visible=True)
+    context_object_name = "products"
+    template_name = "kishore/store/product_list.html"
+
+class ProductDetail(DetailView):
+    queryset = Product.objects.filter(visible=True)
+    context_object_name = "product"
+    template_name = "kishore/store/product_detail.html"
 
 def add_to_cart(request):
     if request.method == "POST":

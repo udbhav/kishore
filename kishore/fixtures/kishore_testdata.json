@@ -116,7 +116,8 @@
         "inventory": -1,
         "price": "10",
         "name": "LP",
-        "description": ""
+        "description": "",
+        "slug": "field-recordings-lp"
     }
 },
 {
