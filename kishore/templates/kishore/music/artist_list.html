@@ -1,0 +1,11 @@
+{% extends "kishore/base.html" %}
+
+{% block kishore_content %}
+<header><h1>Artists</h1></header>
+
+{% for artist in artists %}
+<article>
+  <a href="{{ artist.get_absolute_url }}">{{ artist }}</a>
+</article>
+{% endfor %}
+{% endblock %}

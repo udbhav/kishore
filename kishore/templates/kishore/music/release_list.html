@@ -1,0 +1,8 @@
+{% extends "kishore/base.html" %}
+
+{% block kishore_content %}
+{% if artist %}<header><h1>{{ artist }}</h1></header>{% endif %}
+{% for release in releases %}
+{% include "kishore/music/release.html" %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,72 @@
+/* Reset & Utilities */
+
+.kishore_container ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  list-style-position: outside;
+}
+
+.kishore_container .clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+/* Music Artwork */
+
+.kishore_container .artwork {
+  width: 30%;
+  overflow: hidden;
+  margin-bottom: 20px;
+  float: left;
+}
+
+.kishore_container .artwork .images {
+  width: 100%;
+  text-align: center;
+  -webkit-transition: margin 0.5s ease-in-out;
+}
+
+.kishore_container .artwork .images li {
+  width: 100%;
+  float: left;
+  height: 400px;
+  line-height: 400px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.kishore_container .artwork img {
+  max-width: 100%;
+  max-height: 400px;
+  vertical-align: middle;
+}
+
+.kishore_container .artwork .thumbnails {
+  position: relative;
+  float: left;
+  left: 50%;
+}
+
+.kishore_container .artwork .thumbnails li {
+  position: relative;
+  float: left;
+  left: -50%;
+  margin: 10px 4px 0;
+  opacity: 0.5;
+}
+
+.kishore_container .artwork .thumbnails li.active {
+  opacity: 1;
+}
+
+
+/* Player */
+.kishore_container .player {
+  float: left;
+  width: 68%;
+  margin-right: 2%;
+}

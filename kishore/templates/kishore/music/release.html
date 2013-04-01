@@ -1,0 +1,24 @@
+<article class="release">
+  <header><h1>{{ release }}</h1></header>
+
+  {% if release.streamable %}
+  <div class="player">
+    {% autoescape off %}{{ release.get_player_html }}{% endautoescape %}
+  </div>
+  {% endif %}
+  {% include "kishore/music/artwork.html" with artwork=release.artwork.all %}
+
+  <div style="clear:both;"></div>
+
+  {% if release.description %}
+  <div class="description">{% autoescape off %}{{ release.description }}{% endautoescape %}</div>
+  {% endif %}
+
+  {% if buy_form %}
+  <form action="{% url 'kishore_add_to_cart' %}" method="post">
+    {% csrf_token %}
+    {{ buy_form.as_p }}
+    <input type="submit" value="Add to Cart" />
+  </form>
+  {% endif %}
+</article>

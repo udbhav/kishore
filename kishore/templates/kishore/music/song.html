@@ -1,0 +1,20 @@
+<article class="song clearfix">
+  <header><h1><a href="{{ song.get_absolute_url }}">{{ song }}</a></h1></header>
+
+  {% include "kishore/music/artwork.html" with artwork=song.artwork.all %}
+
+  {% if song.streamable %}
+  <div class="player">
+    {% autoescape off %}{{ song.get_embed_code }}{% endautoescape %}
+  </div>
+  {% endif %}
+
+  {% if song.description %}
+  <div class="description">{% autoescape off %}{{ song.description }}{% endautoescape %}</div>
+  {% endif %}
+
+  {% if song.download_link %}
+  <a href="{{ song.download_link }}" class="download">Download</a>
+  {% endif %}
+
+</article>

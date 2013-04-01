@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block kishore_static %}
+<link rel="stylesheet" media="all" href="{{ STATIC_URL }}kishore/styles.css" />
+<script type="text/javascript" src="{{ STATIC_URL }}kishore/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}kishore/scripts.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="kishore_container">
+{% block kishore_content %}{% endblock kishore_content %}
+</section>
+{% endblock content %}

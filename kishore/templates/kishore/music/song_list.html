@@ -1,0 +1,7 @@
+{% extends "kishore/base.html" %}
+
+{% block kishore_content %}
+{% for song in songs %}
+{% include "kishore/music/song.html" %}
+{% endfor %}
+{% endblock %}

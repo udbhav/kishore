@@ -1,0 +1,137 @@
+[
+{
+    "pk": 1,
+    "model": "kishore.image",
+    "fields": {
+        "credit": "",
+        "image": "uploads/images/tumblr_mjiggm8H4F1qa8ie3o1_1280.jpg",
+        "position": 1,
+        "description": "",
+        "title": "Bugs Image #1"
+    }
+},
+{
+    "pk": 2,
+    "model": "kishore.image",
+    "fields": {
+        "credit": "",
+        "image": "uploads/images/tumblr_mjd2uuGYLo1s7f3fyo1_1280.jpg",
+        "position": 2,
+        "description": "",
+        "title": "Bugs Image #2"
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.artist",
+    "fields": {
+        "url": "",
+        "name": "Twin Sister",
+        "slug": "twin-sister"
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.song",
+    "fields": {
+        "audio_file": "uploads/music/costa_rican_bugs__waves.m4a",
+        "streamable": true,
+        "description": "",
+        "title": "Costa Rican Bugs and Waves",
+        "artist": 1,
+        "track_number": null,
+        "downloadable": true,
+        "artwork": [
+            1,
+            2
+        ],
+        "date": "2013-03-19T16:34:35",
+        "slug": "costa-rican-bugs-and-waves",
+        "remote_url": "https://soundcloud.com/twinsistermusic/costa-rican-bugs-waves"
+    }
+},
+{
+    "pk": 2,
+    "model": "kishore.song",
+    "fields": {
+        "audio_file": "uploads/music/costa_rican_bugs__waves.m4a",
+        "streamable": false,
+        "description": "",
+        "title": "Costa Rican Bugs and Waves 2",
+        "artist": 1,
+        "track_number": null,
+        "downloadable": false,
+        "artwork": [
+            1,
+            2
+        ],
+        "date": "2013-03-19T16:34:35",
+        "slug": "costa-rican-bugs-and-waves-2",
+        "remote_url": "https://soundcloud.com/twinsistermusic/costa-rican-bugs-waves"
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.release",
+    "fields": {
+        "streamable": true,
+        "description": "",
+        "title": "Field Recordings",
+        "artist": 1,
+        "downloadable": true,
+        "artwork": [
+            1,
+            2
+        ],
+        "date": "2013-03-20T11:26:15",
+        "slug": "field-recordings",
+        "remote_url": "https://soundcloud.com/twinsistermusic/sets/field-recordings",
+        "songs": []
+    }
+},
+{
+    "pk": 2,
+    "model": "kishore.release",
+    "fields": {
+        "streamable": false,
+        "description": "",
+        "title": "Field Recordings 2",
+        "artist": 1,
+        "downloadable": false,
+        "artwork": [
+            1,
+            2
+        ],
+        "date": "2013-03-20T11:26:15",
+        "slug": "field-recordings-2",
+        "remote_url": "https://soundcloud.com/twinsistermusic/sets/field-recordings",
+        "songs": []
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.product",
+    "fields": {
+        "images": [],
+        "inventory": -1,
+        "price": "10",
+        "name": "LP",
+        "description": ""
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.physicalrelease",
+    "fields": {
+        "release": 1,
+        "images": []
+    }
+},
+{
+    "pk": 1,
+    "model": "kishore.cart",
+    "fields": {
+        "timestamp": "2013-03-20T12:03:33.351"
+    }
+}
+]
