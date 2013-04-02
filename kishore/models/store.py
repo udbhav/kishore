@@ -140,6 +140,11 @@ class CartItem(models.Model):
     def __unicode__(self):
         return self.product.__unicode__()
 
+    def save(self, *args, **kwargs):
+        if not self.unit_price:
+            self.unit_price = self.product.price
+        super(CartItem, self).save(*args, **kwargs)
+
     def get_form(self):
         return CartItemForm(instance=self)
 
@@ -152,3 +157,9 @@ class CartItemForm(forms.ModelForm):
         model = CartItem
         exclude = ("cart","unit_price")
         widgets = {'product': forms.HiddenInput()}
+
+    def clean_quantity(self):
+        data = self.cleaned_data['quantity']
+        if data < 1:
+            data = 1
+        return data

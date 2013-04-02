@@ -30,7 +30,6 @@ def add_to_cart(request):
                 item_to_update.quantity = item_to_update.quantity + item.quantity
                 item_to_update.save()
             else:
-                item.unit_price = item.product.price
                 item.cart = cart
                 item.save()
 
