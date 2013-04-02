@@ -1,3 +1,8 @@
 <article class="product">
   <header><h1><a href="{{ product.get_absolute_url }}">{{ product }}</a></h1></header>
+  <form method="post" action="{% url 'kishore_add_to_cart' %}">
+    {% csrf_token %}
+    {{ product.get_cartitem_form.as_p }}
+    <input type="submit" value="Add To Cart">
+  </form>
 </article>

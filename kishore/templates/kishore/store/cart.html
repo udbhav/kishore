@@ -1,0 +1,45 @@
+{% extends "kishore/base.html" %}
+{% load kishore_tags %}
+
+{% block kishore_content %}
+<article class="cart">
+  <header><h1>Shopping Cart</h1></header>
+  {% if cart.cartitem_set.all %}
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart.cartitem_set.all %}
+      <tr>
+        <td>
+          {{ item }}
+          <form method="post" action="{% url 'kishore_remove_from_cart' item_id=item.id %}">
+            {% csrf_token %}
+            <input type="submit" value="Remove">
+          </form>
+        </td>
+        <td>
+          {% with item.get_form as form %}
+          <form method="post" action="{% url 'kishore_update_cart' item_id=item.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update">
+          </form>
+          {% endwith %}
+        </td>
+        <td>{{ item.unit_price|kishore_currency }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="subtotal">Subtotal: {{ cart.total_price|kishore_currency }}</div>
+  {% else %}
+  Your cart is empty.
+  {% endif %}
+</article>
+{% endblock %}
