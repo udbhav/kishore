@@ -18,10 +18,7 @@
 /* Music Artwork */
 
 .kishore_container .artwork {
-  width: 30%;
   overflow: hidden;
-  margin-bottom: 20px;
-  float: left;
 }
 
 .kishore_container .artwork .images {
@@ -55,7 +52,7 @@
   position: relative;
   float: left;
   left: -50%;
-  margin: 10px 4px 0;
+  margin: 0.4em 0.2em 0;
   opacity: 0.5;
 }
 
@@ -63,10 +60,6 @@
   opacity: 1;
 }
 
-
-/* Player */
 .kishore_container .player {
-  float: left;
-  width: 68%;
-  margin-right: 2%;
+  margin-bottom: 2em;
 }

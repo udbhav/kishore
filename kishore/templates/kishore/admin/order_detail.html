@@ -1,0 +1,47 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+
+{% block order_nav %}active{% endblock %}
+
+{% block content %}
+<div class="order-small-info pull-right panel panel-default">
+  <div class="panel-body">
+    {{ order.customer_name }}<br>
+    <a href="mailto:{{ order.customer_email }}">{{ order.customer_email }}</a><br>
+    {{ order.timestamp }}
+  </div>
+</div>
+<h2>
+  Order #{{ order.id }}
+</h2>
+{% if order.refunded %}<span class="label label-danger">Refunded</span>{% endif %}
+{% if order.shipped %}<span class="label label-info">Shipped</span>{% endif %}
+
+{% include "kishore/store/order_price_details.html" %}
+
+<div class="btn-toolbar">
+  {% if order.shippable %}
+  <a href="{% url 'kishore_admin_ship_order' pk=order.pk %}" class="btn btn-primary">Shipping</a>
+  {% endif %}
+
+  {% if not order.refunded %}
+  <form class="refund-order" method="post" action="{% url 'kishore_admin_refund_order' pk=order.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Issue a Refund</button>
+  </form>
+  {% endif %}
+
+  <form method="post" action="{% url 'kishore_admin_hide_order' pk=order.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete Order</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+  $(".btn-toolbar form").kishoreConfirmForm();
+  });
+</script>
+{% endblock %}

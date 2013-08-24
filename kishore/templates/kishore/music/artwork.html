@@ -2,7 +2,7 @@
 <div class="artwork">
   <ul class="images clearfix">
     {% for image in artwork %}
-    <li id="artwork_{{ image.id }}"><a href="{{ image.image.url }}"><img src="{{ image.medium_image.url }}" alt="{{ image.description }}" /></a></li>
+    <li id="artwork_{{ image.id }}"><a href="{{ image.image.url }}" target="_blank"><img src="{{ image.medium_image.url }}" alt="{{ image.description }}" /></a></li>
     {% endfor %}
   </ul>
 

@@ -1,0 +1,10 @@
+{% extends "kishore/base.html" %}
+
+{% block kishore_content %}
+<article class="order-success">
+  <header><h1>Order Complete!</h1></header>
+  <p>Thank you for your order.  You will shortly receive an email confirmation that includes all of this information.</p>
+
+  {% include "kishore/store/order_detail.html" %}
+</article>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block artist_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>{{ artist.name }}</h1>
+<form method="post" action=".">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+
+  <div class="btn-toolbar">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#" class="btn btn-danger delete-link">Delete Artist</a>
+  </div>
+</form>
+
+<form method="post" action="{% url 'kishore_admin_artist_delete' pk=artist.id %}" class="delete-form">
+  {% csrf_token %}
+</form>
+{% endblock %}

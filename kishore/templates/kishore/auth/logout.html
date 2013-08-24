@@ -1,0 +1,6 @@
+{% extends "kishore/auth/base.html" %}
+{% load i18n %}
+
+{% block auth_content %}
+<p>Signed out. <a href="{% url 'kishore_login' %}">Sign in again</a>.</p>
+{% endblock %}

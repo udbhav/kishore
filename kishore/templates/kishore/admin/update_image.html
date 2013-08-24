@@ -1,0 +1,28 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block image_nav %}active{% endblock %}
+
+{% block content %}
+<h1>Update Image</h1>
+
+<p>
+  <img src="{{ image.medium_image.url }}"><br>
+  <a href="{{ image.image.url }}">View Original</a>
+</p>
+
+<form method="post" action="." enctype="multipart/form-data">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+
+  <div class="btn-toolbar">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#" class="btn btn-danger delete-link">Delete Image</a>
+  </div>
+</form>
+
+<form method="post" action="{% url 'kishore_admin_image_delete' pk=image.pk %}" class="delete-form">
+  {% csrf_token %}
+</form>
+{% endblock %}

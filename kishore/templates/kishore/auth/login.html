@@ -1,0 +1,24 @@
+{% extends "kishore/auth/base.html" %}
+{% load i18n %}
+
+{% block auth_title %}Kishore Sign in{% endblock %}
+
+{% block auth_content %}
+  <p>
+    <form method="post" action="." class="form-signin">
+      {% csrf_token %}
+      <fieldset>
+        {% for field in form %}
+        {{ field }}
+        {% endfor %}
+
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}{% url 'kishore_admin_dashboard' %}{% endif %}" />
+      </fieldset>
+    </form>
+  </p>
+  <p class="help-text">{% trans "Forgot password" %}? <a href="{% url 'kishore_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+{% endblock %}

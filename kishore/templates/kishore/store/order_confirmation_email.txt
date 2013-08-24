@@ -1,0 +1,29 @@
+{% load kishore_tags %}
+Thanks for your order.
+
+{% if order.shippable %}
+Shipping To
+-----------
+
+{{ order.shipping_address }}
+
+You will be sent an email notification when your order ships.
+{% endif %}
+
+{% if order.downloadable %}
+Your Download Links
+-------------------
+{% for item in order.orderitem_set.all %}{% if item.downloadable %}
+{{ item.product.name_with_no_price }}
+{% for link in item.downloadlink_set.all %}{{ link.get_full_url }}{% endfor %}
+{% endif %}{% endfor %}
+{% endif %}
+
+Order Details
+-------------
+Order #: {{ order.id }}
+
+{% for item in order.orderitem_set.all %}{{ item.quantity }} x {{ item.product.name_with_no_price }}: {{ item.price|kishore_currency }}{% endfor %}
+{% if order.shipping_total %}Shipping: {{ order.shipping_total|kishore_currency }}{% endif %}
+{% if order.tax %}Tax: {{ order.tax|kishore_currency }}{% endif %}
+Total: {{ order.total|kishore_currency }}

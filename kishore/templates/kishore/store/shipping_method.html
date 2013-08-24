@@ -1,0 +1,36 @@
+{% extends "kishore/base.html" %}
+{% load kishore_tags %}
+
+{% block kishore_content %}
+<article class="shipping">
+  <header><h1>Shipping</h1></header>
+
+  <form method="post" action="">
+    <fieldset>
+      <legend>Choose a shipping method</legend>
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        {% for radio in field %}
+        <div class="radio">
+          <label>
+            {{ radio.choice_label }}
+            {{ radio.tag }}
+          </label>
+        </div>
+        {% endfor %}
+
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <span class="label label-danger">{{ error }}</span>
+        {% endfor %}
+        {% endif %}
+      </div>
+      {% endfor %}
+
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Continue</button>
+  </form>
+</article>
+{% endblock %}

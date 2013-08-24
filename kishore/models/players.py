@@ -21,9 +21,9 @@ class SoundcloudPlayer(object):
         try:
             r = client.get("/oembed", url=self.music_data.remote_url)
         except HTTPError:
-            return None
+            return ""
 
         if r.status_code == 200:
             return r.html
         else:
-            return None
+            return ""

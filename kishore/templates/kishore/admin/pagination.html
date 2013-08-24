@@ -1,0 +1,19 @@
+{% if page.has_other_pages %}
+<ul class="pagination">
+  {% if page.has_previous %}<li><a href="?page=1">First</a></li>{% endif %}
+  {% for p in previous %}
+  <li><a href="?page={{p}}">{{p}}</a></li>
+  {% endfor %}
+
+  <li class="active"><a href="#">
+      {% if not page.has_previous %}First
+      {% elif not page.has_next %}Last
+      {% else %}{{ page.number }}{% endif %}
+  </a></li>
+
+  {% for p in next %}
+  <li><a href="?page={{p}}">{{p}}</a></li>
+  {% endfor %}
+  {% if page.has_next %}<li><a href="?page=last">Last</a></li>{% endif %}
+</ul>
+{% endif %}

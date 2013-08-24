@@ -1,0 +1,39 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block order_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>Orders</h1>
+<table class="table table-striped order-list">
+  <thead>
+    <th>Order #</th>
+    <th></th>
+    <th>Time</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Total</th>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
+      <td class="text-center">
+        {% if order.waiting_to_ship and not order.refunded %}
+        <a class="btn btn-primary btn-xs" href="{% url 'kishore_admin_ship_order' pk=order.pk %}">Ship It</a>
+        {% endif %}
+        {% if order.refunded %}<small class="text-danger">Refunded</small>{% endif %}
+      </td>
+      <td>{{ order.timestamp|date:"m/d/y H:i" }}</td>
+      <td>{{ order.customer_name }}</td>
+      <td><a href="mailto:{{ order.customer_email }}">{{ order.customer_email }}</a></td>
+      <td>{{ order.total|kishore_currency }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% kishore_pagination page_obj %}
+{% endblock %}

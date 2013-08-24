@@ -1,0 +1,45 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+
+{% block order_nav %}active{% endblock %}
+
+{% block content %}
+<h2>Order #{{order.id}} Shipping</h2>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3>Shippable Items</h3></div>
+  <table class="table">
+    <thead><th>Quantity</th><th>Item</th></thead>
+    <tbody>
+      {% for item in order.get_shippable_items %}
+      <tr><td>{{ item.quantity }}</td><td>{{ item.product.name_with_no_price }}</td>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel panel-info">
+  <div class="panel-heading"><h3>Shipping Address</h3></div>
+  <div class="panel-body">
+    {{ order.shipping_address|linebreaks }}
+  </div>
+</div>
+
+<div class="btn-toolbar easypost-shipping-toolbar">
+  {% if shipment.postage_label %}
+  <a class="btn btn-default" href="{{ shipment.postage_label.label_url }}">View Postage Label</a>
+  {% else %}
+  <form method="post" action=".">
+    {% csrf_token %}
+    <input type="hidden" name="buy_postage" value="true">
+    <button type="submit" class="btn btn-info">Buy Postage Label</button>
+  </form>
+  {% endif %}
+
+  {% if not order.shipped %}
+  <form method="post" action=".">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Mark as Shipped</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block image_nav %}active{% endblock %}
+
+{% block content %}
+<h1>Add an Image</h1>
+<form method="post" action="." enctype="multipart/form-data">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

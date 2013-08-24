@@ -1,0 +1,53 @@
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Kishore Admin{% block title %}{% endblock %}</title>
+    <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    {% kishore_admin_css %}{% kishore_admin_js %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <div class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'kishore_admin_dashboard' %}">Kishore</a>
+        </div>
+        <div class="navbar-collapse collapse" role="navigation">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'kishore_logout' %}">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10">
+          {% block content %}
+          {% endblock %}
+        </div>
+
+        <div class="col-md-2 sidebar">
+          <ul class="nav">
+            <li class="{% block order_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Orders</a></li>
+            <li class="{% block product_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Products</a></li>
+            {% if kishore_label_layout %}<li class="{% block artist_nav %}{% endblock %}"><a href="{% url 'kishore_admin_artists' %}">Artists</a></li>{% endif %}
+            <li class="{% block release_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Releases</a></li>
+            <li class="{% block song_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Songs</a></li>
+            <li class="{% block image_nav %}{% endblock %}"><a href="{% url 'kishore_admin_images' %}">Images</a></li>
+            <li class="{% block user_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Users</a></li>
+
+          </ul>
+        </div>
+    </div>
+    {% block javascript %}
+    {% endblock javascript %}
+  </body>
+</html>

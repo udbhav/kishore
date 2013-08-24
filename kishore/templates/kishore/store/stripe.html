@@ -1,0 +1,53 @@
+{% extends "kishore/base.html" %}
+{% load kishore_tags %}
+
+{% block kishore_content %}
+<article class="payment">
+  <header><h1>Payment</h1></header>
+
+  <form method="post" action="{% url 'kishore_process_payment' %}" class="kishore_stripe_payment">
+    <fieldset>
+      <legend>Please enter your credit/debit card information</legend>
+      {% csrf_token %}
+      {{ form.token }}
+
+      <div class="form-group">
+        <label>Credit Card Number</label>
+        <input type="text" class="form-control" data-stripe="number">
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>CVC Code</label>
+            <input type="text" class="form-control" data-stripe="cvc">
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>Expiration Date</label>
+            <div class="row">
+              <div class="col-6">
+                <input type="text" placeholder="MM" class="form-control" data-stripe="exp-month">
+              </div>
+              <div class="col-6">
+                <input type="text" placeholder="YY" class="form-control" data-stripe="exp-year">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Place Order</button>
+    <span class="label label-default">Your card will be charged {{ order.total|kishore_currency }}</span>
+  </form>
+</article>
+
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+Stripe.setPublishableKey('{{ key }}');
+$("form.kishore_stripe_payment").kishoreStripe();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "kishore/admin/base.html" %}
+
+{% block body_class %}auth{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <h2>{% block auth_title %}Kishore{% endblock %}</h2>
+    {% block auth_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

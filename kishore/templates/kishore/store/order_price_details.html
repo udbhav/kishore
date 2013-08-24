@@ -1,0 +1,37 @@
+{% load kishore_tags %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th class="text-right">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order.orderitem_set.all %}
+    <tr>
+      <td>{{ item.quantity }} x {{ item.product.name_with_no_price }}</td>
+      <td class="text-right">{{ item.price|kishore_currency }}</td>
+    </tr>
+    {% endfor %}
+
+    {% if order.shipping_total %}
+    <tr>
+      <td><strong>Shipping</strong></td>
+      <td class="text-right">{{ order.shipping_total|kishore_currency }}</td>
+    </tr>
+    {% endif %}
+
+    {% if order.tax %}
+    <tr>
+      <td><strong>Tax</strong></td>
+      <td class="text-right">{{ order.tax|kishore_currency }}</td>
+    </tr>
+    {% endif %}
+
+    <tr>
+      <td><strong>Total</strong></td>
+      <td class="text-right">{{ order.total|kishore_currency }}</td>
+    </tr>
+  </tbody>
+</table>

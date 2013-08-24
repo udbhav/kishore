@@ -1,0 +1,29 @@
+{% extends "kishore/base.html" %}
+{% load kishore_tags %}
+
+{% block kishore_content %}
+<article class="payment">
+  <header><h1>Confirmation and Payment</h1></header>
+  {% include "kishore/store/order_price_details.html" %}
+
+  <form method="post" action="{% url 'kishore_payment' %}" class="kishore_payment_method">
+    <fieldset>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+        <span class="help-block">
+          {% for error in field.errors %}
+          <span class="label label-danger">{{ error }}</span>
+          {% endfor %}
+        </span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Continue</button>
+  </form>
+</article>
+{% endblock %}
