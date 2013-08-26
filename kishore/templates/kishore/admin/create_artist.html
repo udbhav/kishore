@@ -7,9 +7,9 @@
 {% block content %}
 
 <h1>Add an Artist</h1>
-<form method="post" action=".">
+<form method="post" action="." class="artist-form">
   {% csrf_token %}
-  {% include 'kishore/admin/admin_form.html' %}
+  {% include 'kishore/admin/artist_form.html' %}
   <button type="submit" class="btn btn-primary">Create</button>
 </form>
 {% endblock %}

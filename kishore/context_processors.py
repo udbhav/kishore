@@ -7,4 +7,6 @@ def store(request):
     return {'cart': cart, 'support_email': support_email}
 
 def layout(request):
-    return {'kishore_label_layout': kishore_settings.KISHORE_LABEL_LAYOUT}
+    return {'kishore_label_layout': kishore_settings.KISHORE_LABEL_LAYOUT,
+            'kishore_site_name': kishore_settings.KISHORE_SITE_NAME,
+            }

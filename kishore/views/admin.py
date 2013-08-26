@@ -1,34 +1,43 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
+from django.views.generic.list import BaseListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from kishore.models import Order, KishorePaginator, Artist, ArtistForm, Image, ImageForm
+
 from kishore import utils
 
-class OrderList(ListView):
+class ProtectedView(View):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProtectedView, self).dispatch(*args, **kwargs)
+
+class OrderList(ProtectedView, ListView):
     queryset = Order.objects.filter(active=True).order_by('-timestamp')
     template_name = "kishore/admin/order_list.html"
     context_object_name = "orders"
     paginate_by = 25
     paginator_class = KishorePaginator
 
-class OrderDetail(DetailView):
+class OrderDetail(ProtectedView, DetailView):
     queryset = Order.objects.filter(active=True)
     template_name = "kishore/admin/order_detail.html"
     context_object_name = "order"
 
-class ArtistAdminList(ListView):
+class ArtistAdminList(ProtectedView, ListView):
     queryset = Artist.objects.all().order_by("name")
     template_name = "kishore/admin/artist_list.html"
     context_object_name = "artists"
     paginate_by = 25
     paginator_class = KishorePaginator
 
-class ArtistCreate(CreateView):
+class ArtistCreate(ProtectedView, CreateView):
     model = Artist
     form_class = ArtistForm
     template_name = "kishore/admin/create_artist.html"
@@ -36,7 +45,7 @@ class ArtistCreate(CreateView):
     def get_success_url(self):
         return reverse("kishore_admin_artists")
 
-class ArtistUpdate(UpdateView):
+class ArtistUpdate(ProtectedView, UpdateView):
     model = Artist
     form_class = ArtistForm
     template_name = "kishore/admin/update_artist.html"
@@ -44,20 +53,26 @@ class ArtistUpdate(UpdateView):
     def get_success_url(self):
         return reverse("kishore_admin_artists")
 
-class ArtistDelete(DeleteView):
+class ArtistDelete(ProtectedView, DeleteView):
     model = Artist
 
     def get_success_url(self):
         return reverse("kishore_admin_artists")
 
-class ImageList(ListView):
+class ImageList(ProtectedView, ListView):
     model = Image
     template_name = "kishore/admin/image_list.html"
     context_object_name = "images"
-    paginate_by = 21
+    paginate_by = 20
     paginator_class = KishorePaginator
 
-class ImageCreate(CreateView):
+class ImageJSONList(ProtectedView, utils.JSONResponseMixin, BaseListView):
+    model = Image
+    template_name = "kishore/admin/image_list.html"
+    context_object_name = "images"
+    paginate_by = 20
+
+class ImageCreate(ProtectedView, CreateView):
     model = Image
     form_class = ImageForm
     template_name = "kishore/admin/create_image.html"
@@ -65,7 +80,7 @@ class ImageCreate(CreateView):
     def get_success_url(self):
         return reverse("kishore_admin_images")
 
-class ImageUpdate(UpdateView):
+class ImageUpdate(ProtectedView, UpdateView):
     model = Image
     form_class = ImageForm
     template_name = "kishore/admin/update_image.html"
@@ -74,7 +89,7 @@ class ImageUpdate(UpdateView):
     def get_success_url(self):
         return reverse("kishore_admin_images")
 
-class ImageDelete(DeleteView):
+class ImageDelete(ProtectedView, DeleteView):
     model = Image
 
     def get_success_url(self):

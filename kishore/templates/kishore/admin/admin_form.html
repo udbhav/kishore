@@ -1,5 +1,5 @@
 {% for field in form %}
-<div class="form-group">
+<div class="form-group {{ field.html_name }}">
   {{ field.label_tag }}
   {{ field }}
   {% for error in field.errors %}

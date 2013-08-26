@@ -1,9 +1,3 @@
-{% for field in form %}
-<div class="form-group">
-  {{ field.label_tag }}
-  {{ field }}
-  {% for error in field.errors %}
-  <span class="label label-danger">{{ error }}</span>
-  {% endfor %}
-</div>
-{% endfor %}
+{% include 'kishore/admin/admin_form.html' %}
+{% include "kishore/admin/image_picker.html" %}
+{% include "kishore/admin/editor.html" %}

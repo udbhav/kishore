@@ -17,13 +17,17 @@ KISHORE_JAVASCRIPT = getattr(settings, "KISHORE_JAVASCRIPT",
                               "kishore/js/scripts.js"])
 
 KISHORE_ADMIN_STYLESHEETS = getattr(settings, "KISHORE_ADMIN_STYLESHEETS",
-                                    ["kishore/css/admin/bootstrap.css",
-                                     "kishore/css/admin/admin.css"])
+                                    ("kishore/admin/css/admin.css",))
 
-KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_JAVASCRIPT",
+KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_ADMIN_JAVASCRIPT",
                                    ["kishore/js/jquery-1.9.1.min.js",
                                     "kishore/js/mustache.js",
-                                    "kishore/js/admin/admin.js"])
+                                    "kishore/admin/js/jquery-ui-1.10.3.custom.js",
+                                    "kishore/admin/js/Markdown.Converter.js",
+                                    "kishore/admin/js/Markdown.Sanitizer.js",
+                                    "kishore/admin/js/Markdown.Editor.js",
+                                    "kishore/admin/js/modal.js",
+                                    "kishore/admin/js/admin.js"])
 
 KISHORE_PAYMENT_BACKENDS = getattr(settings, "KISHORE_PAYMENT_BACKENDS",
                                    ["kishore.payment.StripeBackend",
@@ -37,6 +41,8 @@ KISHORE_STORAGE_BACKEND = getattr(settings, "KISHORE_STORAGE_BACKEND",
 
 KISHORE_FROM_EMAIL = getattr(settings, "KISHORE_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL)
 KISHORE_SUPPORT_EMAIL = getattr(settings, "KISHORE_SUPPORT_EMAIL", KISHORE_FROM_EMAIL)
+
+KISHORE_SITE_NAME = getattr(settings, "KISHORE_SITE_NAME", "Kishore")
 
 TAX_RATES = {
     'AL': 0.04,

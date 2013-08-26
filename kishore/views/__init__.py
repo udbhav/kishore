@@ -4,4 +4,4 @@ from store import (add_to_cart, cart, update_cart, remove_from_cart, ProductDeta
                    process_download)
 from admin import (dashboard as admin_dashboard, OrderList, OrderDetail, ship_order, refund_order,
                    hide_order, ArtistAdminList, ArtistCreate, ArtistUpdate, ArtistDelete, ImageList,
-                   ImageCreate, ImageUpdate, ImageDelete)
+                   ImageCreate, ImageUpdate, ImageDelete, ImageJSONList)

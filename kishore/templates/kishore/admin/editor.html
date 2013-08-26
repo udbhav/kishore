@@ -1,0 +1,21 @@
+<script type="text/html" id="kishore-editor-template">
+  <div class="kishore-editor">
+    <div class="panel panel-default">
+      <div class="panel-body">
+<p>
+        <div id="wmd-button-bar{% templatetag openvariable %}suffix{% templatetag closevariable %}"></div></p>
+<p>
+        <textarea class="form-control kishore-editor-input" id="wmd-input{% templatetag openvariable %}suffix{% templatetag closevariable %}" rows="10">{% templatetag openvariable %}&initial{% templatetag closevariable %}</textarea>
+</p>
+        <p class="text-right"><small>Use <a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a> formatting.</small></p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h4>Preview</h4></div>
+      <div class="panel-body">
+        <div id="wmd-preview{% templatetag openvariable %}suffix{% templatetag closevariable %}"></div>
+      </div>
+    </div>
+  </div>
+</script>

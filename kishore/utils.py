@@ -1,4 +1,9 @@
+import json
+
 from django.forms import TextInput
+from django.http import HttpResponse
+from django.db.models.query import QuerySet
+from django.core.paginator import Paginator, Page
 
 def load_class(name):
     name = str(name)
@@ -40,3 +45,31 @@ class KishoreTextInput(TextInput):
                 attrs['class'] = 'form-control'
 
         super(KishoreTextInput, self).__init__(attrs)
+
+class JSONResponseMixin(object):
+    response_class = HttpResponse
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs['content_type'] = 'application/json'
+        return self.response_class(
+            self.convert_context_to_json(context),
+            **response_kwargs
+        )
+
+    def convert_context_to_json(self, context):
+        json_context = {}
+        for key, value in context.items():
+            try:
+                json.dumps(value)
+            except TypeError:
+                if value.__class__ == QuerySet:
+                    json_context[key] = [getattr(x, 'json_safe_values', None) for x in value]
+                elif value.__class__ == Page:
+                    json_context['page'] = {'page':value.number,
+                                            'has_next': value.has_next(),
+                                            'has_previous': value.has_previous(),
+                                            }
+            else:
+                json_context[key] = value
+
+        return json.dumps(json_context)

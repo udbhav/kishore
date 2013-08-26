@@ -8,3 +8,5 @@ TODO
 
 - Inventory tracking
 - Low inventory warning in dashboard
+- Image Search in admin
+- Tags on a bunch of shit

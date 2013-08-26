@@ -7,7 +7,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Kishore Admin{% block title %}{% endblock %}</title>
+    <title>{{ kishore_site_name }} Admin{% block title %}{% endblock %}</title>
     <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
@@ -17,7 +17,7 @@
     <div class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="{% url 'kishore_admin_dashboard' %}">Kishore</a>
+          <a class="navbar-brand" href="{% url 'kishore_admin_dashboard' %}">{{ kishore_site_name }}</a>
         </div>
         <div class="navbar-collapse collapse" role="navigation">
           <ul class="nav navbar-nav navbar-right">
@@ -29,11 +29,12 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-md-10">
+        <div class="{% block content_wrapper_class %}col-md-10{% endblock %}">
           {% block content %}
           {% endblock %}
         </div>
 
+        {% block sidebar %}
         <div class="col-md-2 sidebar">
           <ul class="nav">
             <li class="{% block order_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Orders</a></li>
@@ -46,6 +47,7 @@
 
           </ul>
         </div>
+        {% endblock %}
     </div>
     {% block javascript %}
     {% endblock javascript %}
