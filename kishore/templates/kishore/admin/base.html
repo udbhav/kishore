@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load less %}
 {% load kishore_tags %}
 {% load kishore_admin_tags %}
 
@@ -11,8 +10,7 @@
     <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-    <link rel="stylesheet" href="{{ STATIC_URL}}{% less 'kishore/css/admin.less' %}" />
-    {% kishore_admin_js %}
+    {% kishore_admin_css %}
   </head>
   <body class="{% block body_class %}{% endblock %}">
     <div class="navbar navbar-default">
@@ -50,6 +48,7 @@
         </div>
         {% endblock %}
     </div>
+    {% kishore_admin_js %}
     {% block javascript %}
     {% endblock javascript %}
   </body>

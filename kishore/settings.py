@@ -4,9 +4,10 @@ from django.conf import settings
 KISHORE_CURRENCY = getattr(settings, "KISHORE_CURRENCY", "usd")
 KISHORE_CURRENCY_SYMBOL = getattr(settings, "KISHORE_CURRENCY_SYMBOL", "$")
 
-KISHORE_AUDIO_PLAYER = getattr(settings, "KISHORE_AUDIO_PLAYER", "kishore.models.SoundcloudPlayer")
+KISHORE_AUDIO_BACKENDS = getattr(settings, "KISHORE_AUDIO_PLAYER", ["kishore.models.SoundcloudPlayer",
+                                                                  "kishore.models.DefaultPlayer"])
 
-KISHORE_LABEL_LAYOUT = getattr(settings, "KISHORE_LABEL_LAYOUT", False)
+KISHORE_LABEL_LAYOUT = getattr(settings, "KISHORE_LABEL_LAYOUT", True)
 
 KISHORE_STYLESHEETS = getattr(settings, "KISHORE_STYLESHEETS",
                               ["kishore/css/styles.css", "kishore/css/default.css"])
@@ -43,6 +44,8 @@ KISHORE_FROM_EMAIL = getattr(settings, "KISHORE_FROM_EMAIL", settings.DEFAULT_FR
 KISHORE_SUPPORT_EMAIL = getattr(settings, "KISHORE_SUPPORT_EMAIL", KISHORE_FROM_EMAIL)
 
 KISHORE_SITE_NAME = getattr(settings, "KISHORE_SITE_NAME", "Kishore")
+
+KISHORE_USE_LESS_FOR_CSS = getattr(settings, "KISHORE_USE_LESS_FOR_CSS", False)
 
 TAX_RATES = {
     'AL': 0.04,
