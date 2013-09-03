@@ -1,0 +1,15 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block user_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>Add a User</h1>
+<form method="post" action="." class="user-form">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

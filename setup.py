@@ -1,3 +1,6 @@
+import ez_setup
+ez_setup.use_setuptools()
+
 import os
 from setuptools import setup
 
@@ -10,13 +13,16 @@ setup(
     name = 'django-kishore',
     version = '0.1',
     packages = ['kishore'],
+    install_requires = ['Django>=1.5','boto>=2.10.0','django-imagekit>=2.0.3',
+                        'django-less>=0.7.2','django-storages>=1.1.8','easypost>=2.0.4',
+                        'soundcloud>=0.3.6','stripe>=1.9.4'],
     include_package_data = True,
-    license = 'MIT License', # example license
+    license = 'MIT License',
     description = 'A django app to help bands and labels share and sell their music.',
     long_description = README,
     url = 'http://github.com/udbhav/kishore',
     author = 'Udbhav Gupta',
-    author_email = 'gupta.udbhav@gmail.com',
+    author_email = 'dev@udbhavgupta.com',
     classifiers = [
         'Environment :: Web Environment',
         'Framework :: Django',

@@ -1,6 +1,6 @@
 import json
 
-from django.forms import TextInput
+from django import forms
 from django.http import HttpResponse
 from django.db.models.query import QuerySet
 from django.core.paginator import Paginator, Page
@@ -36,7 +36,7 @@ def clear_session_vars(request):
 
 
 
-class KishoreTextInput(TextInput):
+class KishoreWidget(object):
     def __init__(self, attrs=None):
         if not attrs:
             attrs = {'class':'form-control'}
@@ -44,7 +44,16 @@ class KishoreTextInput(TextInput):
             if not attrs.get('class'):
                 attrs['class'] = 'form-control'
 
-        super(KishoreTextInput, self).__init__(attrs)
+        super(KishoreWidget, self).__init__(attrs)
+
+class KishoreTextInput(KishoreWidget, forms.TextInput):
+    pass
+
+class KishoreSelectWidget(KishoreWidget, forms.Select):
+    pass
+
+class KishorePasswordInput(KishoreWidget, forms.PasswordInput):
+    pass
 
 class JSONResponseMixin(object):
     response_class = HttpResponse

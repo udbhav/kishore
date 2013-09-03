@@ -1,11 +1,17 @@
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm
-from django import forms
-from django.core.paginator import Paginator
+import json
 
-from kishore.utils import KishoreTextInput
+from django import forms
+from django.contrib.auth.forms import (AuthenticationForm, PasswordResetForm, SetPasswordForm,
+                                       UserCreationForm)
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
+from django.db import models
+
+from kishore import utils
 
 class KishoreAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(max_length=254, widget=KishoreTextInput(
+    username = forms.CharField(max_length=254, widget=utils.KishoreTextInput(
             attrs = {
                 'placeholder': 'Username',
                 'autofocus': 'true',
@@ -17,7 +23,7 @@ class KishoreAuthenticationForm(AuthenticationForm):
                 }))
 
 class KishorePasswordResetForm(PasswordResetForm):
-    email = forms.EmailField(max_length=254, widget=KishoreTextInput(
+    email = forms.EmailField(max_length=254, widget=utils.KishoreTextInput(
             attrs = {
                 'placeholder': 'Email',
                 'autofocus': 'true',
@@ -54,3 +60,17 @@ class KishorePaginator(Paginator):
             return range(page.number + 1,self.num_pages)
         else:
             return range(page.number + 1,page.number + self.kishore_page_range + 1)
+
+class KishoreUserCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(KishoreUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget = utils.KishoreTextInput()
+        self.fields['password1'].widget = utils.KishorePasswordInput()
+        self.fields['password2'].widget = utils.KishorePasswordInput()
+
+
+class UserForm(forms.ModelForm):
+    username = forms.CharField(widget=utils.KishoreTextInput)
+    class Meta:
+        fields = ('username','is_staff')
+        model = User

@@ -1,6 +1,7 @@
 from datetime import datetime
 import random
 import re
+import json
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -17,35 +18,42 @@ from kishore.templatetags.kishore_tags import kishore_currency
 from kishore import settings as kishore_settings
 from kishore import utils
 
-from music import Song, Release
-from image import Image
+from music import Song, Release, WithSlug
+from image import Image, ModelFormWithImages
 
-class Product(models.Model):
+PRODUCT_SUBCLASSES = [
+    {"class": "DigitalSong", "name": "Digital Song"},
+    {"class": "DigitalRelease", "name": "Digital Release"},
+    {"class": "PhysicalRelease", "name": "Physical Release"},
+    {"class": "Merch", "name": "Merch"},
+    ]
+
+class Product(WithSlug):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField(blank=True)
-    inventory = models.IntegerField(default=-1)
-    images = models.ManyToManyField(Image, blank=True, null=True)
+    track_inventory = models.BooleanField()
+    inventory = models.IntegerField(blank=True,null=True)
+    images = models.ManyToManyField(Image, through='ProductImage', blank=True, null=True)
     visible = models.BooleanField(default=True)
-    weight = models.IntegerField(help_text="(oz) an LP is usually 18oz, CD is 3oz")
+    weight = models.IntegerField(help_text="(oz) an LP is usually 18oz, CD is 3oz",blank=True,null=True)
 
     def __unicode__(self):
-        if self.subclass:
-            return self.subclass.__unicode__()
-        else:
-            return "%s (%s)" % (self.name, self.formatted_price)
+        # return self.name
+        return "%s (%s)" % (self.name, self.formatted_price)
 
     def name_with_no_price(self):
         return re.sub(r'\([^)]*\)', '', self.__unicode__())
 
     @property
     def subclass(self):
-        subclasses = ('digitalsong', 'digitalrelease', 'physicalrelease', 'merch')
-        for s in subclasses:
+        for s in [x['class'].lower() for x in PRODUCT_SUBCLASSES]:
             if hasattr(self, s):
                 return getattr(self, s)
         return None
+
+    def get_subclass_name(self):
+        return [x["name"] for x in PRODUCT_SUBCLASSES if x["class"] == self.subclass.__class__.__name__][0]
 
     def get_absolute_url(self):
         return reverse('kishore_product_detail',kwargs={'slug':self.slug})
@@ -57,9 +65,70 @@ class Product(models.Model):
     def formatted_price(self):
         return kishore_currency(self.price)
 
+    def ordered_images(self):
+        return ProductImage.objects.filter(product=self).order_by('position')
+
+    def images_as_json(self):
+        return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
+
     class Meta:
         db_table = 'kishore_products'
         app_label = 'kishore'
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product)
+    image = models.ForeignKey('Image')
+    position = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'kishore_product_images'
+        app_label = 'kishore'
+
+class ProductForm(ModelFormWithImages):
+    model_class = forms.ChoiceField(
+        choices = [[x['class'], x['name']] for x in PRODUCT_SUBCLASSES],
+        widget = forms.RadioSelect, label = "Product type")
+
+    song = forms.ModelChoiceField(queryset=Song.objects.all(),
+                                  widget=utils.KishoreSelectWidget,
+                                  required=False)
+    release = forms.ModelChoiceField(queryset=Release.objects.all(),
+                                     widget=utils.KishoreSelectWidget,
+                                     required=False
+                                     )
+    zipfile = forms.FileField(required=False, label="Zip file")
+    product_images = forms.CharField(widget=forms.HiddenInput(attrs={'class':'kishore-images-input'}))
+    images_field_name = 'product_images'
+    object_id_name = 'product_id'
+    through_model = ProductImage
+
+    class Meta:
+        model = Product
+        exclude = ('images',)
+        widgets = {
+            'name': utils.KishoreTextInput,
+            'slug': utils.KishoreTextInput,
+            'price': utils.KishoreTextInput,
+            'inventory': utils.KishoreTextInput,
+            'weight': utils.KishoreTextInput,
+            'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
+            }
+
+    def __init__(self, *args, **kwargs):
+        if 'instance' in kwargs and getattr(kwargs['instance'], 'subclass'):
+            kwargs['instance'] = kwargs['instance'].subclass
+
+        super(ProductForm, self).__init__(*args, **kwargs)
+
+        if getattr(self.instance, 'subclass'):
+            self.fields['model_class'].widget = forms.HiddenInput()
+            self.fields['model_class'].initial = self.instance.subclass.__class__.__name__
+
+    def clean(self):
+        if not getattr(self.instance, 'subclass'):
+            self.instance = eval(self.cleaned_data['model_class'])()
+
+        return self.cleaned_data
 
 class DigitalSong(Product):
     song = models.OneToOneField(Song)

@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django import forms
 from django.core.urlresolvers import reverse
@@ -34,9 +36,6 @@ class Image(models.Model):
         db_table = 'kishore_images'
         app_label = 'kishore'
 
-
-
-
 class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
@@ -45,3 +44,35 @@ class ImageForm(forms.ModelForm):
             'credit': KishoreTextInput(),
             'credit_url': KishoreTextInput(),
         }
+
+class ModelFormWithImages(forms.ModelForm):
+    images_field_name = 'images'
+    through_model = models.Model
+
+    def __init__(self, *args, **kwargs):
+        super(ModelFormWithImages, self).__init__(*args, **kwargs)
+
+        if not self.is_bound:
+            self.initial[self.images_field_name] = self.instance.images_as_json
+
+    def save(self):
+        super(ModelFormWithImages, self).save()
+
+        images = json.loads(self.cleaned_data[self.images_field_name])
+        for i, image in enumerate(images):
+            object_image, created = self.through_model.objects.get_or_create(
+                **{'image_id': image['pk'],
+                   self.object_id_name: self.instance.id,
+                   }
+                  )
+            if object_image.position != i:
+                object_image.position = i
+                object_image.save()
+
+        object_images = self.through_model.objects.filter(**{
+                self.object_id_name:self.instance.id})
+
+        for object_image in object_images:
+            matches = [x for x in images if x['pk'] == object_image.image_id]
+            if len(matches) == 0:
+                object_image.delete()

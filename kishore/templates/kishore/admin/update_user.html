@@ -1,0 +1,22 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block user_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>{{ object }}</h1>
+<form method="post" action="." class="user-form">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+  <div class="btn-toolbar">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#" class="btn btn-danger delete-link" data-form-class="delete-form">Delete User</a>
+  </div>
+</form>
+
+<form method="post" action="{% url 'kishore_admin_user_delete' pk=object.id %}" class="delete-form">
+  {% csrf_token %}
+</form>
+{% endblock %}

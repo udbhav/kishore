@@ -1,0 +1,22 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block song_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>{{ song }}</h1>
+<form method="post" action="." class="song-form image-picker-form">
+  {% csrf_token %}
+  {% include 'kishore/admin/admin_form.html' %}
+  <div class="btn-toolbar">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#" class="btn btn-danger delete-link" data-form-class="delete-form">Delete Song</a>
+  </div>
+</form>
+
+<form method="post" action="{% url 'kishore_admin_song_delete' pk=song.id %}" class="delete-form">
+  {% csrf_token %}
+</form>
+{% endblock %}

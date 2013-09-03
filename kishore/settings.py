@@ -22,12 +22,12 @@ KISHORE_ADMIN_STYLESHEETS = getattr(settings, "KISHORE_ADMIN_STYLESHEETS",
 KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_ADMIN_JAVASCRIPT",
                                    ["kishore/js/jquery-1.9.1.min.js",
                                     "kishore/js/mustache.js",
-                                    "kishore/admin/js/jquery-ui-1.10.3.custom.js",
-                                    "kishore/admin/js/Markdown.Converter.js",
-                                    "kishore/admin/js/Markdown.Sanitizer.js",
-                                    "kishore/admin/js/Markdown.Editor.js",
-                                    "kishore/admin/js/modal.js",
-                                    "kishore/admin/js/admin.js"])
+                                    "kishore/js/jquery-ui-1.10.3.custom.js",
+                                    "kishore/js/Markdown.Converter.js",
+                                    "kishore/js/Markdown.Sanitizer.js",
+                                    "kishore/js/Markdown.Editor.js",
+                                    "kishore/js/modal.js",
+                                    "kishore/js/admin.js"])
 
 KISHORE_PAYMENT_BACKENDS = getattr(settings, "KISHORE_PAYMENT_BACKENDS",
                                    ["kishore.payment.StripeBackend",

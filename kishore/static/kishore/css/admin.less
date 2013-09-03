@@ -1,0 +1,119 @@
+@import "bootstrap/bootstrap.less";
+@import "font-awesome.less";
+@import "jquery-ui-1.10.3.custom.less";
+@import "editor.less";
+
+/* jQuery UI */
+
+.ui-widget {
+  background: @body-bg;
+  border: 1px solid @input-border;
+  border-radius: @input-border-radius;
+}
+
+.ui-widget-header {
+  text-align: center; }
+
+.ui-icon {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  *margin-right: .3em;
+  text-indent: 0; }
+  .ui-icon:before {
+    text-decoration: inherit;
+    display: inline-block;
+    speak: none; }
+
+.ui-icon-circle-triangle-w:before {
+  content: "\f060"; }
+
+.ui-icon-circle-triangle-e:before {
+  content: "\f061"; }
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+  position: absolute;
+  &:hover { text-decoration: none; }
+}
+
+.ui-datepicker .ui-datepicker-prev {
+  left: 5px; }
+
+.ui-datepicker .ui-datepicker-next {
+  right: 5px; }
+
+/* General Layout */
+body {
+  padding-bottom: 40px; }
+
+body.auth .navbar {
+  display: none; }
+
+.btn-toolbar form {
+  display: inline; }
+
+.sidebar .nav li.active {
+  background: #eee; }
+
+/* Sign In */
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.form-signin .form-control:focus {
+  z-index: 2; }
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
+
+/* Image Picker */
+.image-picker img {
+  max-width: 100%; }
+.image-picker h3 {
+  margin-top: 0; }
+.image-picker .image-sorter {
+  margin-left: -10px; }
+.image-picker .image-picker-image {
+  padding-left: 5px;
+  padding-right: 5px;
+  position: relative;
+  margin-bottom: 10px; }
+.image-picker .image-sorter .btn-toolbar {
+  visibility: hidden;
+  position: absolute;
+  bottom: 10px;
+  right: 10px; }
+.image-picker .image-picker-image:hover .btn {
+  visibility: visible; }
+
+#add-images .modal-body .btn {
+  display: none; }
+#add-images .pager {
+  margin-bottom: 0; }
+  #add-images .pager li {
+    display: none; }
+    #add-images .pager li.active {
+      display: block; }
+#add-images img {
+  max-width: 100%;
+  opacity: 0.4; }
+#add-images .selected img {
+  opacity: 1; }
+
+/* Orders */
+.refund-order,
+.easypost-shipping-toolbar form {
+  display: inline; }
+
+/* Artists */
+.artist_images label {
+  display: none; }

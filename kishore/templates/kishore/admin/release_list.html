@@ -1,0 +1,20 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block release_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>Releases</h1>
+<p>
+  <div class="btn-toolbar">
+    <a class="btn btn-primary" href="{% url 'kishore_admin_release_create' %}">Add a Release</a>
+  </div>
+</p>
+{% for release in releases %}
+<p><a href="{% url 'kishore_admin_release_update' pk=release.id %}">{{ release }}</a></p>
+{% endfor %}
+
+{% kishore_pagination page_obj %}
+{% endblock %}

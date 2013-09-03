@@ -1,0 +1,106 @@
+{% load kishore_tags %}
+{{ form.errors }}
+
+{% if form.model_class|is_radio %}
+<div class="form-group">
+  {{ form.model_class.label_tag }}
+  {% for radio in form.model_class %}
+  <div class="radio">
+    {{ radio }}
+  </div>
+  {% endfor %}
+
+  {% for error in form.model_class.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+{% else %}
+<div class="form-group">
+<span class="label label-default">{{ product.get_subclass_name }}</span>
+{{ form.model_class }}
+</div>
+{% endif %}
+
+<div class="form-group">
+  {{ form.name.label_tag }}
+  {{ form.name }}
+
+  {% for error in form.name.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group">
+  {{ form.price.label_tag }}
+  {{ form.price }}
+
+  {% for error in form.price.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group song hide hideable">
+  {{ form.song.label_tag }}
+  {{ form.song }}
+
+  {% for error in form.song.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group release hide hideable">
+  {{ form.release.label_tag }}
+  {{ form.release }}
+
+  {% for error in form.release.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group physical-release merch hide hideable">
+  {{ form.weight.label_tag }}
+  {{ form.weight }}
+
+  {% for error in form.weight.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group digital-release hide hideable">
+  {{ form.zipfile.label_tag }}
+  {{ form.zipfile }}
+
+  {% for error in form.zipfile.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group">
+  {{ form.description.label_tag }}
+  {{ form.description }}
+
+  {% for error in form.description.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group">
+  {{ form.product_images.label_tag }}
+  {{ form.product_images }}
+
+  {% for error in form.product_images.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group">
+  {{ form.slug.label_tag }}
+  {{ form.slug }}
+
+  {% for error in form.slug.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+{% include "kishore/admin/image_picker.html" %}
+{% include "kishore/admin/editor.html" %}

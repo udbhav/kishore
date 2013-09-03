@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import json
 
 from django.db import models
@@ -10,10 +10,44 @@ from django.template.defaultfilters import slugify
 
 from kishore import settings as kishore_settings
 from kishore import utils
+from image import ModelFormWithImages
 
-class Artist(models.Model):
-    name = models.CharField(max_length=120)
+class WithSlug(models.Model):
     slug = models.SlugField(unique=True,blank=True)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            valid_slug = False
+            i = 0
+            while not valid_slug:
+                if i == 0:
+                    proposed_slug = slugify(self.get_slug_origin())
+                else:
+                    proposed_slug = slugify("%s %s" % (self.get_slug_origin(), i))
+                try:
+                    self.__class__.objects.get(slug=proposed_slug)
+                except ObjectDoesNotExist:
+                    valid_slug = True
+                else:
+                    i += 1
+
+            self.slug = proposed_slug
+
+        super(WithSlug, self).save(*args, **kwargs)
+
+    def get_slug_origin(self):
+        if hasattr(self,'name'):
+            return getattr(self, 'name')
+        elif hasattr(self, 'title'):
+            return getattr(self, 'title')
+        else:
+            return self.pk
+
+class Artist(WithSlug):
+    name = models.CharField(max_length=120)
     url = models.URLField(blank=True)
     description = models.TextField(blank=True)
     images = models.ManyToManyField('Image', through='ArtistImage', blank=True, null=True)
@@ -23,12 +57,6 @@ class Artist(models.Model):
 
     def get_absolute_url(self):
         return reverse('kishore_artist_detail', kwargs={'slug':self.slug})
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-
-        super(Artist, self).save(*args, **kwargs)
 
     def ordered_images(self):
         return ArtistImage.objects.filter(artist=self).order_by('position')
@@ -52,11 +80,11 @@ class ArtistImage(models.Model):
 class MusicBase(models.Model):
     artist = models.ForeignKey(Artist)
     title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
-    date = models.DateTimeField(default=datetime.now())
+    release_date = models.DateField(default=date.today())
     description = models.TextField(blank=True)
     remote_url = models.CharField(max_length=100, blank=True, help_text="URL to external service hosting the audio, Soundcloud, etc")
-    streamable = models.BooleanField()
+    player_backend = models.CharField(max_length=150,blank=True)
+    streamable = models.BooleanField(default=True)
     downloadable = models.BooleanField()
 
     def __unicode__(self):
@@ -64,6 +92,9 @@ class MusicBase(models.Model):
             return '%s - %s' % (self.artist.name, self.title)
         else:
             return self.title
+
+    def set_player_backend(self):
+        pass
 
     def get_player_backend(self):
         try:
@@ -85,9 +116,8 @@ class MusicBase(models.Model):
     class Meta:
         abstract = True
 
-class Song(MusicBase):
+class Song(WithSlug, MusicBase):
     audio_file = models.FileField(upload_to='uploads/music', blank=True, null=True,storage=utils.load_class(kishore_settings.KISHORE_STORAGE_BACKEND)())
-    track_number = models.IntegerField(null=True, blank=True)
     artwork = models.ManyToManyField('Image', through='SongImage', blank=True, null=True)
 
     def download_link(self):
@@ -98,6 +128,12 @@ class Song(MusicBase):
 
     def get_absolute_url(self):
         return reverse('kishore_song_detail', kwargs={'slug': self.slug})
+
+    def ordered_images(self):
+        return SongImage.objects.filter(song=self).order_by('position')
+
+    def images_as_json(self):
+        return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
 
     class Meta:
         db_table = 'kishore_songs'
@@ -112,7 +148,7 @@ class SongImage(models.Model):
         db_table = 'kishore_song_galleries'
         app_label = 'kishore'
 
-class Release(MusicBase):
+class Release(WithSlug, MusicBase):
     songs = models.ManyToManyField(Song, blank=True, null=True)
     artwork = models.ManyToManyField('Image', through='ReleaseImage', blank=True, null=True)
 
@@ -142,6 +178,12 @@ class Release(MusicBase):
     def get_absolute_url(self):
         return reverse('kishore_release_detail', kwargs={'slug': self.slug})
 
+    def ordered_images(self):
+        return ReleaseImage.objects.filter(release=self).order_by('position')
+
+    def images_as_json(self):
+        return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
+
     class Meta:
         db_table = 'kishore_releases'
         app_label = 'kishore'
@@ -155,38 +197,64 @@ class ReleaseImage(models.Model):
         db_table = 'kishore_release_galleries'
         app_label = 'kishore'
 
-class ArtistForm(forms.ModelForm):
-    artist_images = forms.CharField(widget=forms.HiddenInput)
-
-    def __init__(self, *args, **kwargs):
-        super(ArtistForm, self).__init__(*args, **kwargs)
-
-        if not self.is_bound:
-            self.initial['artist_images'] = self.instance.images_as_json
-
-    def save(self):
-        super(ArtistForm, self).save()
-
-        images = json.loads(self.cleaned_data['artist_images'])
-        for i, image in enumerate(images):
-            try:
-                artist_image = ArtistImage.objects.get(image_id=image['pk'],artist=self.instance)
-            except ObjectDoesNotExist:
-                artist_image = ArtistImage(image_id=image['pk'],artist=self.instance)
-
-            artist_image.position = i
-            artist_image.save()
-
-        for artist_image in self.instance.artistimage_set.all():
-            matches = [x for x in images if x['pk'] == artist_image.image_id]
-            if len(matches) == 0:
-                artist_image.delete()
+class ArtistForm(ModelFormWithImages):
+    artist_images = forms.CharField(widget=forms.HiddenInput(attrs={'class':'kishore-images-input'}))
+    images_field_name = 'artist_images'
+    object_id_name = 'artist_id'
+    through_model = ArtistImage
 
     class Meta:
         model = Artist
-        exclude = ('images',)
+        fields = ('name','url','description','artist_images','slug')
         widgets = {
             'name': utils.KishoreTextInput(),
             'slug': utils.KishoreTextInput(),
             'url': utils.KishoreTextInput(),
+            'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
         }
+
+class SongForm(ModelFormWithImages):
+    artist = forms.ModelChoiceField(queryset=Artist.objects.all(),
+                                    empty_label=None,
+                                    widget=utils.KishoreSelectWidget())
+    song_images = forms.CharField(label="Artwork",
+                                     widget=forms.HiddenInput(attrs={'class':'kishore-images-input'}))
+    images_field_name = 'song_images'
+    object_id_name = 'song_id'
+    through_model = SongImage
+
+    class Meta:
+        model = Song
+        fields = ('artist','title','remote_url','audio_file', 'release_date','streamable',
+                  'downloadable','description','song_images','slug')
+
+        widgets = {
+            'title': utils.KishoreTextInput(),
+            'slug': utils.KishoreTextInput(),
+            'release_date': utils.KishoreTextInput(),
+            'remote_url': utils.KishoreTextInput(),
+            'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
+            }
+
+class ReleaseForm(ModelFormWithImages):
+    artist = forms.ModelChoiceField(queryset=Artist.objects.all(),
+                                    empty_label=None,
+                                    widget=utils.KishoreSelectWidget())
+    release_images = forms.CharField(label="Artwork",
+                                     widget=forms.HiddenInput(attrs={'class':'kishore-images-input'}))
+    images_field_name = 'release_images'
+    object_id_name = 'release_id'
+    through_model = ReleaseImage
+
+    class Meta:
+        model = Release
+        fields = ('artist','title','remote_url', 'release_date','streamable',
+                  'downloadable','description','release_images','slug')
+
+        widgets = {
+            'title': utils.KishoreTextInput(),
+            'slug': utils.KishoreTextInput(),
+            'release_date': utils.KishoreTextInput(),
+            'remote_url': utils.KishoreTextInput(),
+            'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
+            }

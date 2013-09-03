@@ -1,0 +1,20 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block user_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>Users</h1>
+<p>
+  <div class="btn-toolbar">
+    <a class="btn btn-primary" href="{% url 'kishore_admin_user_create' %}">Add a User</a>
+  </div>
+</p>
+{% for user in users %}
+<p><a href="{% url 'kishore_admin_user_update' pk=user.id %}">{{ user }}</a></p>
+{% endfor %}
+
+{% kishore_pagination page_obj %}
+{% endblock %}

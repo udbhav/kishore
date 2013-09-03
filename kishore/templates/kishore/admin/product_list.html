@@ -1,0 +1,20 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block product_nav %}active{% endblock %}
+
+{% block content %}
+
+<h1>Products</h1>
+<p>
+  <div class="btn-toolbar">
+    <a class="btn btn-primary" href="{% url 'kishore_admin_product_create' %}">Add a Product</a>
+  </div>
+</p>
+{% for product in products %}
+<p><a href="{% url 'kishore_admin_product_update' pk=product.id %}">{{ product }}</a></p>
+{% endfor %}
+
+{% kishore_pagination page_obj %}
+{% endblock %}

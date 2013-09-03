@@ -7,12 +7,9 @@
 {% block content %}
 
 <h1>{{ artist.name }}</h1>
-<form method="post" action="." class="artist-form" data-image-field="">
+<form method="post" action="." class="artist-form image-picker-form" data-image-field="">
   {% csrf_token %}
-  {% include 'kishore/admin/artist_form.html' %}
-
-
-
+  {% include 'kishore/admin/admin_form.html' %}
   <div class="btn-toolbar">
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="#" class="btn btn-danger delete-link" data-form-class="delete-form">Delete Artist</a>

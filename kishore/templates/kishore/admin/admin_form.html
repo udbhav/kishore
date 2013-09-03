@@ -1,9 +1,35 @@
+{% load kishore_tags %}
+
 {% for field in form %}
 <div class="form-group {{ field.html_name }}">
+  {% if field|is_checkbox or field|is_radio %}
+
+  {% if field|is_checkbox %}
+  <div class="checkbox"><label>
+      {{ field }}
+      {{ field.label }}
+    </label></div>
+  {% else %}
+  {{ field.label_tag }}
+  {% for radio in field %}
+  <div class="radio">
+    {{ radio }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% else %}
+
   {{ field.label_tag }}
   {{ field }}
+
+  {% endif %}
+
   {% for error in field.errors %}
   <span class="label label-danger">{{ error }}</span>
   {% endfor %}
 </div>
 {% endfor %}
+
+{% include "kishore/admin/image_picker.html" %}
+{% include "kishore/admin/editor.html" %}

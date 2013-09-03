@@ -1,5 +1,7 @@
 from django import template
 from django.conf import settings
+from django.forms import CheckboxInput, RadioSelect
+
 from kishore import settings as kishore_settings
 
 register = template.Library()
@@ -32,3 +34,11 @@ def kishore_pagination(page):
         'previous': page.paginator.get_previous_range(page),
         'next': page.paginator.get_next_range(page),
         }
+
+@register.filter(name='is_checkbox')
+def is_checkbox(field):
+  return field.field.widget.__class__.__name__ == CheckboxInput().__class__.__name__
+
+@register.filter(name='is_radio')
+def is_radio(field):
+  return field.field.widget.__class__.__name__ == RadioSelect().__class__.__name__

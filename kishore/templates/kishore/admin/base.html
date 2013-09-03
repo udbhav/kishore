@@ -1,7 +1,7 @@
+{% load staticfiles %}
+{% load less %}
 {% load kishore_tags %}
 {% load kishore_admin_tags %}
-{% load staticfiles %}
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,8 @@
     <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-    {% kishore_admin_css %}{% kishore_admin_js %}
+    <link rel="stylesheet" href="{{ STATIC_URL}}{% less 'kishore/css/admin.less' %}" />
+    {% kishore_admin_js %}
   </head>
   <body class="{% block body_class %}{% endblock %}">
     <div class="navbar navbar-default">
@@ -38,12 +39,12 @@
         <div class="col-md-2 sidebar">
           <ul class="nav">
             <li class="{% block order_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Orders</a></li>
-            <li class="{% block product_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Products</a></li>
+            <li class="{% block product_nav %}{% endblock %}"><a href="{% url 'kishore_admin_products' %}">Products</a></li>
             {% if kishore_label_layout %}<li class="{% block artist_nav %}{% endblock %}"><a href="{% url 'kishore_admin_artists' %}">Artists</a></li>{% endif %}
-            <li class="{% block release_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Releases</a></li>
-            <li class="{% block song_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Songs</a></li>
+            <li class="{% block release_nav %}{% endblock %}"><a href="{% url 'kishore_admin_releases' %}">Releases</a></li>
+            <li class="{% block song_nav %}{% endblock %}"><a href="{% url 'kishore_admin_songs' %}">Songs</a></li>
             <li class="{% block image_nav %}{% endblock %}"><a href="{% url 'kishore_admin_images' %}">Images</a></li>
-            <li class="{% block user_nav %}{% endblock %}"><a href="{% url 'kishore_admin_orders' %}">Users</a></li>
+            {% if request.user.is_superuser %}<li class="{% block user_nav %}{% endblock %}"><a href="{% url 'kishore_admin_users' %}">Users</a></li>{% endif %}
 
           </ul>
         </div>
