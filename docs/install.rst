@@ -35,4 +35,8 @@ Installation
         (r'^manage/', include(admin_urls)),
     )
 
-6. Configure the required settings :doc:`required settings <settings>`
+6. Install PIL::
+
+   pip install pil
+
+7. Configure the required settings :doc:`required settings <settings>`

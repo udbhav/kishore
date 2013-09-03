@@ -14,9 +14,9 @@ class Image(models.Model):
     credit = models.CharField(max_length=100, blank=True)
     credit_url = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
-    medium_image = ImageSpecField(image_field='image', processors=[ResizeToFit(500,500),])
-    thumbnail = ImageSpecField(image_field='image', processors=[ResizeToFill(60,60),])
-    cropped_square = ImageSpecField(image_field='image', processors=[ResizeToFill(300,300),])
+    medium_image = ImageSpecField(source='image', processors=[ResizeToFit(500,500),])
+    thumbnail = ImageSpecField(source='image', processors=[ResizeToFill(60,60),])
+    cropped_square = ImageSpecField(source='image', processors=[ResizeToFill(300,300),])
 
     def __unicode__(self):
         return self.title
