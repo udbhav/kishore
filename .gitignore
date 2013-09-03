@@ -1,1 +1,3 @@
-kishore/migrations
+*.pyc
+dist/
+django_kishore.egg-info/

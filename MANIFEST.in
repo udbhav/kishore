@@ -1,5 +1,7 @@
 include LICENSE
+include README.md
 include ez_setup.py
-recursive-include kishore/fixtures *
-recursive-include kishore/static *
-recursive-include kishore/templates *
+
+recursive-include kishore *
+recursive-exclude kishore *.pyc
+recursive-exclude kishore \#*\#
