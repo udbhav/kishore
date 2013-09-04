@@ -1,12 +1,38 @@
-{% extends "base.html" %}
+{% load staticfiles %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
 
-{% block content %}
-<section class="kishore_container">
-{% block kishore_content %}{% endblock kishore_content %}
-</section>
-<script type="text/javascript">
-$(document).ready(function() {
-$(".artwork").kishoreCarousel();
-});
-</script>
-{% endblock content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ kishore_site_name }} {% block title %}{% endblock %}</title>
+    <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    {% kishore_css %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <div class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">{{ kishore_site_name }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="{% block content_wrapper_class %}col-md-12{% endblock %}">
+          <section class="kishore-container">
+            {% block kishore_content %}{% endblock %}
+          </section>
+        </div>
+      </div>
+    </div>
+    {% kishore_js %}
+    {% block javascript %}
+    {% endblock javascript %}
+  </body>
+</html>

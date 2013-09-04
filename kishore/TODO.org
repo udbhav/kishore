@@ -1,0 +1,8 @@
+* TODO Admin Dashboard
+* TODO Inventory Tracking
+* TODO Default Player
+* TODO Paypal Backend
+* TODO Create new image from Image picker
+* TODO Add editor to image description
+* TODO Search
+* TODO Show currency as part of label and/or help text

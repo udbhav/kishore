@@ -135,6 +135,10 @@ class SongDelete(ProtectedView, DeleteView):
     def get_success_url(self):
         return reverse("kishore_admin_songs")
 
+class SongJSONList(ProtectedView, utils.JSONResponseMixin, BaseListView):
+    model = Song
+    paginate_by = 20
+
 class ReleaseAdminList(ProtectedView, ListView):
     queryset = Release.objects.all().order_by("title")
     template_name = "kishore/admin/release_list.html"

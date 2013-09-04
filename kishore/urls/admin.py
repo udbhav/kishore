@@ -7,7 +7,7 @@ from kishore.views import (OrderList, OrderDetail, ArtistAdminList, ArtistCreate
                            ImageDelete, SongAdminList, SongCreate, SongUpdate, SongDelete,
                            ReleaseAdminList, ReleaseCreate, ReleaseUpdate, ReleaseDelete,
                            UserList, UserCreate, UserUpdate, UserDelete, ProductAdminList,
-                           ProductCreate, ProductUpdate, ProductDelete)
+                           ProductCreate, ProductUpdate, ProductDelete, SongJSONList)
 
 import auth as auth_urls
 
@@ -36,6 +36,7 @@ urlpatterns = patterns(
     url(r'^songs/create/$', SongCreate.as_view(), name='kishore_admin_song_create'),
     url(r'^songs/(?P<pk>\d+)/$', SongUpdate.as_view(), name='kishore_admin_song_update'),
     url(r'^songs/(?P<pk>\d+)/delete/$', SongDelete.as_view(), name='kishore_admin_song_delete'),
+    url(r'^songs/json/$', SongJSONList.as_view(),name='kishore_admin_songs_json'),
 
     url(r'^releases/$', ReleaseAdminList.as_view(), name='kishore_admin_releases'),
     url(r'^releases/create/$', ReleaseCreate.as_view(), name='kishore_admin_release_create'),

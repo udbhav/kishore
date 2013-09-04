@@ -35,12 +35,9 @@
         </td>
       </tr>
       {% endfor %}
+      <tr><td colspan="3">Subtotal: {{ cart.total_price|kishore_currency }}</td></tr>
     </tbody>
   </table>
-
-  <div class="subtotal">
- Subtotal: {{ cart.total_price|kishore_currency }}
-  </div>
 
   <a href="{% url 'kishore_checkout' %}" class="btn btn-primary">Checkout</a>
   {% else %}

@@ -18,40 +18,40 @@
 // Brand colors
 // -------------------------
 
-@brand-primary:         #428bca;
+@brand-primary:         #9999ff;
 @brand-success:         #5cb85c;
 @brand-warning:         #f0ad4e;
-@brand-danger:          #d9534f;
-@brand-info:            #5bc0de;
+@brand-danger:          #FF6699;
+@brand-info:            #CC99FF;
 
 // Scaffolding
 // -------------------------
 
 @body-bg:               #fff;
-@text-color:            @gray-dark;
+@text-color:            @gray;
 
 // Links
 // -------------------------
 
-@link-color:            @brand-primary;
+@link-color:            @brand-info;
 @link-hover-color:      darken(@link-color, 15%);
 
 // Typography
 // -------------------------
 
-@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
-@font-family-serif:       Georgia, "Times New Roman", Times, serif;
+@font-family-sans-serif:  "Futura", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif:       "Baskerville", Georgia, "Times New Roman", Times, serif;
 @font-family-monospace:   Monaco, Menlo, Consolas, "Courier New", monospace;
-@font-family-base:        @font-family-sans-serif;
+@font-family-base:        @font-family-serif;
 
-@font-size-base:          14px;
+@font-size-base:          16px;
 @font-size-large:         ceil(@font-size-base * 1.25); // ~18px
 @font-size-small:         ceil(@font-size-base * 0.85); // ~12px
 
 @line-height-base:        1.428571429; // 20/14
 @line-height-computed:    floor(@font-size-base * @line-height-base); // ~20px
 
-@headings-font-family:    @font-family-base;
+@headings-font-family:    @font-family-sans-serif;
 @headings-font-weight:    500;
 @headings-line-height:    1.1;
 
@@ -374,8 +374,8 @@
 @state-success-bg:               #dff0d8;
 @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
 
-@state-info-text:                #3a87ad;
-@state-info-bg:                  #d9edf7;
+@state-info-text:                #fff;
+@state-info-bg:                  @brand-info;
 @state-info-border:              darken(spin(@state-info-bg, -10), 7%);
 
 

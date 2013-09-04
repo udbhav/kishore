@@ -4,6 +4,11 @@ from django.forms import CheckboxInput, RadioSelect
 
 from kishore import settings as kishore_settings
 
+try:
+    from less.templatetags.less import less as less_tag
+except ImportError:
+    pass
+
 register = template.Library()
 
 @register.filter
@@ -15,10 +20,12 @@ def kishore_currency(value):
 
 @register.simple_tag
 def kishore_css():
-    output = ""
-    for path in kishore_settings.KISHORE_STYLESHEETS:
-        output += "<link rel=\"stylesheet\" media=\"all\" href=\"%s%s\" />" % (settings.STATIC_URL, path)
-    return output
+    if kishore_settings.KISHORE_USE_LESS_FOR_CSS:
+        path = less_tag("kishore/css/styles.less")
+    else:
+        path = "kishore/css/styles.css"
+
+    return "<link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\" />" % (settings.STATIC_URL, path)
 
 @register.simple_tag
 def kishore_js():

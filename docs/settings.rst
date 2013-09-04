@@ -1,6 +1,9 @@
 Settings
 ========
 
+Kishore does a lot of things, and also tries to let you control how it does them.  This means there's
+a fair bit of configuration involved at the beginning.
+
 Important Kishore Settings
 --------------------------
 
@@ -9,7 +12,7 @@ These settings all require various amounts of configuration on your part, depend
 KISHORE_AUDIO_BACKENDS
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Default: ["kishore.models.SoundcloudPlayer","kishore.models.DefaultPlayer"]
+Default: ["kishore.models.SoundcloudPlayer"]
 
 An array of strings that are paths to classes to use as possible audio players.  If you plan on using
 the built in Soundcloud player, you must set SOUNDCLOUD_CLIENT_ID, which you can get through
@@ -23,7 +26,6 @@ Default: True
 If the site is for just a single artist, set this to False, and do the following to create the initial
 artist data::
 
-    python manage.py shell
     >>> from kishore.models import Artist
     >>> Artist.objects.create(name="Kishore Kumar")
 
@@ -35,11 +37,33 @@ Default: ["kishore.payment.StripeBackend","kishore.payment.PaypalBackend"]
 If you're using `Stripe <https://stripe.com/>`_, you must set STRIPE_SECRET_KEY and
 STRIPE_PUBLISHABLE_KEY.
 
+KISHORE_SHIPPING_BACKEND
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: "kishore.shipping.EasyPostBackend"
+
+If you're using `easypost <https://www.easypost.com/>`_ you must set EASYPOST_API_KEY, and
+EASYPOST_FROM_ID.  EASYPOST_FROM_ID is the id of the shipping origin address you've created through
+the easypost api. See their `documentation <https://www.easypost.com/docs/python#addresses>`_ for
+more information, and remember that from addresses require a name or company and phone.
+
+KISHORE_STORAGE_BACKEND
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: "kishore.storage.SecureS3Storage"
+
+The secure S3 storage backend requires AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and
+AWS_STORAGE_BUCKET_NAME.
 
 Required Django Settings
 ------------------------
 
 There are a couple of Django specific settings you must have set for things to work.
+
+EMAIL_BACKEND
+~~~~~~~~~~~~~
+
+The store needs to be able to send emails to customers about orders.
 
 LOGIN_URL
 ~~~~~~~~~
@@ -85,6 +109,13 @@ KISHORE_CURRENCY_SYMBOL
 Default: "$"
 
 Used to change what's displayed in templates.
+
+KISHORE_SITE_NAME
+~~~~~~~~~~~~~~~~~
+
+Default: "Kishore"
+
+Used for titles throughout the site and admin.
 
 KISHORE_USE_LESS_FOR_CSS
 ~~~~~~~~~~~~~~~~~~~~~~~~

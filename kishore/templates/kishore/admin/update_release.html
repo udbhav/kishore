@@ -6,7 +6,13 @@
 
 {% block content %}
 
-<h1>{{ release }}</h1>
+<h1>
+  {{ release }}
+  <a class="btn btn-default" href="{{ release.get_absolute_url }}">
+    <i class="icon-external-link"></i>
+  </a>
+</h1>
+
 <form method="post" action="." class="release-form image-picker-form" data-image-field="">
   {% csrf_token %}
   {% include 'kishore/admin/admin_form.html' %}

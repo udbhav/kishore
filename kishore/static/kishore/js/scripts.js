@@ -98,4 +98,18 @@
     });
   }
 
+  $.fn.kishoreAddCartForm = function(option) {
+    return this.each(function() {
+      var $this = $(this);
+      $("input[type=radio], input[type=submit]", $this).hide();
+      $("label", $this).addClass("btn btn-primary").on("click", function() {
+        $(this).find("input[type=radio]").prop('checked',true);
+        $this.submit();
+      });
+    });
+  }
 })(jQuery);
+
+$(document).ready(function() {
+  $(".add-cart").kishoreAddCartForm();
+});

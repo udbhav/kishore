@@ -378,7 +378,7 @@ class CartItemForm(forms.ModelForm):
     class Meta:
         model = CartItem
         exclude = ("cart","unit_price")
-        widgets = {'product': forms.HiddenInput()}
+        widgets = {'product': forms.HiddenInput(), 'quantity': forms.HiddenInput()}
 
     def clean_quantity(self):
         data = self.cleaned_data['quantity']

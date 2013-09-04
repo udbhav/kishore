@@ -6,7 +6,11 @@
 
 {% block content %}
 
-<h1>{{ song }}</h1>
+<h1>
+  {{ song }}
+  <a class="btn btn-default" href="{{ song.get_absolute_url }}"><i class="icon-external-link"></i></a>
+</h1>
+
 <form method="post" action="." class="song-form image-picker-form">
   {% csrf_token %}
   {% include 'kishore/admin/admin_form.html' %}

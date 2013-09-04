@@ -1,0 +1,71 @@
+@import "bootstrap/bootstrap.less";
+@import "common.less";
+@import "font-awesome.less";
+
+/* Layout stuff */
+
+.kishore-container img {
+  max-width: 100%;
+}
+
+.kishore-container p {
+  line-height: @line-height-computed * 1.2;
+}
+
+/* Music Artwork */
+
+.kishore-container .artwork {
+  overflow: hidden;
+}
+
+.kishore-container .artwork .images {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+  -webkit-transition: margin 0.5s ease-in-out;
+}
+
+.kishore-container .artwork .images li {
+  width: 100%;
+  float: left;
+  height: 400px;
+  line-height: 400px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.kishore-container .artwork img {
+  max-width: 100%;
+  max-height: 400px;
+  vertical-align: middle;
+}
+
+.kishore-container .artwork .thumbnails {
+  position: relative;
+  float: left;
+  left: 50%;
+}
+
+.kishore-container .artwork .thumbnails li {
+  position: relative;
+  float: left;
+  left: -50%;
+  margin: 0.4em 0.2em 0;
+  opacity: 0.5;
+}
+
+.kishore-container .artwork .thumbnails li.active {
+  opacity: 1;
+}
+
+.kishore-container .player {
+  margin-bottom: 2em;
+}
+
+/* Store */
+
+.cart {
+  form { display: inline; }
+  .table tbody > tr > td { vertical-align: middle }
+}

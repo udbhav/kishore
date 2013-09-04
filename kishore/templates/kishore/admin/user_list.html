@@ -5,16 +5,19 @@
 {% block user_nav %}active{% endblock %}
 
 {% block content %}
-
-<h1>Users</h1>
-<p>
-  <div class="btn-toolbar">
+  <div class="btn-toolbar pull-right">
     <a class="btn btn-primary" href="{% url 'kishore_admin_user_create' %}">Add a User</a>
   </div>
-</p>
+
+<h1>Users</h1>
+
+<table class="table table-striped">
 {% for user in users %}
-<p><a href="{% url 'kishore_admin_user_update' pk=user.id %}">{{ user }}</a></p>
+<tr><td>
+<a href="{% url 'kishore_admin_user_update' pk=user.id %}">{{ user }}</a></p>
+</td></tr>
 {% endfor %}
+</table>
 
 {% kishore_pagination page_obj %}
 {% endblock %}

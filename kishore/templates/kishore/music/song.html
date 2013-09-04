@@ -5,7 +5,7 @@
 
   {% if song.streamable %}
   <div class="player">
-    {% autoescape off %}{{ song.get_embed_code }}{% endautoescape %}
+    {% autoescape off %}{{ song.get_player_html }}{% endautoescape %}
   </div>
   {% endif %}
 

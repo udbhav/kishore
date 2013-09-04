@@ -1,8 +1,17 @@
 {% extends "kishore/base.html" %}
 
 {% block kishore_content %}
-{% if artist %}<header><h1>{{ artist }}</h1></header>{% endif %}
-{% for release in releases %}
-{% include "kishore/music/release.html" %}
-{% endfor %}
+{% if artist %}
+<h1>{{ artist }}</h1>
+{% endif %}
+
+<div class="row">
+  {% for release in releases %}
+  <div class="col-md-4">
+    <a href="{{ release.get_absolute_url }}">
+      <img src="{{ release.get_primary_image.cropped_square.url }}">
+    </a>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

@@ -5,16 +5,29 @@
 {% block artist_nav %}active{% endblock %}
 
 {% block content %}
+<div class="btn-toolbar pull-right">
+  <a class="btn btn-primary" href="{% url 'kishore_admin_artist_create' %}">Add an Artist</a>
+</div>
 
 <h1>Artists</h1>
-<p>
-  <div class="btn-toolbar">
-    <a class="btn btn-primary" href="{% url 'kishore_admin_artist_create' %}">Add an Artist</a>
-  </div>
-</p>
-{% for artist in artists %}
-<p><a href="{% url 'kishore_admin_artist_update' pk=artist.id %}">{{ artist }}</a></p>
+<table class="table table-striped">
+  <thead>
+    <th></th>
+    <th></th>
+  </thead>
+  <tbody>
+
+    {% for artist in artists %}
+    <tr>
+      <td><a href="{% url 'kishore_admin_artist_update' pk=artist.id %}">{{ artist }}</a></td>
+      <td>
+        <a href="{{ artist.get_absolute_url }}"><i class="icon-external-link"></i></a>
+      </td>
+    </tr>
+</tr>
 {% endfor %}
+</tbody>
+</table>
 
 {% kishore_pagination page_obj %}
 {% endblock %}

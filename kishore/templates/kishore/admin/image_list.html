@@ -5,16 +5,15 @@
 {% block image_nav %}active{% endblock %}
 
 {% block content %}
+<div class="btn-toolbar pull-right">
+  <a class="btn btn-primary" href="{% url 'kishore_admin_image_create' %}">Add an Image</a>
+</div>
 
 <h1>Images</h1>
-<p>
-  <div class="btn-toolbar">
-    <a class="btn btn-primary" href="{% url 'kishore_admin_image_create' %}">Add an Image</a>
-  </div>
-</p>
+
 {% for image in images %}
 <a href="{% url 'kishore_admin_image_update' pk=image.pk %}">
-<img src="{{ image.cropped.url }}" />
+  <img src="{{ image.thumbnail.url }}" />
 </a>
 {% endfor %}
 

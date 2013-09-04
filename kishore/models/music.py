@@ -11,6 +11,7 @@ from django.template.defaultfilters import slugify
 from kishore import settings as kishore_settings
 from kishore import utils
 from image import ModelFormWithImages
+from players import DefaultPlayer
 
 class WithSlug(models.Model):
     slug = models.SlugField(unique=True,blank=True)
@@ -74,7 +75,7 @@ class ArtistImage(models.Model):
     position = models.IntegerField(default=1)
 
     class Meta:
-        db_table = 'kishore_artist_galleries'
+        db_table = 'kishore_artist_images'
         app_label = 'kishore'
 
 class MusicBase(models.Model):
@@ -83,7 +84,6 @@ class MusicBase(models.Model):
     release_date = models.DateField(default=date.today())
     description = models.TextField(blank=True)
     remote_url = models.CharField(max_length=100, blank=True, help_text="URL to external service hosting the audio, Soundcloud, etc")
-    player_backend = models.CharField(max_length=150,blank=True)
     streamable = models.BooleanField(default=True)
     downloadable = models.BooleanField()
 
@@ -93,25 +93,26 @@ class MusicBase(models.Model):
         else:
             return self.title
 
-    def set_player_backend(self):
-        pass
-
-    def get_player_backend(self):
-        try:
-            player_class_string = kishore_settings.KISHORE_AUDIO_PLAYER.rsplit(".", 1)
-            mod = __import__(player_class_string[0], fromlist=[player_class_string[1]])
-            klass = getattr(mod, player_class_string[1])
-        except (ImportError, AttributeError):
-            raise ImproperlyConfigured("Something is wrong with your KISHORE_AUDIO_PLAYER setting")
-        return klass
+    def get_player(self):
+        if not self.remote_url:
+            return DefaultPlayer(self)
+        else:
+            for backend in kishore_settings.KISHORE_AUDIO_BACKENDS:
+                player = utils.load_class(backend)(self)
+                if player.accepts_remote_url(self.remote_url):
+                    return player
 
     def get_player_html(self):
         if self.streamable:
-            backend_klass = self.get_player_backend()
-            player = backend_klass(self)
+            player = self.get_player()
             return player.get_player_html()
         else:
             return None
+
+    def get_primary_image(self):
+        images = self.ordered_images()
+        if images:
+            return images[0].image
 
     class Meta:
         abstract = True
@@ -135,6 +136,12 @@ class Song(WithSlug, MusicBase):
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
 
+    @property
+    def json_safe_values(self):
+        return {'pk': self.pk,
+                'title':self.__unicode__(),
+                }
+
     class Meta:
         db_table = 'kishore_songs'
         app_label = 'kishore'
@@ -145,11 +152,11 @@ class SongImage(models.Model):
     position = models.IntegerField(default=1)
 
     class Meta:
-        db_table = 'kishore_song_galleries'
+        db_table = 'kishore_song_images'
         app_label = 'kishore'
 
 class Release(WithSlug, MusicBase):
-    songs = models.ManyToManyField(Song, blank=True, null=True)
+    songs = models.ManyToManyField(Song, through='ReleaseSong', blank=True, null=True)
     artwork = models.ManyToManyField('Image', through='ReleaseImage', blank=True, null=True)
 
     def get_product_ids(self):
@@ -167,7 +174,7 @@ class Release(WithSlug, MusicBase):
         ids = self.get_product_ids()
         if ids:
             form = CartItemForm()
-            form.fields["product"].widget = forms.Select()
+            form.fields["product"].widget = forms.RadioSelect()
             form.fields["product"].queryset = Product.objects.filter(id__in=ids)
             form.fields["product"].empty_label = None
             return form
@@ -194,7 +201,16 @@ class ReleaseImage(models.Model):
     position = models.IntegerField(default=1)
 
     class Meta:
-        db_table = 'kishore_release_galleries'
+        db_table = 'kishore_release_images'
+        app_label = 'kishore'
+
+class ReleaseSong(models.Model):
+    release = models.ForeignKey(Release)
+    song = models.ForeignKey('Song')
+    track_number = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'kishore_release_songs'
         app_label = 'kishore'
 
 class ArtistForm(ModelFormWithImages):

@@ -1,15 +1,15 @@
 {% if artwork %}
 <div class="artwork">
-  <ul class="images clearfix">
+  <ul class="images clearfix unstyled">
     {% for image in artwork %}
-    <li id="artwork_{{ image.id }}"><a href="{{ image.image.url }}" target="_blank"><img src="{{ image.medium_image.url }}" alt="{{ image.description }}" /></a></li>
+    <li id="artwork_{{ image.id }}"><a href="{{ image.image.image.url }}" target="_blank"><img src="{{ image.image.medium_image.url }}" alt="{{ image.description }}" /></a></li>
     {% endfor %}
   </ul>
 
   {% if artwork|length > 1 %}
   <ul class="thumbnails">
     {% for image in artwork %}
-    <li{% if forloop.first %} class="active"{% endif %}><a href="#artwork_{{ image.id }}"><img src="{{ image.thumbnail.url }}" alt="{{ image.description }}" /></a></li>
+    <li{% if forloop.first %} class="active"{% endif %}><a href="#artwork_{{ image.id }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ image.description }}" /></a></li>
     {% endfor %}
   </ul>
   {% endif %}

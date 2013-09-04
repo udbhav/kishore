@@ -5,16 +5,32 @@
 {% block song_nav %}active{% endblock %}
 
 {% block content %}
+<div class="btn-toolbar pull-right">
+  <a class="btn btn-primary" href="{% url 'kishore_admin_song_create' %}">Add a Song</a>
+</div>
 
 <h1>Songs</h1>
-<p>
-  <div class="btn-toolbar">
-    <a class="btn btn-primary" href="{% url 'kishore_admin_song_create' %}">Add a Song</a>
-  </div>
-</p>
-{% for song in songs %}
-<p><a href="{% url 'kishore_admin_song_update' pk=song.id %}">{{ song }}</a></p>
-{% endfor %}
+
+<table class="table table-striped">
+  <thead>
+    <th>Song</th>
+    <th>Artist</th>
+    <th></th>
+  </thead>
+  <tbody>
+    {% for song in songs %}
+    <tr>
+      <td><a href="{% url 'kishore_admin_song_update' pk=song.pk %}">
+        {{ song.title }}
+      </a></td>
+      <td><a href="{% url 'kishore_admin_artist_update' pk=song.artist.pk %}">
+          {{ song.artist }}
+      </a></td>
+      <td><a href="{{ song.get_absolute_url }}"><i class="icon-external-link"></i></a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% kishore_pagination page_obj %}
 {% endblock %}
