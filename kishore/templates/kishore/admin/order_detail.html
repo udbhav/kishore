@@ -5,10 +5,12 @@
 
 {% block content %}
 <div class="order-small-info pull-right panel panel-default">
-  <div class="panel-body">
+  <div class="panel-body monospaced">
+    <small>
     {{ order.customer_name }}<br>
     <a href="mailto:{{ order.customer_email }}">{{ order.customer_email }}</a><br>
     {{ order.timestamp }}
+    </small>
   </div>
 </div>
 <h2>

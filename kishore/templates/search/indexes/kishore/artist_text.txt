@@ -1,0 +1,4 @@
+{% load markup %}
+
+{{ object.name }}
+{{ object.description|markdown:"safe" }}

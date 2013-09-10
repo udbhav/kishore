@@ -43,6 +43,7 @@ class ImageForm(forms.ModelForm):
             'title': KishoreTextInput(),
             'credit': KishoreTextInput(),
             'credit_url': KishoreTextInput(),
+            'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
         }
 
 class ModelFormWithImages(forms.ModelForm):

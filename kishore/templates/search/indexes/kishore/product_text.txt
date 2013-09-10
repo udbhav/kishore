@@ -1,0 +1,5 @@
+{% load markup %}
+
+{{ object.name }}
+{{ object.formatted_price }}
+{{ object.description|markdown:"safe" }}

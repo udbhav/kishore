@@ -130,9 +130,12 @@ $(document).ready(function() {
   })
 
   $(".song-form").kishorePicker({
-    imageFieldSelector: 'input[name=song_images]'
+    fieldSelector: 'input[name=song_images]'
   });
 
+  $(".product-form").kishorePicker({
+    fieldSelector: 'input[name=product_images]'
+  });
 
   $(".kishore-editor-input").kishoreEditor();
   $(".song-form input[name=release_date]").kishoreDatepicker();

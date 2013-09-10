@@ -6,7 +6,11 @@
 
 {% block content %}
 
-<h1>{{ product }}</h1>
+<h1>
+  {{ product }}
+  <a class="btn btn-default" href="{{ product.get_absolute_url }}"><i class="icon-external-link"></i></a>
+</h1>
+
 <form method="post" action="." class="product-form image-picker-form" enctype="multipart/form-data">
 
   {% csrf_token %}

@@ -1,0 +1,5 @@
+{% load markup %}
+
+{{ object.title }}
+{{ object.artist }}
+{{ object.description|markdown:"safe" }}

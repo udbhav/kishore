@@ -1,0 +1,5 @@
+{% load markup %}
+
+{{ object.title }}
+{{ object.credit }}
+{{ object.description|markdown:"safe" }}

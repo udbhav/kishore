@@ -90,6 +90,11 @@ DEFAULT_FROM_EMAIL
 The address for emails sent from the store.
 
 
+Required 3rd Party Settings
+---------------------------
+
+You have to `configure haystack <http://haystacksearch.org>`_
+
 Optional Kishore Settings
 -------------------------
 

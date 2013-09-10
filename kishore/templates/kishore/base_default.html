@@ -24,13 +24,20 @@
           <a class="navbar-brand" href="/">{{ kishore_site_name }}</a>
         </div>
 
-        <div class="collapse navbar-collapse pull-right">
+        <div class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
-          {% if cart and cart.item_count > 0 %}
-          <li class="cart-count">
-            <a href="{% url 'kishore_cart' %}" title="Your Cart"><i class="icon-shopping-cart"></i> [{{ cart.item_count }}]</a>
-          </li>
-          {% endif %}
+            <li>
+              <form method="get" action="{% url 'kishore_search' %}" class="navbar-form">
+                <div class="form-group">
+                  <input type="text" name="q" placeholder="search" class="form-control input-sm">
+                </div>
+              </form>
+            </li>
+            {% if cart and cart.item_count > 0 %}
+            <li class="kishore-cart-count">
+              <a href="{% url 'kishore_cart' %}" title="Your Cart"><i class="icon-shopping-cart"></i> [{{ cart.item_count }}]</a>
+            </li>
+            {% endif %}
           </ul>
         </div>
 

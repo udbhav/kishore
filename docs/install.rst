@@ -20,7 +20,9 @@ Installation
         'django.contrib.staticfiles',
         'django.contrib.humanize',
         'django.contrib.markup',
-        'kishore'
+
+        'haystack',
+        'kishore',
     )
 
 4. Run syncdb to create the database tables::

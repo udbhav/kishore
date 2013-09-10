@@ -1,5 +1,4 @@
 * TODO Create new image from Image picker
-* TODO Add editor to image description
 * TODO Search
 * TODO Admin Dashboard
 * TODO Inventory Tracking
