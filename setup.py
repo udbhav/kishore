@@ -15,7 +15,7 @@ setup(
     packages = ['kishore'],
     install_requires = ['Django>=1.5','boto>=2.10.0','django-imagekit>=3.0.3',
                         'django-less>=0.7.2','django-storages>=1.1.8','easypost>=2.0.4',
-                        'soundcloud>=0.3.6','stripe>=1.9.4','markdown>=2.3.1'],
+                        'soundcloud>=0.3.6','stripe>=1.9.4','markdown>=2.3.1', 'requests>=1.2.3'],
     include_package_data = True,
     license = 'MIT License',
     description = 'A django app to help bands and labels share and sell their music.',

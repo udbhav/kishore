@@ -59,7 +59,7 @@
 <div class="form-group physical-release merch hide hideable">
   {{ form.weight.label_tag }}
   {{ form.weight }}
-
+  <span class="help-block">Ounces</span>
   {% for error in form.weight.errors %}
   <span class="label label-danger">{{ error }}</span>
   {% endfor %}

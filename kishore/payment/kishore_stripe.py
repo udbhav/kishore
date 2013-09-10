@@ -45,9 +45,9 @@ class StripeBackend(object):
 
     def get_api_key(self, secret=True):
         if secret:
-            var = "STRIPE_SECRET_KEY"
+            var = "KISHORE_STRIPE_SECRET_KEY"
         else:
-            var = "STRIPE_PUBLISHABLE_KEY"
+            var = "KISHORE_STRIPE_PUBLISHABLE_KEY"
 
         key = getattr(settings, var, None)
         if key:

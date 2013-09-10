@@ -45,6 +45,8 @@ KISHORE_SHIPPING_BACKEND = getattr(settings, "KISHORE_SHIPPING_BACKEND",
 KISHORE_STORAGE_BACKEND = getattr(settings, "KISHORE_STORAGE_BACKEND",
                                   "kishore.storage.SecureS3Storage")
 
+KISHORE_PAYPAL_ENDPOINT = getattr(settings, "KISHORE_PAYPAL_ENDPOINT", "https://api.paypal.com/v1")
+
 KISHORE_FROM_EMAIL = getattr(settings, "KISHORE_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL)
 KISHORE_SUPPORT_EMAIL = getattr(settings, "KISHORE_SUPPORT_EMAIL", KISHORE_FROM_EMAIL)
 

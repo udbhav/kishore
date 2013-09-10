@@ -116,24 +116,21 @@ def payment(request):
     return render(request, "kishore/store/payment.html",{'form':form,'order':order})
 
 def process_payment(request):
-    if request.method == "POST":
-        order = utils.get_or_create_order(request)
+    order = utils.get_or_create_order(request)
 
-        if order.total == 0:
-            return redirect("kishore_cart")
+    if order.total == 0:
+        return redirect("kishore_cart")
 
-        klass = utils.load_class(order.payment_processor)
-        payment_processor = klass()
-        valid = payment_processor.accept_payment(request, order)
+    klass = utils.load_class(order.payment_processor)
+    payment_processor = klass()
+    valid = payment_processor.accept_payment(request, order)
 
-        if valid:
-            order.fulfill()
-            return render(request, "kishore/store/success.html",{'order':order})
-        else:
-            error = "We're sorry, there was a problem charging your card, please try again."
-            return render(request, "kishore/store/error.html",{'error':error})
+    if valid:
+        order.fulfill()
+        return render(request, "kishore/store/success.html",{'order':order})
     else:
-        return HttpResponse("Bad request", status=400)
+        error = "We're sorry, there was a problem charging your card, please try again."
+        return render(request, "kishore/store/error.html",{'error':error})
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 

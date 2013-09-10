@@ -15,7 +15,11 @@ def get_cart(request):
 
     cart_id = request.session.get('kishore_cart_id', None)
     if cart_id:
-        return Cart.objects.get(pk=cart_id)
+        try:
+            return Cart.objects.get(pk=cart_id)
+        except Cart.DoesNotExist:
+            request.session['kishore_cart_id'] = None
+            return None
 
 def get_or_create_cart(request):
     from kishore.models import Cart
