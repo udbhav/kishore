@@ -15,16 +15,31 @@ a:hover {
   text-transform: uppercase;
 }
 
-label, input, select, table, .btn, .label {
+label, input, select, table, .btn, .label, .form-group {
   font-family: @font-family-monospace;
   font-size: 0.75em;
   text-transform: uppercase;
+}
+
+textarea {
+  font-family: @font-family-serif;
+  text-transform: none;
 }
 
 input {
   text-transform: none;
 }
 
-.navbar-brand {
-  color: @brand-primary !important;
+.navbar .navbar-brand {
+  color: @brand-primary;
+}
+
+.navbar-inverse .navbar-brand {
+  color: #fff;
+}
+
+.help-text {
+  text-transform: none;
+  color: @gray-light;
+  font-size: 10px;
 }

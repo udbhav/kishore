@@ -46,6 +46,7 @@
   right: 5px; }
 
 /* General Layout */
+
 body {
   padding-bottom: 40px; }
 
@@ -57,6 +58,14 @@ body.auth .navbar {
 
 .sidebar .nav li.active {
   background: #eee; }
+
+.panel {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
 
 /* Sign In */
 .form-signin .form-control {
@@ -76,40 +85,62 @@ body.auth .navbar {
   border-top-left-radius: 0;
   border-top-right-radius: 0; }
 
-/* Image Picker */
-.image-picker img {
-  max-width: 100%; }
-.image-picker h3 {
-  margin-top: 0; }
-.image-picker .image-sorter {
-  margin-left: -10px; }
-.image-picker .image-picker-image {
-  padding-left: 5px;
-  padding-right: 5px;
-  position: relative;
-  margin-bottom: 10px; }
-.image-picker .image-sorter .btn-toolbar {
-  visibility: hidden;
-  position: absolute;
-  bottom: 10px;
-  right: 10px; }
-.image-picker .image-picker-image:hover .btn {
-  visibility: visible; }
+/* Kishore Picker */
 
-#add-images .modal-body .btn {
-  display: none; }
-#add-images .pager {
-  margin-bottom: 0; }
-  #add-images .pager li {
-    display: none; }
-    #add-images .pager li.active {
-      display: block; }
-#add-images img {
-  max-width: 100%;
-  opacity: 0.4; }
-#add-images .selected img {
-  opacity: 1; }
+.kishore-picker {
 
+  img { max-width: 100%; }
+
+  h3 {  margin-top: 0; }
+
+  .kishore-picker-item {
+    .btn {
+      visibility: hidden;
+    }
+    &:hover .btn { visibility: visible; }
+  }
+
+  .item-picker-modal {
+    .kishore-picker-item { cursor: pointer; }
+    .modal-body .btn { display: none; }
+    .pager {
+      margin-bottom: 0;
+      li { display: none; }
+      li.active { display: block; }
+    }
+    img {
+      max-width: 100%;
+      opacity: 0.4;
+    }
+    .selected {
+      color: @brand-primary;
+      img { opacity: 1; }
+    }
+  }
+}
+
+.image-picker {
+  .kishore-picker-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    position: relative;
+    margin-bottom: 10px;
+
+    .btn-toolbar {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+}
+
+.song-picker {
+  .kishore-picker-item {
+    .btn-toolbar {
+      display: inline;
+    }
+  }
+}
 /* Orders */
 .refund-order,
 .easypost-shipping-toolbar form {
@@ -118,3 +149,14 @@ body.auth .navbar {
 /* Artists */
 .artist_images label {
   display: none; }
+
+/* Music */
+
+.form-group.streamable, .form-group.downloadable {
+  float: left;
+  margin-right: 20px;
+}
+
+.form-group.description {
+  clear: both;
+}

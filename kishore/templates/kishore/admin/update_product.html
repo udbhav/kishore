@@ -7,7 +7,8 @@
 {% block content %}
 
 <h1>{{ product }}</h1>
-<form method="post" action="." class="product-form image-picker-form">
+<form method="post" action="." class="product-form image-picker-form" enctype="multipart/form-data">
+
   {% csrf_token %}
   {% include 'kishore/admin/product_form.html' %}
   <div class="btn-toolbar">

@@ -10,13 +10,14 @@
     <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+
     {% kishore_admin_css %}
   </head>
   <body class="{% block body_class %}{% endblock %}">
     <div class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="{% url 'kishore_admin_dashboard' %}">{{ kishore_site_name }}</a>
+          <a class="navbar-brand" href="{% url 'kishore_admin_dashboard' %}">{{ kishore_site_name }} Admin</a>
         </div>
         <div class="navbar-collapse collapse" role="navigation">
           <ul class="nav navbar-nav navbar-right">

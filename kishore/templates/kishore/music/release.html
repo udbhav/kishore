@@ -15,11 +15,11 @@
       <h2>Buy</h2>
       <form method="post" action="{% url 'kishore_add_to_cart' %}" class="add-cart">
         {% csrf_token %}
-        <p>
+        <ul class="list-unstyled">
         {% for radio in form.product %}
-        {{ radio }}
+        <li><p>{{ radio }}</p></li>
         {% endfor %}
-        </p>
+        </ul>
         {{ form.quantity }}
         <input type="submit" value="Add To Cart" class="btn btn-primary">
       </form>

@@ -7,6 +7,7 @@ urlpatterns = patterns(
     url(r'^artists/(?P<slug>[-\w]+)/$', ArtistDetail.as_view(), name='kishore_artist_detail'),
 
     url(r'^songs/$', SongList.as_view(), name='kishore_songs_index'),
+    url(r'^songs/play/$', 'kishore.views.play_song', {}, 'kishore_song_play'),
     url(r'^songs/(?P<slug>[-\w]+)/$', SongDetail.as_view(), name='kishore_song_detail'),
 
     url(r'^releases/$', ReleaseList.as_view(), name='kishore_releases_index'),

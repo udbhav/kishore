@@ -111,5 +111,7 @@
 })(jQuery);
 
 $(document).ready(function() {
+  $.fn.kishoreCSRFProtection();
   $(".add-cart").kishoreAddCartForm();
+  $(".kishore-audio-player").kishoreAudioPlayer();
 });

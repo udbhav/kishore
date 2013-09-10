@@ -15,6 +15,9 @@ KISHORE_STYLESHEETS = getattr(settings, "KISHORE_STYLESHEETS",
 KISHORE_JAVASCRIPT = getattr(settings, "KISHORE_JAVASCRIPT",
                              ["kishore/js/jquery-1.9.1.min.js",
                               "kishore/js/mustache.js",
+                              "kishore/js/soundmanager2.js",
+                              "kishore/js/kishore-csrf.js",
+                              "kishore/js/kishore-player.js",
                               "kishore/js/scripts.js"])
 
 KISHORE_ADMIN_STYLESHEETS = getattr(settings, "KISHORE_ADMIN_STYLESHEETS",
@@ -28,6 +31,8 @@ KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_ADMIN_JAVASCRIPT",
                                     "kishore/js/Markdown.Sanitizer.js",
                                     "kishore/js/Markdown.Editor.js",
                                     "kishore/js/modal.js",
+                                    "kishore/js/kishore-csrf.js",
+                                    "kishore/js/kishore-picker.js",
                                     "kishore/js/admin.js"])
 
 KISHORE_PAYMENT_BACKENDS = getattr(settings, "KISHORE_PAYMENT_BACKENDS",

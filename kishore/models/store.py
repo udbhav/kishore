@@ -125,13 +125,25 @@ class ProductForm(ModelFormWithImages):
             self.fields['model_class'].initial = self.instance.subclass.__class__.__name__
 
     def clean(self):
+        data = self.cleaned_data
+
         if not getattr(self.instance, 'subclass'):
             self.instance = eval(self.cleaned_data['model_class'])()
 
-        return self.cleaned_data
+        instance = eval(self.cleaned_data['model_class'])()
+
+        if self.instance.__class__ == PhysicalRelease or self.instance.__class__ == Merch:
+            if not data['weight']:
+                self._errors['weight'] = self.error_class(["Weight is required"])
+
+        if self.instance.__class__ == PhysicalRelease or self.instance.__class__ == DigitalRelease:
+            if not data['release']:
+                self._errors['release'] = self.error_class(["Release is required"])
+
+        return data
 
 class DigitalSong(Product):
-    song = models.OneToOneField(Song)
+    song = models.OneToOneField(Song, blank=True, null=True)
     shippable = False
     downloadable = True
 
@@ -143,7 +155,7 @@ class DigitalSong(Product):
         return self.song.audio_file.storage.download_url(self.song.audio_file.name)
 
 class DigitalRelease(Product):
-    release = models.ForeignKey(Release)
+    release = models.ForeignKey(Release, blank=True, null=True)
     zipfile = models.FileField(upload_to='uploads/store',storage=utils.load_class(kishore_settings.KISHORE_STORAGE_BACKEND)())
     shippable = False
     downloadable = True
@@ -159,7 +171,7 @@ class DigitalRelease(Product):
         app_label = 'kishore'
 
 class PhysicalRelease(Product):
-    release = models.ForeignKey(Release)
+    release = models.ForeignKey(Release, blank=True, null=True)
     shippable = True
     downloadable = True
 
@@ -378,7 +390,8 @@ class CartItemForm(forms.ModelForm):
     class Meta:
         model = CartItem
         exclude = ("cart","unit_price")
-        widgets = {'product': forms.HiddenInput(), 'quantity': forms.HiddenInput()}
+        widgets = {'product': forms.HiddenInput(),
+                   'quantity': forms.TextInput(attrs={'class':'form-control'})}
 
     def clean_quantity(self):
         data = self.cleaned_data['quantity']

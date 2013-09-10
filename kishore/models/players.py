@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.template.loader import render_to_string
 from requests.exceptions import HTTPError
 
 import soundcloud
@@ -39,4 +40,9 @@ class SoundcloudPlayer(BasePlayer):
 
 class DefaultPlayer(BasePlayer):
     def get_player_html(self):
-        return "You need to write the player Udbhav!"
+        if self.music_data.__class__.__name__ == 'Release':
+            songs = self.music_data.ordered_songs
+        else:
+            songs = [self.music_data]
+
+        return render_to_string("kishore/music/kishore_player.html", {'songs':songs})

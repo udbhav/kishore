@@ -177,6 +177,7 @@ class Release(WithSlug, MusicBase):
             form.fields["product"].widget = forms.RadioSelect()
             form.fields["product"].queryset = Product.objects.filter(id__in=ids)
             form.fields["product"].empty_label = None
+            form.fields["quantity"].widget = forms.HiddenInput()
             return form
         else:
             return None
@@ -187,6 +188,13 @@ class Release(WithSlug, MusicBase):
 
     def ordered_images(self):
         return ReleaseImage.objects.filter(release=self).order_by('position')
+
+    def ordered_songs(self):
+        release_songs = ReleaseSong.objects.filter(release=self).order_by('track_number')
+        return [r.song for r in release_songs if r.song.streamable]
+
+    def songs_as_json(self):
+        return json.dumps([s.json_safe_values for s in self.ordered_songs()])
 
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
@@ -260,12 +268,41 @@ class ReleaseForm(ModelFormWithImages):
                                      widget=forms.HiddenInput(attrs={'class':'kishore-images-input'}))
     images_field_name = 'release_images'
     object_id_name = 'release_id'
+    release_songs = forms.CharField(label="Songs",
+                                    widget=forms.HiddenInput(attrs={'class':'kishore-songs-input'}))
     through_model = ReleaseImage
+
+    def __init__(self, *args, **kwargs):
+        super(ReleaseForm, self).__init__(*args, **kwargs)
+
+        if not self.is_bound:
+            self.initial['release_songs'] = self.instance.songs_as_json
+
+    def save(self):
+        super(ReleaseForm, self).save()
+
+        songs = json.loads(self.cleaned_data['release_songs'])
+        for i, song in enumerate(songs):
+            release_song, created = ReleaseSong.objects.get_or_create(
+                song_id= song['pk'],
+                release_id = self.instance.id
+                )
+
+            if release_song.track_number != i:
+                release_song.track_number = i
+                release_song.save()
+
+        release_songs = ReleaseSong.objects.filter(release_id=self.instance.id)
+
+        for release_song in release_songs:
+            matches = [x for x in songs if x['pk'] == release_song.song_id]
+            if len(matches) == 0:
+                release_song.delete()
 
     class Meta:
         model = Release
         fields = ('artist','title','remote_url', 'release_date','streamable',
-                  'downloadable','description','release_images','slug')
+                  'downloadable','description','release_songs','release_images','slug')
 
         widgets = {
             'title': utils.KishoreTextInput(),

@@ -1,19 +1,19 @@
 <script type="text/html" id="image-picker-template">
-  <div class="panel panel-default image-picker">
+  <div class="panel panel-default kishore-picker image-picker">
     <div class="panel-heading text-right">
-        <a href="#add-images" data-toggle="modal" class="btn btn-primary add-images">Add Images</a>
+      <a href="#add-images" data-toggle="modal" class="btn btn-primary add-images">Add Images</a>
     </div>
 
     <div class="panel-body">
       <div class="row">
         <div class="col-md-12">
-          <div class="row image-sorter">
+          <div class="row item-sorter">
           </div>
         </div>
       </div>
     </div>
 
-    <div class="modal fade" id="add-images" data-image-url="{% url 'kishore_admin_images_json' %}">
+    <div class="modal fade item-picker-modal" id="add-images" data-item-url="{% url 'kishore_admin_images_json' %}">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -28,22 +28,23 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary save-images">Add Images</button>
+            <button type="button" class="btn btn-primary save-items">Add Images</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
 </script>
 
 <script type="text/html" id="image-picker-item-template">
-  <div class="col-md-3 col-xs-6 image-picker-image" data-pk="{% templatetag openvariable %}pk{% templatetag closevariable %}">
+  <div class="col-md-3 col-xs-6 kishore-picker-item" data-pk="{% templatetag openvariable %}pk{% templatetag closevariable %}">
     <img src="{% templatetag openvariable %} image_url {% templatetag closevariable %}">
     <div class="btn-toolbar">
       <a class="btn btn-default btn-xs" href="{% templatetag openvariable %}admin_url{% templatetag closevariable %}" target="_blank">
         <i class="icon-external-link"></i>
       </a>
-      <a class="btn btn-danger btn-xs image-delete" href="#"><i class="icon-trash"></i></a>
+      <a class="btn btn-danger btn-xs item-delete" href="#"><i class="icon-trash"></i></a>
     </div>
   </div>
 </script>

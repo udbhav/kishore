@@ -1,0 +1,47 @@
+<script type="text/html" id="song-picker-template">
+  <div class="panel panel-default kishore-picker song-picker">
+    <div class="panel-heading text-right">
+      <a href="#add-songs" data-toggle="modal" class="btn btn-primary add-songs">Add Songs</a>
+    </div>
+
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row item-sorter">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade item-picker-modal" id="add-songs" data-item-url="{% url 'kishore_admin_songs_json' %}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Choose Songs</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="pager">
+              <li class="previous"><a href="#">Previous</a></li>
+              <li class="next"><a href="#">Next</a></li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary save-items">Add Songs</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <span class="help-text">You don't need to add songs manually if you're using a remote URL.</span>
+</script>
+
+<script type="text/html" id="song-picker-item-template">
+  <div class="col-sm-12 kishore-picker-item" data-pk="{% templatetag openvariable %}pk{% templatetag closevariable %}">
+    {% templatetag openvariable %} title {% templatetag closevariable %}
+    <a class="btn btn-default btn-xs" href="{% templatetag openvariable %}admin_url{% templatetag closevariable %}" target="_blank"><i class="icon-external-link"></i></a>
+    <a class="btn btn-danger btn-xs item-delete" href="#"><i class="icon-trash"></i></a>
+  </div>
+</script>

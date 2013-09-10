@@ -1,4 +1,7 @@
+import json
+
 from django.views.generic import DetailView, ListView
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from kishore.models import Artist, Song, Release, Product, CartItemForm
 
@@ -45,3 +48,17 @@ class ReleaseDetail(DetailView):
     queryset = Release.objects.all()
     context_object_name = "release"
     template_name = "kishore/music/release_detail.html"
+
+def play_song(request):
+    if request.is_ajax() and request.method == 'POST':
+        song_ids = json.loads(request.POST.get('song_ids', None))
+        songs = Song.objects.filter(id__in=song_ids)
+        song_urls = {}
+        for song in songs:
+            song_urls[song.id] = song.audio_file.url
+
+        data = json.dumps(song_urls)
+        mimetype = 'application/json'
+        return HttpResponse(data,mimetype)
+    else:
+        return HttpResponse("Bad request", status=400)
