@@ -1,0 +1,7 @@
+{{ object.id }}
+{{ object.customer_name }}
+{{ object.customer_email }}
+{{ object.shipping_address }}
+{% for item in object.orderitem_set.all %}
+{{ item.product.name_with_no_price }}
+{% endfor %}

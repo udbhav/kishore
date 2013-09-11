@@ -1,5 +1,4 @@
 * TODO Create new image from Image picker
-* TODO Search
 * TODO Admin Dashboard
 * TODO Inventory Tracking
 * TODO Show currency as part of label and/or help text
@@ -10,3 +9,4 @@
 * TODO Analytics
 * TODO Accessibility
 * TODO Product Detail page
+* TODO Clean up appearance of file input in admin when it has a file

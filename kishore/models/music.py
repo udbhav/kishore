@@ -59,6 +59,9 @@ class Artist(WithSlug):
     def get_absolute_url(self):
         return reverse('kishore_artist_detail', kwargs={'slug':self.slug})
 
+    def get_admin_url(self):
+        return reverse('kishore_admin_artist_update', kwargs={'pk':self.id})
+
     def ordered_images(self):
         return ArtistImage.objects.filter(artist=self).order_by('position')
 
@@ -130,6 +133,9 @@ class Song(WithSlug, MusicBase):
     def get_absolute_url(self):
         return reverse('kishore_song_detail', kwargs={'slug': self.slug})
 
+    def get_admin_url(self):
+        return reverse('kishore_admin_song_update', kwargs={'pk':self.id})
+
     def ordered_images(self):
         return SongImage.objects.filter(song=self).order_by('position')
 
@@ -185,6 +191,9 @@ class Release(WithSlug, MusicBase):
 
     def get_absolute_url(self):
         return reverse('kishore_release_detail', kwargs={'slug': self.slug})
+
+    def get_admin_url(self):
+        return reverse('kishore_admin_release_update', kwargs={'pk':self.id})
 
     def ordered_images(self):
         return ReleaseImage.objects.filter(release=self).order_by('position')

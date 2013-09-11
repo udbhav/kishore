@@ -5,7 +5,11 @@
 {% block artist_nav %}active{% endblock %}
 
 {% block content %}
-<div class="btn-toolbar pull-right">
+<div class="admin-toolbar pull-right">
+  <form method="post" action="{% url 'kishore_admin_artist_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search artists" class="form-control input-sm" />
+  </form>
   <a class="btn btn-primary" href="{% url 'kishore_admin_artist_create' %}">Add an Artist</a>
 </div>
 
@@ -19,7 +23,7 @@
 
     {% for artist in artists %}
     <tr>
-      <td><a href="{% url 'kishore_admin_artist_update' pk=artist.id %}">{{ artist }}</a></td>
+      <td><a href="{{ artist.get_admin_url }}">{{ artist }}</a></td>
       <td>
         <a href="{{ artist.get_absolute_url }}"><i class="icon-external-link"></i></a>
       </td>

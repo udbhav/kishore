@@ -5,7 +5,12 @@
 {% block image_nav %}active{% endblock %}
 
 {% block content %}
-<div class="btn-toolbar pull-right">
+<div class="admin-toolbar pull-right">
+  <form method="post" action="{% url 'kishore_admin_image_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search images" class="form-control input-sm" />
+  </form>
+
   <a class="btn btn-primary" href="{% url 'kishore_admin_image_create' %}">Add an Image</a>
 </div>
 

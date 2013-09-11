@@ -5,7 +5,11 @@
 {% block release_nav %}active{% endblock %}
 
 {% block content %}
-<div class="btn-toolbar pull-right">
+<div class="admin-toolbar pull-right">
+  <form method="post" action="{% url 'kishore_admin_release_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search releases" class="form-control input-sm" />
+  </form>
   <a class="btn btn-primary" href="{% url 'kishore_admin_release_create' %}">Add a Release</a>
 </div>
 
@@ -20,7 +24,7 @@
   <tbody>
     {% for release in releases %}
     <tr>
-      <td><a href="{% url 'kishore_admin_release_update' pk=release.pk %}">
+      <td><a href="{{ release.get_absolute_url }}">
         {{ release.title }}
       </a></td>
       <td><a href="{% url 'kishore_admin_artist_update' pk=release.artist.pk %}">

@@ -5,7 +5,11 @@
 {% block song_nav %}active{% endblock %}
 
 {% block content %}
-<div class="btn-toolbar pull-right">
+<div class="admin-toolbar pull-right">
+  <form method="post" action="{% url 'kishore_admin_song_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search songs" class="form-control input-sm" />
+  </form>
   <a class="btn btn-primary" href="{% url 'kishore_admin_song_create' %}">Add a Song</a>
 </div>
 

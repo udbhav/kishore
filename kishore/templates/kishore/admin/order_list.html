@@ -5,11 +5,17 @@
 {% block order_nav %}active{% endblock %}
 
 {% block content %}
+<div class="admin-toolbar pull-right">
+  <form method="post" action="{% url 'kishore_admin_order_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search orders" class="form-control input-sm" />
+  </form>
+</div>
 
 <h1>Orders</h1>
 <table class="table table-striped order-list">
   <thead>
-    <th>Order #</th>
+    <th>Order</th>
     <th></th>
     <th>Time</th>
     <th>Name</th>
@@ -19,7 +25,7 @@
   <tbody>
     {% for order in orders %}
     <tr>
-      <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
+      <td><a href="{{ order.get_admin_url }}">{{ order }}</a></td>
       <td class="text-center">
         {% if order.waiting_to_ship and not order.refunded %}
         <a class="btn btn-primary btn-xs" href="{% url 'kishore_admin_ship_order' pk=order.pk %}">Ship It</a>

@@ -1,0 +1,26 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block content %}
+  <form method="post" action="" class="pull-right">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search" class="form-control input-sm" value="{{ query }}" />
+  </form>
+
+<h1>{{ title }}</h1>
+
+{% if query %}<p>Results for <em>{{ query }}</em></p>{% endif %}
+
+{% if results %}
+<table class="table table-striped">
+  <tbody>
+    {% for result in results %}
+    <tr><td><a href="{{ result.object.get_admin_url }}">{{ result.object }}</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+{% if query %}<p>Sorry, no results found</p>{% endif %}
+{% endif %}
+{% endblock %}

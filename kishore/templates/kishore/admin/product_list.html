@@ -5,7 +5,11 @@
 {% block product_nav %}active{% endblock %}
 
 {% block content %}
-<div class="btn-toolbar pull-right">
+<div class="pull-right admin-toolbar">
+  <form method="post" action="{% url 'kishore_admin_product_search' %}" class="form-inline">
+    {% csrf_token %}
+    <input type="text" name="q" placeholder="Search products" class="form-control input-sm" />
+  </form>
   <a class="btn btn-primary" href="{% url 'kishore_admin_product_create' %}">Add a Product</a>
 </div>
 
@@ -21,7 +25,7 @@
   <tbody>
     {% for product in products %}
     <tr>
-      <td><a href="{% url 'kishore_admin_product_update' pk=product.id %}">{{ product.name }}</a></td>
+      <td><a href="{{ product.get_admin_url }}">{{ product.name }}</a></td>
       <td>{{ product.formatted_price }}</td>
       <td><span class="label label-{{ product.get_subclass_name|slugify }}">
           {{ product.get_subclass_name }}
@@ -35,5 +39,8 @@
   </tbody>
 </table>
 
+{% if page_obj %}
 {% kishore_pagination page_obj %}
+{% endif %}
+
 {% endblock %}

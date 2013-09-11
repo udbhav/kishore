@@ -61,6 +61,9 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('kishore_product_detail',kwargs={'slug':self.slug})
 
+    def get_admin_url(self):
+        return reverse('kishore_admin_product_update',kwargs={'pk':self.id})
+
     def get_cartitem_form(self):
         return CartItemForm(instance=CartItem(product=self))
 
@@ -283,8 +286,8 @@ class Order(models.Model):
         db_table = 'kishore_orders'
         app_label = 'kishore'
 
-    def _unicode__(self):
-        return self.customer_name
+    def __unicode__(self):
+        return "#%i %s" % (self.id, self.customer_name)
 
     @property
     def total(self):
@@ -312,6 +315,9 @@ class Order(models.Model):
 
     def get_absolute_url(self):
         return reverse('kishore_admin_order_detail', kwargs={'pk':self.pk})
+
+    def get_admin_url(self):
+        return self.get_absolute_url()
 
     def add_from_cart(self, cart):
         for item in cart.cartitem_set.all():

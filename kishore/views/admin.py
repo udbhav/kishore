@@ -12,7 +12,9 @@ from django.http import HttpResponse
 
 from kishore.models import (Order, KishorePaginator, Artist, ArtistForm, Image, ImageForm, Song,
                             SongForm, Release, ReleaseForm, UserForm, KishoreUserCreationForm,
-                            Product, ProductForm)
+                            Product, ProductForm, KishoreSearchForm, ProductSearchForm,
+                            ArtistSearchForm, SongSearchForm, ReleaseSearchForm, OrderSearchForm,
+                            ImageSearchForm)
 
 from kishore import utils
 
@@ -29,6 +31,14 @@ class StaffView(View):
         else:
             return HttpResponse("Unauthorized", status=401)
 
+class AdminSearchView(ProtectedView, FormView):
+    form_class = KishoreSearchForm
+    template_name = "kishore/admin/search.html"
+
+    def form_valid(self, form):
+        return self.render_to_response(self.get_context_data(query=form.cleaned_data['q'],
+                                                      results=form.search()))
+
 class OrderList(ProtectedView, ListView):
     queryset = Order.objects.filter(active=True).order_by('-timestamp')
     template_name = "kishore/admin/order_list.html"
@@ -40,6 +50,14 @@ class OrderDetail(ProtectedView, DetailView):
     queryset = Order.objects.filter(active=True)
     template_name = "kishore/admin/order_detail.html"
     context_object_name = "order"
+
+class OrderSearch(AdminSearchView):
+    form_class = OrderSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Order Search'
+        return context
 
 class ArtistAdminList(ProtectedView, ListView):
     queryset = Artist.objects.all().order_by("name")
@@ -105,6 +123,14 @@ class ImageDelete(ProtectedView, DeleteView):
 
     def get_success_url(self):
         return reverse("kishore_admin_images")
+
+class ImageSearch(AdminSearchView):
+    form_class = ImageSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ImageSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Image Search'
+        return context
 
 class SongAdminList(ProtectedView, ListView):
     queryset = Song.objects.all().order_by("title")
@@ -228,6 +254,38 @@ class ProductDelete(ProtectedView, DeleteView):
 
     def get_success_url(self):
         return reverse("kishore_admin_products")
+
+class ProductSearch(AdminSearchView):
+    form_class = ProductSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Product Search'
+        return context
+
+class ArtistSearch(AdminSearchView):
+    form_class = ArtistSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ArtistSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Artist Search'
+        return context
+
+class ReleaseSearch(AdminSearchView):
+    form_class = ReleaseSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ReleaseSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Release Search'
+        return context
+
+class SongSearch(AdminSearchView):
+    form_class = SongSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super(SongSearch, self).get_context_data(**kwargs)
+        context['title'] = 'Song Search'
+        return context
 
 @login_required
 def dashboard(request):
