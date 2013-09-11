@@ -20,6 +20,24 @@
 </div>
 {% endif %}
 
+<div class="form-group song hide hideable">
+  {{ form.song.label_tag }}
+  {{ form.song }}
+
+  {% for error in form.song.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group release hide hideable">
+  {{ form.release.label_tag }}
+  {{ form.release }}
+
+  {% for error in form.release.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
 <div class="form-group">
   {{ form.name.label_tag }}
   {{ form.name }}
@@ -45,24 +63,6 @@
     </label></div>
 
   {% for error in form.visible.errors %}
-  <span class="label label-danger">{{ error }}</span>
-  {% endfor %}
-</div>
-
-<div class="form-group song hide hideable">
-  {{ form.song.label_tag }}
-  {{ form.song }}
-
-  {% for error in form.song.errors %}
-  <span class="label label-danger">{{ error }}</span>
-  {% endfor %}
-</div>
-
-<div class="form-group release hide hideable">
-  {{ form.release.label_tag }}
-  {{ form.release }}
-
-  {% for error in form.release.errors %}
   <span class="label label-danger">{{ error }}</span>
   {% endfor %}
 </div>

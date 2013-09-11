@@ -13,12 +13,13 @@ from django.template import Context
 from django.utils.hashcompat import sha_constructor
 from django.utils.encoding import smart_str
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.defaultfilters import slugify
 
 from kishore.templatetags.kishore_tags import kishore_currency
 from kishore import settings as kishore_settings
 from kishore import utils
 
-from music import Song, Release, WithSlug
+from music import Song, Release
 from image import Image, ModelFormWithImages
 
 PRODUCT_SUBCLASSES = [
@@ -28,8 +29,9 @@ PRODUCT_SUBCLASSES = [
     {"class": "Merch", "name": "Merch"},
     ]
 
-class Product(WithSlug):
+class Product(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True,blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField(blank=True)
     track_inventory = models.BooleanField()
@@ -53,7 +55,8 @@ class Product(WithSlug):
         return None
 
     def get_subclass_name(self):
-        return [x["name"] for x in PRODUCT_SUBCLASSES if x["class"] == self.subclass.__class__.__name__][0]
+        if self.subclass:
+            return [x["name"] for x in PRODUCT_SUBCLASSES if x["class"] == self.subclass.__class__.__name__][0]
 
     def get_absolute_url(self):
         return reverse('kishore_product_detail',kwargs={'slug':self.slug})
@@ -77,6 +80,26 @@ class Product(WithSlug):
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            valid_slug = False
+            i = 0
+            while not valid_slug:
+                if i == 0:
+                    proposed_slug = slugify(self.name)
+                else:
+                    proposed_slug = slugify("%s %s" % (self.name, i))
+                try:
+                    Product.objects.get(slug=proposed_slug)
+                except ObjectDoesNotExist:
+                    valid_slug = True
+                else:
+                    i += 1
+
+            self.slug = proposed_slug
+
+        super(Product, self).save(*args, **kwargs)
+
     class Meta:
         db_table = 'kishore_products'
         app_label = 'kishore'
@@ -93,8 +116,10 @@ class ProductImage(models.Model):
 class ProductForm(ModelFormWithImages):
     model_class = forms.ChoiceField(
         choices = [[x['class'], x['name']] for x in PRODUCT_SUBCLASSES],
-        widget = forms.RadioSelect, label = "Product type")
+        widget = forms.RadioSelect, label = "Product type",
+        required = True)
 
+    name = forms.CharField(required=False, widget=utils.KishoreTextInput)
     song = forms.ModelChoiceField(queryset=Song.objects.all(),
                                   widget=utils.KishoreSelectWidget,
                                   required=False)
@@ -112,7 +137,6 @@ class ProductForm(ModelFormWithImages):
         model = Product
         exclude = ('images',)
         widgets = {
-            'name': utils.KishoreTextInput,
             'slug': utils.KishoreTextInput,
             'price': utils.KishoreTextInput,
             'inventory': utils.KishoreTextInput,
@@ -121,35 +145,61 @@ class ProductForm(ModelFormWithImages):
             }
 
     def __init__(self, *args, **kwargs):
+        # if there is an instance of product and a subclass, replace product with the subclass
         if 'instance' in kwargs and getattr(kwargs['instance'], 'subclass'):
             kwargs['instance'] = kwargs['instance'].subclass
 
         super(ProductForm, self).__init__(*args, **kwargs)
 
+        # if we have a subclass, no need to show the product type radios
         if getattr(self.instance, 'subclass'):
             self.fields['model_class'].widget = forms.HiddenInput()
             self.fields['model_class'].initial = self.instance.subclass.__class__.__name__
 
     def clean(self):
         data = self.cleaned_data
+        model_class = data.get('model_class')
 
-        if not getattr(self.instance, 'subclass'):
-            self.instance = eval(self.cleaned_data['model_class'])()
+        if not getattr(self.instance, 'subclass') and model_class:
+            self.instance = eval(model_class)()
 
-        instance = eval(self.cleaned_data['model_class'])()
+        if model_class:
+            klass = eval(model_class)
 
-        if self.instance.__class__ == PhysicalRelease or self.instance.__class__ == Merch:
-            if not data['weight']:
-                self._errors['weight'] = self.error_class(["Weight is required"])
+            if klass == PhysicalRelease or klass == Merch:
+                if not data['weight']:
+                    self._errors['weight'] = self.error_class(["Weight is required"])
 
-        if self.instance.__class__ == PhysicalRelease or self.instance.__class__ == DigitalRelease:
-            if not data['release']:
-                self._errors['release'] = self.error_class(["Release is required"])
+            if klass == PhysicalRelease or klass == DigitalRelease:
+                release = data['release']
+
+                if not release:
+                    self._errors['release'] = self.error_class(["Release is required"])
+
+                if release and not data['name']:
+                    data['name'] = release.title
+
+            if klass == DigitalSong:
+                song = data['song']
+
+                if not song:
+                    self._errors['song'] = self.error_class(["Song is required"])
+
+                if song and not getattr(song, 'audio_file'):
+                    self._errors['song'] = self.error_class(["Please choose a song that has an audio file"])
+                if song and not data['name']:
+                    data['name'] = song.title
+
+            if not data['name']:
+                self._errors['name'] = self.error_class(["Name is required"])
+
+        elif not name:
+            self._errors['name'] = self.error_class(["Name is required"])
 
         return data
 
 class DigitalSong(Product):
-    song = models.OneToOneField(Song, blank=True, null=True)
+    song = models.ForeignKey(Song, blank=True, null=True)
     shippable = False
     downloadable = True
 
