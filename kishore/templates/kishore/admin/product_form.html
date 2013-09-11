@@ -51,6 +51,10 @@
   {{ form.price.label_tag }}
   {{ form.price }}
 
+  {% if form.price.help_text %}
+  <span class="help-block">{{ form.price.help_text }}</span>
+  {% endif %}
+
   {% for error in form.price.errors %}
   <span class="label label-danger">{{ error }}</span>
   {% endfor %}
@@ -70,7 +74,12 @@
 <div class="form-group physical-release merch hide hideable">
   {{ form.weight.label_tag }}
   {{ form.weight }}
-  <span class="help-block">Ounces</span>
+
+
+  {% if form.weight.help_text %}
+  <span class="help-block">{{ form.weight.help_text }}</span>
+  {% endif %}
+
   {% for error in form.weight.errors %}
   <span class="label label-danger">{{ error }}</span>
   {% endfor %}

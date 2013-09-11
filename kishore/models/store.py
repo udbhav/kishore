@@ -32,7 +32,9 @@ PRODUCT_SUBCLASSES = [
 class Product(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,blank=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2,
+                                help_text="(%s) %s" % (kishore_settings.KISHORE_CURRENCY_SYMBOL,
+                                                       kishore_settings.KISHORE_CURRENCY))
     description = models.TextField(blank=True)
     track_inventory = models.BooleanField()
     inventory = models.IntegerField(blank=True,null=True)

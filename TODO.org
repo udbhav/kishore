@@ -1,10 +1,6 @@
 * TODO Create new image from Image picker
 * TODO Admin Dashboard
 * TODO Inventory Tracking
-* TODO Show currency as part of label and/or help text
-
-
-
 * TODO Celery Tasks
 * TODO Analytics
 * TODO Accessibility
