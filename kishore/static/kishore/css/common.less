@@ -17,8 +17,12 @@ a:hover {
 
 label, input, select, table, .btn, .label, .form-group {
   font-family: @font-family-monospace;
-  font-size: 0.75em;
+  font-size: @font-size-base * 0.75;
   text-transform: uppercase;
+}
+
+.label {
+  font-size: @font-size-base * 0.5;
 }
 
 textarea {
@@ -47,3 +51,10 @@ input {
 .monospaced {
   font-family: @font-family-monospace;
 }
+
+.label-artist { background-color: @brand-primary; }
+.label-release, .label-physical-release, .label-digital-release { background-color: @brand-danger; }
+.label-song, .label-digital-song { background-color: @brand-warning; color: @text-color; }
+.label-product, .label-merch { background-color: @brand-success; color: @text-color; }
+
+.success-icon { background: @brand-success; color: @text-color; }

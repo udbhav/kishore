@@ -25,7 +25,7 @@
       </form>
       {% endif %}{% endwith %}
 
-      {% include "kishore/music/artwork.html" with artwork=release.ordered_images %}
+      {% include "kishore/music/artwork.html" with artwork=release.ordered_images artwork_id=release.id %}
     </div>
   </div>
 

@@ -14,6 +14,8 @@
   <thead>
     <th>Product</th>
     <th>Price</th>
+    <th>Type</th>
+    <th class="text-center">Visible</th>
     <th></th>
   </thead>
   <tbody>
@@ -21,6 +23,10 @@
     <tr>
       <td><a href="{% url 'kishore_admin_product_update' pk=product.id %}">{{ product.name }}</a></td>
       <td>{{ product.formatted_price }}</td>
+      <td><span class="label label-{{ product.get_subclass_name|slugify }}">
+          {{ product.get_subclass_name }}
+      </span></td>
+      <td class="text-center">{% if product.visible %}<i class="icon-check success-icon"></i>{% endif %}</td>
       <td>
         <a href="{{ product.get_absolute_url }}"><i class="icon-external-link"></i></a>
       </td>

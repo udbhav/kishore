@@ -1,15 +1,21 @@
 {% if artwork %}
 <div class="artwork">
-  <ul class="images clearfix unstyled">
+<div class="carousel slide" id="artwork-{{ artwork_id }}">
+  <div class="carousel-inner">
     {% for image in artwork %}
-    <li id="artwork_{{ image.id }}"><a href="{{ image.image.image.url }}" target="_blank"><img src="{{ image.image.medium_image.url }}" alt="{{ image.description }}" /></a></li>
+    <div class="item {% if forloop.first %}active{% endif %}">
+      <a href="{{ image.image.image.url }}" target="_blank"><img src="{{ image.image.medium_image.url }}" alt="{{ image.description }}" /></a>
+    </div>
     {% endfor %}
-  </ul>
+  </div>
+</div>
 
-  {% if artwork|length > 1 %}
-  <ul class="thumbnails">
+{% if artwork|length > 1 %}
+  <ul class="thumbnails list-unstyled clearfix">
     {% for image in artwork %}
-    <li{% if forloop.first %} class="active"{% endif %}><a href="#artwork_{{ image.id }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ image.description }}" /></a></li>
+    <li {% if forloop.first %}class="active"{% endif %} data-slide-to="{{ forloop.counter0 }}" data-target="#artwork-{{ artwork_id }}">
+      <img src="{{ image.image.thumbnail.url }}" alt="{{ image.description }}" />
+    </li>
     {% endfor %}
   </ul>
   {% endif %}

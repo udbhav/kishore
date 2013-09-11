@@ -175,7 +175,7 @@ class Release(WithSlug, MusicBase):
         if ids:
             form = CartItemForm()
             form.fields["product"].widget = forms.RadioSelect()
-            form.fields["product"].queryset = Product.objects.filter(id__in=ids)
+            form.fields["product"].queryset = Product.objects.filter(id__in=ids).filter(visible=True)
             form.fields["product"].empty_label = None
             form.fields["quantity"].widget = forms.HiddenInput()
             return form

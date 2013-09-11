@@ -108,10 +108,21 @@
       });
     });
   }
+
+  $.fn.kishoreArtwork = function(option) {
+    return this.each(function() {
+      var $elem = $(this);
+      $(".thumbnails img", $elem).on("click", function() {
+        $("li.active", $elem).removeClass("active");
+        $(this).parent().addClass("active");
+      });
+    });
+  }
 })(jQuery);
 
 $(document).ready(function() {
   $.fn.kishoreCSRFProtection();
   $(".add-cart").kishoreAddCartForm();
   $(".kishore-audio-player").kishoreAudioPlayer();
+  $(".artwork").kishoreArtwork();
 });

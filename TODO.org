@@ -9,3 +9,4 @@
 * TODO Celery Tasks
 * TODO Analytics
 * TODO Accessibility
+* TODO Product Detail page

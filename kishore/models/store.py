@@ -61,6 +61,12 @@ class Product(WithSlug):
     def get_cartitem_form(self):
         return CartItemForm(instance=CartItem(product=self))
 
+    def get_artist(self):
+        if hasattr(self.subclass, 'release'):
+            return self.subclass.release.artist
+        elif hasattr(self.subclass, 'song'):
+            return self.subclass.song.artist
+
     @property
     def formatted_price(self):
         return kishore_currency(self.price)

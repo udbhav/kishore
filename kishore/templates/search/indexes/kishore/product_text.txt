@@ -1,5 +1,6 @@
 {% load markup %}
 
 {{ object.name }}
+{{ object.get_artist }}
 {{ object.formatted_price }}
 {{ object.description|markdown:"safe" }}

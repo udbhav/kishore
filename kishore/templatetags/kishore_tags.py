@@ -34,7 +34,7 @@ def kishore_js():
         output += "<script type=\"text/javascript\" src=\"%s%s\"></script>" % (settings.STATIC_URL, path)
     return output
 
-@register.inclusion_tag('kishore/admin/pagination.html')
+@register.inclusion_tag('kishore/pagination.html')
 def kishore_pagination(page):
     return {
         'page': page,
