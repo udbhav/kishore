@@ -14,7 +14,9 @@
   <a class="btn btn-primary" href="{% url 'kishore_admin_image_create' %}">Add an Image</a>
 </div>
 
-<h1>Images</h1>
+<div class="page-header">
+  <h1>Images</h1>
+</div>
 
 {% for image in images %}
 <a href="{% url 'kishore_admin_image_update' pk=image.pk %}">

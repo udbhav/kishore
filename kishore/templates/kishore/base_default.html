@@ -26,6 +26,10 @@
 
         <div class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
+            {% if request.user.is_authenticated %}
+            <li><a href="{% url 'kishore_admin_dashboard' %}">Admin</a></li>
+            {% endif %}
+
             <li>
               <form method="get" action="{% url 'kishore_search' %}" class="navbar-form search-form">
                 <div class="form-group">
@@ -33,11 +37,13 @@
                 </div>
               </form>
             </li>
+
             {% if cart and cart.item_count > 0 %}
             <li class="kishore-cart-count">
               <a href="{% url 'kishore_cart' %}" title="Your Cart"><i class="icon-shopping-cart"></i> [{{ cart.item_count }}]</a>
             </li>
             {% endif %}
+
           </ul>
         </div>
 

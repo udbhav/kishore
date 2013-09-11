@@ -10,3 +10,5 @@
 * TODO Accessibility
 * TODO Product Detail page
 * TODO Clean up appearance of file input in admin when it has a file
+* TODO Test large quantities of content
+* TODO Social Links

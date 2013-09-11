@@ -5,8 +5,10 @@
 {% block artist_nav %}active{% endblock %}
 
 {% block content %}
-
+<div class="page-header">
 <h1>{{ artist.name }}</h1>
+</div>
+
 <form method="post" action="." class="artist-form image-picker-form" data-image-field="">
   {% csrf_token %}
   {% include 'kishore/admin/admin_form.html' %}

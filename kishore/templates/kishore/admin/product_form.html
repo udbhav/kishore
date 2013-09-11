@@ -15,7 +15,7 @@
 </div>
 {% else %}
 <div class="form-group">
-<span class="label label-default">{{ product.get_subclass_name }}</span>
+<span class="label label-{{ product.get_subclass_name|slugify }}">{{ product.get_subclass_name }}</span>
 {{ form.model_class }}
 </div>
 {% endif %}

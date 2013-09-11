@@ -13,7 +13,9 @@
   <a class="btn btn-primary" href="{% url 'kishore_admin_release_create' %}">Add a Release</a>
 </div>
 
-<h1>Releases</h1>
+<div class="page-header">
+  <h1>Releases</h1>
+</div>
 
 <table class="table table-striped">
   <thead>
@@ -24,10 +26,10 @@
   <tbody>
     {% for release in releases %}
     <tr>
-      <td><a href="{{ release.get_absolute_url }}">
+      <td><a href="{{ release.get_admin_url }}">
         {{ release.title }}
       </a></td>
-      <td><a href="{% url 'kishore_admin_artist_update' pk=release.artist.pk %}">
+      <td><a href="{{ release.artist.get_admin_url }}">
           {{ release.artist }}
       </a></td>
       <td><a href="{{ release.get_absolute_url }}"><i class="icon-external-link"></i></a></td>

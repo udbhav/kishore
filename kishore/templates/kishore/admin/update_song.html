@@ -5,11 +5,12 @@
 {% block song_nav %}active{% endblock %}
 
 {% block content %}
-
-<h1>
-  {{ song }}
-  <a class="btn btn-default" href="{{ song.get_absolute_url }}"><i class="icon-external-link"></i></a>
-</h1>
+<div class="page-header">
+  <h1>
+    {{ song }}
+    <a class="btn btn-default" href="{{ song.get_absolute_url }}"><i class="icon-external-link"></i></a>
+  </h1>
+</div>
 
 <form method="post" action="." class="song-form image-picker-form" enctype="multipart/form-data">
   {% csrf_token %}

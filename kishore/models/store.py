@@ -173,6 +173,10 @@ class ProductForm(ModelFormWithImages):
                 if not data['weight']:
                     self._errors['weight'] = self.error_class(["Weight is required"])
 
+            if klass == DigitalRelease:
+                if not data['zipfile']:
+                    self._errors['zipfile'] = self.error_class(["Zipfile is required"])
+
             if klass == PhysicalRelease or klass == DigitalRelease:
                 release = data['release']
 

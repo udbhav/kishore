@@ -5,8 +5,10 @@
 {% block user_nav %}active{% endblock %}
 
 {% block content %}
+<div class="page-header">
+  <h1>{{ object }}</h1>
+</div>
 
-<h1>{{ object }}</h1>
 <form method="post" action="." class="user-form">
   {% csrf_token %}
   {% include 'kishore/admin/admin_form.html' %}

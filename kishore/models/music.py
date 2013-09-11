@@ -148,6 +148,20 @@ class Song(WithSlug, MusicBase):
                 'title':self.__unicode__(),
                 }
 
+    def get_cart_form(self):
+        from products import CartItemForm, Product
+
+        ids = [x.id for x in self.digitalsong_set.filter(visible=True)]
+        if ids:
+            form = CartItemForm()
+            form.fields["product"].widget = forms.RadioSelect()
+            form.fields["product"].queryset = Product.objects.filter(id__in=ids)
+            form.fields["product"].empty_label = None
+            form.fields["quantity"].widget = forms.HiddenInput()
+            return form
+        else:
+            return None
+
     class Meta:
         db_table = 'kishore_songs'
         app_label = 'kishore'
@@ -169,8 +183,8 @@ class Release(WithSlug, MusicBase):
         count = self.physicalrelease_set.count() + self.digitalrelease_set.count()
         if count > 0:
             products = []
-            products.extend([x.product_ptr_id for x in self.physicalrelease_set.all()])
-            products.extend([x.product_ptr_id for x in self.digitalrelease_set.all()])
+            products.extend([x.product_ptr_id for x in self.physicalrelease_set.filter(visible=True)])
+            products.extend([x.product_ptr_id for x in self.digitalrelease_set.filter(visible=True)])
             return products
         else:
             return None
@@ -187,7 +201,6 @@ class Release(WithSlug, MusicBase):
             return form
         else:
             return None
-
 
     def get_absolute_url(self):
         return reverse('kishore_release_detail', kwargs={'slug': self.slug})
@@ -207,6 +220,10 @@ class Release(WithSlug, MusicBase):
 
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
+
+    def get_downloads(self):
+        if self.downloadable:
+            return self.digitalrelease_set.all()
 
     class Meta:
         db_table = 'kishore_releases'

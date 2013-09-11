@@ -1,40 +1,29 @@
 {% load markup %}
 
-<article class="release clearfix">
-  <header><h1>{{ release }}</h1></header>
-
+<article class="release">
   <div class="row">
-    {% if release.streamable %}
-    <div class="player col-md-8">
-      {% autoescape off %}{{ release.get_player_html }}{% endautoescape %}
-    </div>
-    {% endif %}
+    <div class="col-md-8">
+      {% if release.streamable %}
+      <div class="player">
+        {% autoescape off %}{{ release.get_player_html }}{% endautoescape %}
+      </div>
+      {% endif %}
 
-    <div class="col-md-4">
-      {% with release.get_cart_form as form %}{% if form %}
-      <h2>Buy</h2>
-      <form method="post" action="{% url 'kishore_add_to_cart' %}" class="add-cart">
-        {% csrf_token %}
-        <ul class="list-unstyled">
-        {% for radio in form.product %}
-        <li><p>{{ radio }}</p></li>
-        {% endfor %}
-        </ul>
-        {{ form.quantity }}
-        <input type="submit" value="Add To Cart" class="btn btn-primary">
-      </form>
-      {% endif %}{% endwith %}
-
-      {% include "kishore/music/artwork.html" with artwork=release.ordered_images artwork_id=release.id %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
       {% if release.description %}
       <div class="description">{{ release.description|markdown:"safe" }}</div>
       {% endif %}
+    </div>
 
+    <div class="col-md-4">
+      {% with release.get_cart_form as form %}
+      {% include "kishore/store/buy_product.html" %}
+      {% endwith %}
+
+      {% with release.get_downloads as products %}
+      {% include "kishore/store/download_product.html" %}
+      {% endwith %}
+
+      {% include "kishore/music/artwork.html" with artwork=release.ordered_images artwork_id=release.id %}
     </div>
   </div>
 </article>

@@ -7,17 +7,21 @@
 <div class="order-small-info pull-right panel panel-default">
   <div class="panel-body monospaced">
     <small>
-    {{ order.customer_name }}<br>
-    <a href="mailto:{{ order.customer_email }}">{{ order.customer_email }}</a><br>
-    {{ order.timestamp }}
+      {{ order.customer_name }}<br>
+      <a href="mailto:{{ order.customer_email }}">{{ order.customer_email }}</a><br>
+      {{ order.timestamp }}
     </small>
   </div>
 </div>
-<h2>
-  Order #{{ order.id }}
-</h2>
-{% if order.refunded %}<span class="label label-danger">Refunded</span>{% endif %}
-{% if order.shipped %}<span class="label label-info">Shipped</span>{% endif %}
+
+<div class="page-header">
+  <h1>Order #{{ order.id }}
+    <small>
+      {% if order.refunded %}<span class="label label-danger">Refunded</span>{% endif %}
+      {% if order.shipped %}<span class="label label-info">Shipped</span>{% endif %}
+    </small>
+  </h1>
+</div>
 
 {% include "kishore/store/order_price_details.html" %}
 

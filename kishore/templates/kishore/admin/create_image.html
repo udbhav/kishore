@@ -5,7 +5,10 @@
 {% block image_nav %}active{% endblock %}
 
 {% block content %}
-<h1>Add an Image</h1>
+<div class="page-header">
+  <h1>Add an Image</h1>
+</div>
+
 <form method="post" action="." enctype="multipart/form-data">
   {% csrf_token %}
   {% include 'kishore/admin/admin_form.html' %}

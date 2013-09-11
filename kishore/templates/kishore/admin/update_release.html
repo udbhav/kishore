@@ -5,13 +5,14 @@
 {% block release_nav %}active{% endblock %}
 
 {% block content %}
-
-<h1>
-  {{ release }}
-  <a class="btn btn-default" href="{{ release.get_absolute_url }}">
-    <i class="icon-external-link"></i>
-  </a>
-</h1>
+<div class="page-header">
+  <h1>
+    {{ release }}
+    <a class="btn btn-default" href="{{ release.get_absolute_url }}">
+      <i class="icon-external-link"></i>
+    </a>
+  </h1>
+</div>
 
 <form method="post" action="." class="release-form image-picker-form" data-image-field="">
   {% csrf_token %}

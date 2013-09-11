@@ -48,6 +48,10 @@
       $("li", self.$elem).on("click", function() {
         self.toggleSound(this);
       });
+
+      $(".song-link", self.$elem).on("click", function(e) {
+        e.stopPropagation();
+      });
     }
 
     , toggleSound: function(li) {
@@ -77,15 +81,16 @@
       , $position = $('<div id="song-position" class="progress"><div class="progress-bar"></div></div>')
       , $progress = $(".progress-bar", $position)
 
-      , $time = $('<div id="song-time" class="pull-right"></div>');
+      , $time = $('<div id="song-time" class="pull-right"></div>')
+      , $link = $('<a class="pull-right" id="song-link">').attr("href", $li.attr("data-link")).html("permalink");
 
       // stop other stuff
       soundManager.stopAll();
       $("li", self.$elem).removeClass("playing", "paused");
-      $("#song-controls, #song-time").remove();
+      $("#song-controls, #song-time, #song-link").remove();
 
       $controls.append($position);
-      $li.addClass("playing").append($controls).prepend($time);
+      $li.addClass("playing").append($controls).prepend($time).prepend($link);
 
       $position.on("click", function(e) {
         var position = (e.pageX - $(this).offset().left) / $(this).width() * sound.durationEstimate;
@@ -93,27 +98,7 @@
         e.stopPropagation();
       });
 
-      // $progress.draggable({
-      //   axis: "x",
-      //   containment: "#song-position",
-      //   start: function(event, ui) {
-      //     sound.pause();
-      //   },
-      //   drag: function(event, ui) {
-      //     var new_position = Math.round((ui.position.left/$controls.width()) * sound.durationEstimate / 1000);
-      //     var duration = Math.round(sound.durationEstimate/1000);
-      //     var new_time = Math.floor(new_position/60) + ':' + self.padSeconds(new_position % 60) + ' / ' + Math.floor(duration/60) + ':' + self.padSeconds(duration % 60);
-      //     $time.html(new_time);
-
-      //   },
-      //   stop: function(event, ui) {
-      //     var new_position = Math.round((ui.position.left/$controls.width()) * sound.durationEstimate);
-      //     sound.play();
-      //     sound.setPosition(new_position);
-      //     $(".playlist .paused").removeClass("paused").addClass("playing");
-      //   }
-      // });
-
+      $link.on("click", function(e) { e.stopPropagation() });
 
       sound.play({
         whileplaying: function() {
