@@ -17,7 +17,7 @@
       {% for item in cart.cartitem_set.all %}
       <tr>
         <td>
-          {{ item.product.name_with_no_price }}
+          {{ item.product.name }}
           <form method="post" action="{% url 'kishore_remove_from_cart' item_id=item.id %}">
             {% csrf_token %}
             <input type="submit" value="Remove" class="btn btn-small btn-danger">

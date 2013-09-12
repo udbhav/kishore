@@ -1,5 +1,47 @@
 {% extends "kishore/base.html" %}
-
+{% load markup %}
+{% load cache %}
 {% block kishore_content %}
-{% include "kishore/store/product.html" %}
+{% cache 9999999 product_detail product.cache_key %}
+<div class="page-header">
+  <h1>{{ product.name }} <small>{{ product.formatted_price }}</small>
+  </h1>
+
+  {% if product.subclass.includes_downloads %}
+  <span class="label label-danger">Includes Free Digital Download</span>
+  {% endif %}
+
+</div>
+
+<article class="product">
+
+  <div class="row">
+    <div class="col-md-8">
+      {% if product.get_player_html %}
+      <div class="player">
+        {% autoescape off %}{{ product.get_player_html }}{% endautoescape %}
+      </div>
+      {% endif %}
+
+      {% if product.get_description %}
+      <div class="description">{{ product.get_description|markdown:"safe" }}</div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-4">
+      <p>
+        <form method="post" action="{% url 'kishore_add_to_cart' %}">
+          {% csrf_token %}
+          {{ product.get_cartitem_form.as_p }}
+          <input type="submit" class="btn btn-primary" value="Add To Cart">
+        </form>
+      </p>
+
+
+      {% include "kishore/images/artwork.html" with artwork=product.get_ordered_images artwork_id=product.id %}
+    </div>
+  </div>
+
+</article>
+{% endcache %}
 {% endblock %}

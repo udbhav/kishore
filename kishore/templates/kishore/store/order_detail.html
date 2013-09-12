@@ -11,7 +11,7 @@
 {% for item in order.orderitem_set.all %}
 {% if item.downloadable %}
 <p>
-{{ item.product.name_with_no_price }}<br>
+{{ item.product.name }}<br>
 {% for link in item.downloadlink_set.all %}
 <a href="{{ link.get_full_url }}">{{ link.get_full_url }}</a><br>
 {% endfor %}

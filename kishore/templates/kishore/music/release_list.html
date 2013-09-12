@@ -1,4 +1,5 @@
 {% extends "kishore/base.html" %}
+{% load cache %}
 
 {% block kishore_content %}
 {% if artist %}
@@ -7,11 +8,14 @@
 
 <div class="row">
   {% for release in releases %}
-  <div class="col-md-4">
+  {% cache 9999999 release_list_item release.cache_key %}
+  <div class="col-sm-3">
     <a href="{{ release.get_absolute_url }}">
       <img src="{{ release.get_primary_image.cropped_square.url }}">
     </a>
+    <p><a href="{{ release.get_absolute_url }}">{{ release }}</a></p>
   </div>
+  {% endcache %}
   {% endfor %}
 </div>
 {% endblock %}

@@ -12,6 +12,7 @@ from kishore import settings as kishore_settings
 from kishore import utils
 from image import ModelFormWithImages
 from players import DefaultPlayer
+from cache import CachedModel
 
 class WithSlug(models.Model):
     slug = models.SlugField(unique=True,blank=True)
@@ -47,7 +48,7 @@ class WithSlug(models.Model):
         else:
             return self.pk
 
-class Artist(WithSlug):
+class Artist(WithSlug, CachedModel):
     name = models.CharField(max_length=120)
     url = models.URLField(blank=True)
     description = models.TextField(blank=True)
@@ -67,6 +68,11 @@ class Artist(WithSlug):
 
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
+
+    def get_cached_siblings(self):
+        releases = list(self.release_set.all())
+        songs = list(self.song_set.all())
+        return releases + songs
 
     class Meta:
         db_table = 'kishore_artists'
@@ -120,7 +126,7 @@ class MusicBase(models.Model):
     class Meta:
         abstract = True
 
-class Song(WithSlug, MusicBase):
+class Song(WithSlug, MusicBase, CachedModel):
     audio_file = models.FileField(upload_to='uploads/music', blank=True, null=True,storage=utils.load_class(kishore_settings.KISHORE_STORAGE_BACKEND)())
     artwork = models.ManyToManyField('Image', through='SongImage', blank=True, null=True)
 
@@ -175,7 +181,7 @@ class SongImage(models.Model):
         db_table = 'kishore_song_images'
         app_label = 'kishore'
 
-class Release(WithSlug, MusicBase):
+class Release(WithSlug, MusicBase, CachedModel):
     songs = models.ManyToManyField(Song, through='ReleaseSong', blank=True, null=True)
     artwork = models.ManyToManyField('Image', through='ReleaseImage', blank=True, null=True)
 

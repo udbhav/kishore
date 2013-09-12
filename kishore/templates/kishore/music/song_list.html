@@ -1,7 +1,10 @@
 {% extends "kishore/base.html" %}
+{% load cache %}
 
 {% block kishore_content %}
 {% for song in songs %}
-{% include "kishore/music/song.html" %}
+{% cache 9999999 song_list_item song.cache_key %}
+{{ song }}
+{% endcache %}
 {% endfor %}
 {% endblock %}

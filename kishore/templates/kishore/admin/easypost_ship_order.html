@@ -11,7 +11,7 @@
     <thead><th>Quantity</th><th>Item</th></thead>
     <tbody>
       {% for item in order.get_shippable_items %}
-      <tr><td>{{ item.quantity }}</td><td>{{ item.product.name_with_no_price }}</td>
+      <tr><td>{{ item.quantity }}</td><td>{{ item.product.name }}</td>
         {% endfor %}
     </tbody>
   </table>

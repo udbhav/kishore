@@ -21,6 +21,7 @@ from kishore import utils
 
 from music import Song, Release
 from image import Image, ModelFormWithImages
+from cache import CachedModel
 
 PRODUCT_SUBCLASSES = [
     {"class": "DigitalSong", "name": "Digital Song"},
@@ -29,7 +30,7 @@ PRODUCT_SUBCLASSES = [
     {"class": "Merch", "name": "Merch"},
     ]
 
-class Product(models.Model):
+class Product(CachedModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2,
@@ -45,9 +46,6 @@ class Product(models.Model):
     def __unicode__(self):
         # return self.name
         return "%s (%s)" % (self.name, self.formatted_price)
-
-    def name_with_no_price(self):
-        return re.sub(r'\([^)]*\)', '', self.__unicode__())
 
     @property
     def subclass(self):
@@ -67,13 +65,45 @@ class Product(models.Model):
         return reverse('kishore_admin_product_update',kwargs={'pk':self.id})
 
     def get_cartitem_form(self):
-        return CartItemForm(instance=CartItem(product=self))
+        form = CartItemForm(instance=CartItem(product=self))
+        form.fields["quantity"].widget = forms.HiddenInput()
+        return form
+
+    def get_description(self):
+        if self.description:
+            return self.description
+        elif hasattr(self.subclass, 'get_related_description'):
+            return self.subclass.get_related_description()
+
+    def get_ordered_images(self):
+        product_images = ProductImage.objects.filter(product=self).order_by('position')
+        if product_images:
+            return product_images
+        elif hasattr(self.subclass, 'get_related_images'):
+            return self.subclass.get_related_images()
+
+    def get_primary_image(self):
+        images = self.get_ordered_images()
+        if len(images) > 0:
+            return images[0].image
+
+    def get_player_html(self):
+        if hasattr(self.subclass, 'get_player_html'):
+            return self.subclass.get_player_html()
+
+    def get_related_music_object(self):
+        if hasattr(self.subclass, 'release'):
+            return self.subclass.release
+        elif hasattr(self.subclass, 'song'):
+            return self.subclass.song
 
     def get_artist(self):
-        if hasattr(self.subclass, 'release'):
-            return self.subclass.release.artist
-        elif hasattr(self.subclass, 'song'):
-            return self.subclass.song.artist
+        related = self.get_related_music_object()
+        if related:
+            return related.artist
+
+    def get_cached_siblings(self):
+        return [self.get_related_music_object()]
 
     @property
     def formatted_price(self):
@@ -212,12 +242,22 @@ class DigitalSong(Product):
     shippable = False
     downloadable = True
 
+    def get_download_url(self):
+        return self.song.audio_file.storage.download_url(self.song.audio_file.name)
+
+    def get_related_description(self):
+        return self.song.description
+
+    def get_related_images(self):
+        return self.song.ordered_images()
+
+    def get_player_html(self):
+        if self.song.streamable:
+            return self.song.get_player_html()
+
     class Meta:
         db_table = 'kishore_digitalsongs'
         app_label = 'kishore'
-
-    def get_download_url(self):
-        return self.song.audio_file.storage.download_url(self.song.audio_file.name)
 
 class DigitalRelease(Product):
     release = models.ForeignKey(Release, blank=True, null=True)
@@ -231,6 +271,16 @@ class DigitalRelease(Product):
     def get_download_url(self):
         return self.zipfile.storage.download_url(self.zipfile.name)
 
+    def get_related_description(self):
+        return self.release.description
+
+    def get_related_images(self):
+        return self.release.ordered_images()
+
+    def get_player_html(self):
+        if self.release.streamable:
+            return self.release.get_player_html()
+
     class Meta:
         db_table = 'kishore_digitalreleases'
         app_label = 'kishore'
@@ -242,6 +292,20 @@ class PhysicalRelease(Product):
 
     def __unicode__(self):
         return "%s - %s (%s)" % (self.release, self.name, self.formatted_price)
+
+    def get_related_description(self):
+        return self.release.description
+
+    def get_related_images(self):
+        return self.release.ordered_images()
+
+    def get_player_html(self):
+        if self.release.streamable:
+            return self.release.get_player_html()
+
+    def includes_downloads(self):
+        if self.release.digitalrelease_set.filter(visible=True).count() > 0:
+            return True
 
     class Meta:
         db_table = 'kishore_physicalreleases'
@@ -512,7 +576,7 @@ class DownloadLink(models.Model):
     def find_releases(self):
         product = self.item.product
         if hasattr(product, 'physicalrelease'):
-            return DigitalRelease.objects.filter(release=product.physicalrelease.release)
+            return DigitalRelease.objects.filter(release=product.physicalrelease.release,visible=True)
         elif hasattr(product, 'digitalrelease'):
             return [product.digitalrelease]
         elif hasattr(product, 'digitalsong'):

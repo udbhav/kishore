@@ -1,13 +1,17 @@
 {% extends "kishore/base.html" %}
 
 {% block kishore_content %}
+<div class="page-header">
+  <h1>Search</h1>
+</div>
+
 <article class="search">
-  <h2>Search</h2>
+
   {% if query %}
   <p>Results for <em>{{ query }}</em></p>
 
   {% for result in page.object_list %}
-  <p>
+  <p class="monospaced">
     <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
     <span class="label label-{{ result.model_name }}">{{ result.model_name }}</span>
   </p>
