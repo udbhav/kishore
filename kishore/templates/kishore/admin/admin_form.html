@@ -23,6 +23,10 @@
   {{ field.label_tag }}
   {{ field }}
 
+  {% if field.help_text %}
+  <span class="help-block">{{ field.help_text }}</span>
+  {% endif %}
+
   {% endif %}
 
   {% for error in field.errors %}

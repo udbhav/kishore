@@ -113,6 +113,19 @@
 </div>
 
 <div class="form-group">
+  {{ form.tags.label_tag }}
+  {{ form.tags }}
+
+  {% if form.tags.help_text %}
+  <span class="help-block">{{ form.tags.help_text }}</span>
+  {% endif %}
+
+  {% for error in form.tags.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group">
   {{ form.slug.label_tag }}
   {{ form.slug }}
 

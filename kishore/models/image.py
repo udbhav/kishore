@@ -6,9 +6,10 @@ from django.core.urlresolvers import reverse
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit, ResizeToFill
 
-from kishore.utils import KishoreTextInput
+from kishore import utils
+from tags import TaggableModel
 
-class Image(models.Model):
+class Image(TaggableModel):
     title = models.CharField(max_length=100, blank=True)
     image = models.ImageField(upload_to='uploads/images')
     credit = models.CharField(max_length=100, blank=True)
@@ -40,9 +41,10 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
         widgets = {
-            'title': KishoreTextInput(),
-            'credit': KishoreTextInput(),
-            'credit_url': KishoreTextInput(),
+            'title': utils.KishoreTextInput(),
+            'credit': utils.KishoreTextInput(),
+            'credit_url': utils.KishoreTextInput(),
+            'tags': utils.KishoreTagWidget(),
             'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
         }
 

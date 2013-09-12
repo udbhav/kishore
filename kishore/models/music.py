@@ -6,49 +6,17 @@ from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from django.template.defaultfilters import slugify
+
 
 from kishore import settings as kishore_settings
 from kishore import utils
 from image import ModelFormWithImages
 from players import DefaultPlayer
 from cache import CachedModel
+from slugs import SlugModel
+from tags import TaggableModel
 
-class WithSlug(models.Model):
-    slug = models.SlugField(unique=True,blank=True)
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            valid_slug = False
-            i = 0
-            while not valid_slug:
-                if i == 0:
-                    proposed_slug = slugify(self.get_slug_origin())
-                else:
-                    proposed_slug = slugify("%s %s" % (self.get_slug_origin(), i))
-                try:
-                    self.__class__.objects.get(slug=proposed_slug)
-                except ObjectDoesNotExist:
-                    valid_slug = True
-                else:
-                    i += 1
-
-            self.slug = proposed_slug
-
-        super(WithSlug, self).save(*args, **kwargs)
-
-    def get_slug_origin(self):
-        if hasattr(self,'name'):
-            return getattr(self, 'name')
-        elif hasattr(self, 'title'):
-            return getattr(self, 'title')
-        else:
-            return self.pk
-
-class Artist(WithSlug, CachedModel):
+class Artist(SlugModel, CachedModel, TaggableModel):
     name = models.CharField(max_length=120)
     url = models.URLField(blank=True)
     description = models.TextField(blank=True)
@@ -87,7 +55,7 @@ class ArtistImage(models.Model):
         db_table = 'kishore_artist_images'
         app_label = 'kishore'
 
-class MusicBase(models.Model):
+class MusicBase(TaggableModel):
     artist = models.ForeignKey(Artist)
     title = models.CharField(max_length=100)
     release_date = models.DateField(default=date.today())
@@ -126,7 +94,7 @@ class MusicBase(models.Model):
     class Meta:
         abstract = True
 
-class Song(WithSlug, MusicBase, CachedModel):
+class Song(SlugModel, MusicBase, CachedModel):
     audio_file = models.FileField(upload_to='uploads/music', blank=True, null=True,storage=utils.load_class(kishore_settings.KISHORE_STORAGE_BACKEND)())
     artwork = models.ManyToManyField('Image', through='SongImage', blank=True, null=True)
 
@@ -181,7 +149,7 @@ class SongImage(models.Model):
         db_table = 'kishore_song_images'
         app_label = 'kishore'
 
-class Release(WithSlug, MusicBase, CachedModel):
+class Release(SlugModel, MusicBase, CachedModel):
     songs = models.ManyToManyField(Song, through='ReleaseSong', blank=True, null=True)
     artwork = models.ManyToManyField('Image', through='ReleaseImage', blank=True, null=True)
 
@@ -261,11 +229,12 @@ class ArtistForm(ModelFormWithImages):
 
     class Meta:
         model = Artist
-        fields = ('name','url','description','artist_images','slug')
+        fields = ('name','url','description','artist_images','tags','slug')
         widgets = {
             'name': utils.KishoreTextInput(),
             'slug': utils.KishoreTextInput(),
             'url': utils.KishoreTextInput(),
+            'tags': utils.KishoreTagWidget(),
             'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
         }
 
@@ -282,13 +251,14 @@ class SongForm(ModelFormWithImages):
     class Meta:
         model = Song
         fields = ('artist','title','remote_url','audio_file', 'release_date','streamable',
-                  'downloadable','description','song_images','slug')
+                  'downloadable','description','song_images','tags','slug')
 
         widgets = {
             'title': utils.KishoreTextInput(),
             'slug': utils.KishoreTextInput(),
             'release_date': utils.KishoreTextInput(),
             'remote_url': utils.KishoreTextInput(),
+            'tags': utils.KishoreTagWidget(),
             'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
             }
 
@@ -334,12 +304,13 @@ class ReleaseForm(ModelFormWithImages):
     class Meta:
         model = Release
         fields = ('artist','title','remote_url', 'release_date','streamable',
-                  'downloadable','description','release_songs','release_images','slug')
+                  'downloadable','description','release_songs','release_images','tags','slug')
 
         widgets = {
             'title': utils.KishoreTextInput(),
             'slug': utils.KishoreTextInput(),
             'release_date': utils.KishoreTextInput(),
             'remote_url': utils.KishoreTextInput(),
+            'tags': utils.KishoreTagWidget(),
             'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
             }

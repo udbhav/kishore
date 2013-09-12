@@ -22,6 +22,7 @@ Installation
         'django.contrib.markup',
 
         'haystack',
+        'taggit',
         'kishore',
     )
 

@@ -22,6 +22,7 @@ from kishore import utils
 from music import Song, Release
 from image import Image, ModelFormWithImages
 from cache import CachedModel
+from tags import TaggableModel
 
 PRODUCT_SUBCLASSES = [
     {"class": "DigitalSong", "name": "Digital Song"},
@@ -30,7 +31,7 @@ PRODUCT_SUBCLASSES = [
     {"class": "Merch", "name": "Merch"},
     ]
 
-class Product(CachedModel):
+class Product(CachedModel, TaggableModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2,
@@ -176,6 +177,7 @@ class ProductForm(ModelFormWithImages):
             'price': utils.KishoreTextInput,
             'inventory': utils.KishoreTextInput,
             'weight': utils.KishoreTextInput,
+            'tags': utils.KishoreTagWidget(),
             'description': forms.Textarea(attrs={'class':'kishore-editor-input'})
             }
 

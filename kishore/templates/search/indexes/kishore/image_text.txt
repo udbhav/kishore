@@ -1,5 +1,6 @@
 {% load markup %}
 
 {{ object.title }}
+{% for tag in object.tags.all %}{{ tag }} {% endfor %}
 {{ object.credit }}
 {{ object.description|markdown:"safe" }}

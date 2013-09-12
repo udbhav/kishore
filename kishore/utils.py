@@ -4,6 +4,7 @@ from django import forms
 from django.http import HttpResponse
 from django.db.models.query import QuerySet
 from django.core.paginator import Paginator, Page
+from taggit.forms import TagWidget
 
 def load_class(name):
     name = str(name)
@@ -64,6 +65,9 @@ class KishoreSelectWidget(KishoreWidget, forms.Select):
     pass
 
 class KishorePasswordInput(KishoreWidget, forms.PasswordInput):
+    pass
+
+class KishoreTagWidget(KishoreWidget, TagWidget):
     pass
 
 class JSONResponseMixin(object):

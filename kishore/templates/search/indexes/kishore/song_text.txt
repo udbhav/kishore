@@ -2,4 +2,5 @@
 
 {{ object.title }}
 {{ object.artist }}
+{% for tag in object.tags.all %}{{ tag }} {% endfor %}
 {{ object.description|markdown:"safe" }}
