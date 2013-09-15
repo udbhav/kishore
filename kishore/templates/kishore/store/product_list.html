@@ -1,14 +1,26 @@
 {% extends "kishore/base.html" %}
+{% load cache %}
+{% load kishore_tags %}
 
 {% block kishore_content %}
+<div class="page-header">
+  {% if title %}
+  <h1>{{ title }}</h1>
+  {% else %}
+  <h1>Products</h1>
+  {% endif %}
+</div>
+
 <div class="row">
   {% for product in products %}
+  {% cache 9999999 product_list_item product.cache_key %}
   <div class="col-sm-3">
     <a href="{{ product.get_absolute_url }}">
       <img src="{{ product.get_primary_image.cropped_square.url }}">
     </a>
     <p><a href="{{ product.get_absolute_url }}">{{ product }}</a></p>
   </div>
+  {% endcache %}
   {% endfor %}
 </div>
 {% endblock %}

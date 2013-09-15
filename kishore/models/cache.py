@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime
 
 class CachedModel(models.Model):
-    last_modified = models.DateTimeField(default=datetime.now())
+    last_modified = models.DateTimeField(default=datetime.now(),blank=True)
 
     @property
     def cache_key(self):

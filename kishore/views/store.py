@@ -7,8 +7,9 @@ from django.views.generic import DetailView, ListView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from taggit.models import Tag
 
-from kishore.models import Cart, Product, CartItem, CartItemForm, Order, PaymentForm, DownloadLink, DigitalRelease
+from kishore.models import Cart, Product, CartItem, CartItemForm, Order, PaymentForm, DownloadLink, DigitalRelease, KishorePaginator
 from kishore import settings as kishore_settings
 from kishore import utils
 
@@ -16,11 +17,29 @@ class ProductList(ListView):
     queryset = Product.objects.filter(visible=True)
     context_object_name = "products"
     template_name = "kishore/store/product_list.html"
+    paginate_by = 25
+    paginator_class = KishorePaginator
 
 class ProductDetail(DetailView):
     queryset = Product.objects.filter(visible=True)
     context_object_name = "product"
     template_name = "kishore/store/product_detail.html"
+
+class ProductsByTag(ListView):
+    model = Product
+    context_object_name = "products"
+    template_name = "kishore/store/product_list.html"
+    paginate_by = 25
+    paginator_class = KishorePaginator
+
+    def get_queryset(self):
+        return Product.objects.filter(tags__slug__in=[self.kwargs['tag']],visible=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductsByTag, self).get_context_data(**kwargs)
+        tag = get_object_or_404(Tag, slug=self.kwargs['tag'])
+        context['title'] = "Products tagged %s" % tag.name
+        return context
 
 def cart(request):
     cart = utils.get_or_create_cart(request)
