@@ -1,0 +1,10 @@
+{% load cache %}
+
+{% cache 9999999 release_list_item release.cache_key %}
+<div class="col-sm-4 release-item">
+  <a href="{{ release.get_absolute_url }}">
+    <img src="{{ release.get_primary_image.cropped_square.url }}">
+  </a>
+  <p class="title"><a href="{{ release.get_absolute_url }}">{{ release }}</a></p>
+</div>
+{% endcache %}

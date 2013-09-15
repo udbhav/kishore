@@ -1,19 +1,16 @@
 {% extends "kishore/base.html" %}
 {% load cache %}
+{% load markup %}
 {% load kishore_tags %}
 
 {% block kishore_content %}
 <div class="page-header">
-  {% if title %}
-  <h1>{{ title }}</h1>
-  {% else %}
-  <h1>Songs</h1>
-  {% endif %}
+  <h1>Songs by {{ artist }}</h1>
 </div>
 
-<article class="song-list">
+<article class="artist-songs">
 {% for song in songs %}
-{% with song as song_title %}
+{% with song.title as song_title %}
 {% include "kishore/music/song.html" %}
 {% endwith %}
 {% endfor %}

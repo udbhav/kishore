@@ -2,13 +2,27 @@
 {% load cache %}
 
 {% block kishore_content %}
-<header><h1>Artists</h1></header>
+<div class="page-header">
+  {% if title %}
+  <h1>{{ title }}</h1>
+  {% else %}
+  <h1>Artists</h1>
+  {% endif %}
+</div>
+
+<div class="row">
 
 {% for artist in artists %}
 {% cache 9999999 artist_list_item artist.cache_key %}
-<article>
-  <a href="{{ artist.get_absolute_url }}">{{ artist }}</a>
-</article>
+<div class="col-sm-6">
+  <h2><a href="{{ artist.get_absolute_url }}">{{ artist }}</a></h2>
+  {% if artist.get_primary_image %}
+  <a href="{{ artist.get_absolute_url }}">
+    <img src="{{ artist.get_primary_image.medium_image.url }}" alt="{{ artist }}">
+  </a>
+  {% endif %}
+</div>
 {% endcache %}
 {% endfor %}
+
 {% endblock %}

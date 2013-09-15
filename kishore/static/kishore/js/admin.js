@@ -137,6 +137,10 @@ $(document).ready(function() {
     fieldSelector: 'input[name=product_images]'
   });
 
+  $(".artist-form").kishorePicker({
+    fieldSelector: 'input[name=artist_images]'
+  });
+
   $(".kishore-editor-input").kishoreEditor();
   $(".song-form input[name=release_date]").kishoreDatepicker();
   $(".product-form").kishoreProductForm();

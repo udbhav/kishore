@@ -1,0 +1,42 @@
+{% load markup %}
+{% load cache %}
+
+{% block kishore_content %}
+{% cache 9999999 song song.cache_key %}
+<article class="song">
+  {% if song_title %}
+  <h2><a href="{{ song.get_absolute_url }}">{{ song_title }}</a></h2>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-8">
+      {% if song.streamable %}
+      <div class="player">
+      {% autoescape off %}{{ song.get_player_html }}{% endautoescape %}
+      </div>
+      {% endif %}
+
+      {% if song.description %}
+      <div class="description">{{ song.description|markdown:"safe" }}</div>
+      {% endif %}
+    </div>
+
+
+    <div class="col-md-4">
+      {% with song.get_cart_form as form %}
+      {% include "kishore/store/buy_product.html" %}
+      {% endwith %}
+
+      {% if song.downloadable %}
+      <div class="download-product">
+        <h2>Download</h2>
+        <a href="{{ song.get_download_url }}" class="btn btn-danger">Download</a>
+      </div>
+      {% endif %}
+
+      {% include "kishore/images/artwork.html" with artwork=song.ordered_images artwork_id=song.id %}
+    </div>
+  </div>
+</article>
+{% endcache %}
+{% endblock %}

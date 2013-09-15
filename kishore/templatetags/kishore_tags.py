@@ -36,11 +36,12 @@ def kishore_js():
 
 @register.inclusion_tag('kishore/pagination.html')
 def kishore_pagination(page):
-    return {
-        'page': page,
-        'previous': page.paginator.get_previous_range(page),
-        'next': page.paginator.get_next_range(page),
-        }
+    if page:
+        return {
+            'page': page,
+            'previous': page.paginator.get_previous_range(page),
+            'next': page.paginator.get_next_range(page),
+            }
 
 @register.filter(name='is_checkbox')
 def is_checkbox(field):

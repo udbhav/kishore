@@ -1,0 +1,48 @@
+{% extends "kishore/base.html" %}
+{% load cache %}
+{% load markup %}
+
+{% block kishore_content %}
+{% cache 9999999 artist_detail artist.cache_key %}
+<div class="page-header">
+  <h1>{{ artist }}</h1>
+</div>
+
+<article class="artist-detail">
+  <div class="row">
+
+    <div class="col-sm-6">
+      {% if artist.get_primary_image %}
+      <p>
+        <img src="{{ artist.get_primary_image.medium_image.url }}" alt="{{ artist }}">
+      </p>
+      {% endif %}
+
+      {% if artist.url %}<p><a href="{{ artist.url }}">{{ artist.url }}</a></p>{% endif %}
+
+      {% if artist.description %}
+      {{ artist.description|markdown:"safe" }}
+      {% endif %}
+    </div>
+
+
+    <div class="col-sm-6">
+      {% if artist.release_set.all %}
+      <h2>Releases</h2>
+      <div class="row">
+        {% for release in artist.release_set.all %}
+        {% include "kishore/music/release_list_item.html" %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if artist.song_set.all %}
+      <h4><a href="{% url 'kishore_artist_songs' slug=artist.slug %}">View all songs</a></h4>
+      {% endif %}
+    </div>
+
+  </div>
+
+</article>
+{% endcache %}
+{% endblock %}

@@ -1,21 +1,17 @@
 {% extends "kishore/base.html" %}
-{% load cache %}
 
 {% block kishore_content %}
-{% if artist %}
-<h1>{{ artist }}</h1>
-{% endif %}
+<div class="page-header">
+  {% if title %}
+  <h1>{{ title }}</h1>
+  {% else %}
+  <h1>Releases</h1>
+  {% endif %}
+</div>
 
 <div class="row">
   {% for release in releases %}
-  {% cache 9999999 release_list_item release.cache_key %}
-  <div class="col-sm-3">
-    <a href="{{ release.get_absolute_url }}">
-      <img src="{{ release.get_primary_image.cropped_square.url }}">
-    </a>
-    <p><a href="{{ release.get_absolute_url }}">{{ release }}</a></p>
-  </div>
-  {% endcache %}
+  {% include "kishore/music/release_list_item.html" %}
   {% endfor %}
 </div>
 {% endblock %}

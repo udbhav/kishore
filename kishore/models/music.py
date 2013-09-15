@@ -34,6 +34,11 @@ class Artist(SlugModel, CachedModel, TaggableModel):
     def ordered_images(self):
         return ArtistImage.objects.filter(artist=self).order_by('position')
 
+    def get_primary_image(self):
+        images = self.ordered_images()
+        if images:
+            return images[0].image
+
     def images_as_json(self):
         return json.dumps([i.image.json_safe_values for i in self.ordered_images()])
 
@@ -93,6 +98,7 @@ class MusicBase(TaggableModel):
 
     class Meta:
         abstract = True
+        ordering = ['-release_date']
 
 class Song(SlugModel, MusicBase, CachedModel):
     audio_file = models.FileField(upload_to='uploads/music', blank=True, null=True,storage=utils.load_class(kishore_settings.KISHORE_STORAGE_BACKEND)())
