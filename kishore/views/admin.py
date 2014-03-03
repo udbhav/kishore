@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta, date
+import json
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.list import BaseListView
@@ -6,9 +9,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.db.models import Sum
 
 from kishore.models import (Order, KishorePaginator, Artist, ArtistForm, Image, ImageForm, Song,
                             SongForm, Release, ReleaseForm, UserForm, KishoreUserCreationForm,
@@ -289,7 +292,28 @@ class SongSearch(AdminSearchView):
 
 @login_required
 def dashboard(request):
-    return render(request, "kishore/admin/index.html")
+
+    # orders waiting to ship
+    orders = Order.objects.filter(active=True,
+                                  shipped=False,
+                                  refunded=False).exclude(shipment_processor='')
+
+    # sales data
+    now = datetime.now()
+
+    weekly_sales = Order.sales_data(now-timedelta(days=7))
+    monthly_sales = Order.sales_data(now-timedelta(days=30))
+
+    # json dump handler for date
+    dhandler = lambda obj: "%s/%s" % (obj.month, obj.day) if isinstance(obj, date) else None
+    sales_by_day = json.dumps(Order.sales_by_day(), default=dhandler)
+
+    return render(request, "kishore/admin/dashboard.html", {
+            'orders': orders,
+            'monthly_sales': monthly_sales,
+            'weekly_sales': weekly_sales,
+            'sales_by_day': sales_by_day,
+            })
 
 @login_required
 def ship_order(request, pk):

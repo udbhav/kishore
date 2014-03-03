@@ -62,8 +62,15 @@
 
   productForm.prototype = {
     init: function() {
-      var self = this, $input = $("input[name=model_class]");
+      var self = this;
 
+      self.setupModelFields();
+      self.setupInventory();
+    }
+
+    , setupModelFields: function() {
+      // show all the fields relevant to each product type
+      var self = this, $input = $("input[name=model_class]");
       if ($input.attr("type") == "radio") {
         $input.on("change", function() {
           var model_class = $("input[name=model_class]:checked").val();
@@ -94,6 +101,24 @@
       $(selector,self.$elem).removeClass("hide");
     }
 
+    , setupInventory: function() {
+
+      // inventory tracking, make the field visible as necessary
+      var $inventory = $(".form-group.inventory");
+
+      function toggle_inventory_field() {
+        if ($("input[name=track_inventory]:checked").length) {
+          $inventory.removeClass("hide");
+        } else {
+          $inventory.addClass("hide");
+        }
+      }
+
+      $("input[name=track_inventory").on("change", toggle_inventory_field);
+      toggle_inventory_field();
+    }
+
+
   }
 
 
@@ -109,6 +134,17 @@
     });
   }
 
+
+  $.fn.kishoreDashboard = function() {
+    return this.each(function() {
+
+      var $sales = $("#sales-by-day"), sales_data = JSON.parse($sales.html()),
+      $canvas = $('<canvas id="sales-by-day-chart">');
+
+      $canvas.width($sales.parent().width()).insertAfter("#sales-by-day");
+      var ctx = $canvas.get(0).getContext("2d")
+    });
+  }
 
 })(jQuery)
 
@@ -144,5 +180,7 @@ $(document).ready(function() {
   $(".kishore-editor-input").kishoreEditor();
   $(".song-form input[name=release_date]").kishoreDatepicker();
   $(".product-form").kishoreProductForm();
+  $("body.dashboard").kishoreDashboard();
   $.fn.kishoreCSRFProtection();
+
 });

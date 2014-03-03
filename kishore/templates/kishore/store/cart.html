@@ -4,6 +4,10 @@
 {% block kishore_content %}
 <article class="cart">
   <header><h1>Shopping Cart</h1></header>
+  {% if error %}
+  <p><span class="label label-danger">Sorry, one or more of the items in your cart is no longer in stock.</span></p>
+  {% endif %}
+
   {% if cart.cartitem_set.all %}
   <table class="table table-striped">
     <thead>
@@ -42,7 +46,7 @@
 
   <a href="{% url 'kishore_checkout' %}" class="btn btn-primary">Checkout</a>
   {% else %}
-  Your cart is empty.
+  <p>Your cart is empty.</p>
   {% endif %}
 </article>
 {% endblock %}

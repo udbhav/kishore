@@ -11,13 +11,17 @@
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
 
+    {% block kishore_css %}
     {% kishore_css %}
+    {% endblock %}
+
     <script type="text/javascript">
       var kishore_static_root = "{% static 'kishore' %}";
     </script>
   </head>
   <body class="{% block body_class %}{% endblock %}">
 
+    {% block kishore_header %}
     <div class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
@@ -51,6 +55,7 @@
         {% endblock kishore_extra_nav %}
       </div>
     </div>
+    {% endblock %}
 
     <div class="container">
       <div class="row">

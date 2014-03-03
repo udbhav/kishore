@@ -1,0 +1,44 @@
+{% extends "kishore/admin/base.html" %}
+{% load kishore_tags %}
+{% load kishore_admin_tags %}
+
+{% block body_class %}dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Dashboard</h1>
+</div>
+
+{% if orders %}
+<article class="orders-waiting-to-ship">
+  <h2>Orders waiting to Ship</h2>
+  {% include "kishore/admin/order_table.html" %}
+</article>
+{% endif %}
+
+<article class="sales">
+  <h2>Sales</h2>
+  <p class="monospaced">
+    Last 7 days: {{ weekly_sales.total|kishore_currency }} from {{ weekly_sales.count }} order(s)<br>
+    Last 30 days: {{ monthly_sales.total|kishore_currency }} from {{ monthly_sales.count }} order(s)
+  </p>
+  <script id="sales-by-day" type="application/json">
+    {% autoescape off %}{{ sales_by_day }}{% endautoescape %}
+  </script>
+</article>
+
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Add a new</h3></div>
+  <div class="panel-body">
+    <div class="btn-toolbar">
+      <a href="{% url 'kishore_admin_product_create' %}" class="btn btn-primary">Product</a>
+      <a href="{% url 'kishore_admin_artist_create' %}" class="btn btn-primary">Artist</a>
+      <a href="{% url 'kishore_admin_release_create' %}" class="btn btn-primary">Release</a>
+      <a href="{% url 'kishore_admin_song_create' %}" class="btn btn-primary">Song</a>
+      <a href="{% url 'kishore_admin_image_create' %}" class="btn btn-primary">Image</a>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

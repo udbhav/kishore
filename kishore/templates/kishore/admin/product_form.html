@@ -72,6 +72,31 @@
 </div>
 
 <div class="form-group physical-release merch hide hideable">
+  <div class="checkbox"><label>
+      {{ form.track_inventory }}
+      {{ form.track_inventory.label }}
+    </label></div>
+
+  {% for error in form.track_inventory.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group inventory hide">
+  {{ form.inventory.label_tag }}
+  {{ form.inventory }}
+
+
+  {% if form.inventory.help_text %}
+  <span class="help-block">{{ form.inventory.help_text }}</span>
+  {% endif %}
+
+  {% for error in form.inventory.errors %}
+  <span class="label label-danger">{{ error }}</span>
+  {% endfor %}
+</div>
+
+<div class="form-group physical-release merch hide hideable">
   {{ form.weight.label_tag }}
   {{ form.weight }}
 

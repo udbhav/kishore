@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import random
 import re
 import json
@@ -14,6 +14,7 @@ from django.utils.hashcompat import sha_constructor
 from django.utils.encoding import smart_str
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
+from django.db.models import Sum, Count
 
 from kishore.templatetags.kishore_tags import kishore_currency
 from kishore import settings as kishore_settings
@@ -109,6 +110,15 @@ class Product(CachedModel, TaggableModel):
     @property
     def formatted_price(self):
         return kishore_currency(self.price)
+
+    @property
+    def in_stock(self):
+        klass = self.subclass.__class__
+        if (klass == PhysicalRelease or klass == Merch):
+            if self.track_inventory and self.inventory <= 0:
+                return False
+
+        return True
 
     def ordered_images(self):
         return ProductImage.objects.filter(product=self).order_by('position')
@@ -361,6 +371,26 @@ class Order(models.Model):
     def __unicode__(self):
         return "#%i %s" % (self.id, self.customer_name)
 
+    @classmethod
+    def sales_data(self, start, end=datetime.now()):
+        return self.objects.filter(
+            timestamp__lte=end).filter(
+            timestamp__gte=start).aggregate(total=Sum('subtotal'), count=Count('id'))
+
+    @classmethod
+    def sales_by_day(self, start=date.today()-timedelta(days=30), end=date.today()):
+        day = start
+        sales_data = []
+
+        while day != end:
+            sales_data.append({
+                    'date': day,
+                    'data': self.sales_data(day, day+timedelta(days=1))
+                    })
+            day = day + timedelta(days=1)
+
+        return sales_data
+
     @property
     def total(self):
         return self.subtotal + self.shipping_total + self.tax
@@ -403,11 +433,12 @@ class Order(models.Model):
 
         self.save()
 
-    def fulfill(self):
+    def complete(self):
         self.active = True
 
         for item in self.orderitem_set.all():
             item.create_download_links()
+            item.decrement_product_inventory()
 
         self.send_confirmation_mail()
         self.save()
@@ -462,6 +493,11 @@ class OrderItem(models.Model):
                 DownloadLink.objects.create(item=self)
                 i += -1
 
+    def decrement_product_inventory(self):
+        if self.product.track_inventory:
+            self.product.inventory -= self.quantity
+            self.product.save()
+
 class Cart(models.Model):
     timestamp = models.DateTimeField(default=datetime.now())
 
@@ -494,6 +530,20 @@ class Cart(models.Model):
             return True
         else:
             return False
+
+    def clean(self):
+        valid = True
+
+        for item in self.cartitem_set.all():
+            if not item.product.in_stock:
+                valid = False
+                item.delete()
+            elif item.quantity > item.product.inventory:
+                valid = False
+                item.quantity = item.product.inventory
+                item.save()
+
+        return valid
 
     class Meta:
         db_table = 'kishore_carts'

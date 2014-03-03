@@ -33,6 +33,7 @@ KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_ADMIN_JAVASCRIPT",
                                     "kishore/js/Markdown.Sanitizer.js",
                                     "kishore/js/Markdown.Editor.js",
                                     "kishore/js/modal.js",
+                                    "kishore/js/Chart.js",
                                     "kishore/js/kishore-csrf.js",
                                     "kishore/js/kishore-picker.js",
                                     "kishore/js/admin.js"])

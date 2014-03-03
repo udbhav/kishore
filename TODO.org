@@ -1,6 +1,7 @@
+* TODO Paypal Digital Goods
+* TODO Registration Templates
 * TODO Create new image from Image picker
 * TODO Admin Dashboard
-* TODO Inventory Tracking
 * TODO Celery Tasks
 * TODO Analytics
 * TODO Accessibility
@@ -10,3 +11,7 @@
 * TODO Social Links
 * TODO Song List
 * TODO Artist detail
+* TODO Private Pages
+* TODO Sales Charts
+* TODO Reports
+* TODO International shipments

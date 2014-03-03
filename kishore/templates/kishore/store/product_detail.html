@@ -8,7 +8,7 @@
   </h1>
 
   {% if product.subclass.includes_downloads %}
-  <span class="label label-danger">Includes Free Digital Download</span>
+  <span class="label label-warning">Includes Free Digital Download</span>
   {% endif %}
 
 </div>
@@ -30,11 +30,15 @@
 
     <div class="col-md-4">
       <p>
+        {% if product.in_stock %}
         <form method="post" action="{% url 'kishore_add_to_cart' %}">
           {% csrf_token %}
           {{ product.get_cartitem_form.as_p }}
           <input type="submit" class="btn btn-primary" value="Add To Cart">
         </form>
+        {% else %}
+        <span class="label label-danger">Sorry, this product is out of stock.</span>
+        {% endif %}
       </p>
 
 

@@ -6,7 +6,7 @@ from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db.models import Q
 
 from kishore import settings as kishore_settings
 from kishore import utils
@@ -163,7 +163,12 @@ class Release(SlugModel, MusicBase, CachedModel):
         count = self.physicalrelease_set.count() + self.digitalrelease_set.count()
         if count > 0:
             products = []
-            products.extend([x.product_ptr_id for x in self.physicalrelease_set.filter(visible=True)])
+
+            # we want to make sure we don't get any out of stock products
+            physical_releases = self.physicalrelease_set.filter(visible=True).exclude(
+                Q(track_inventory=True) & Q(inventory__lte=0))
+
+            products.extend([x.product_ptr_id for x in physical_releases])
             products.extend([x.product_ptr_id for x in self.digitalrelease_set.filter(visible=True)])
             return products
         else:

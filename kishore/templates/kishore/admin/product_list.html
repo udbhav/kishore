@@ -23,6 +23,7 @@
     <th>Price</th>
     <th>Type</th>
     <th class="text-center">Visible</th>
+    <th class="text-center">Inventory</th>
     <th></th>
   </thead>
   <tbody>
@@ -34,6 +35,7 @@
           {{ product.get_subclass_name }}
       </span></td>
       <td class="text-center">{% if product.visible %}<i class="icon-check success-icon"></i>{% endif %}</td>
+      <td class="text-center">{% if product.track_inventory %}{{ product.inventory }}{% endif %}</td>
       <td>
         <a href="{{ product.get_absolute_url }}"><i class="icon-external-link"></i></a>
       </td>

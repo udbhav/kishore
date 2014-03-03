@@ -96,7 +96,10 @@ def remove_from_cart(request, item_id):
 
 def checkout(request):
     cart = utils.get_or_create_cart(request)
+    valid = cart.clean()
 
+    if not valid:
+        return render(request, "kishore/store/cart.html", {'cart':cart,'error':True})
     if cart.empty:
         return redirect("kishore_cart")
     elif cart.shippable:
@@ -145,7 +148,7 @@ def process_payment(request):
     valid = payment_processor.accept_payment(request, order)
 
     if valid:
-        order.fulfill()
+        order.complete()
         return render(request, "kishore/store/success.html",{'order':order})
     else:
         error = "We're sorry, there was a problem charging your card, please try again."
