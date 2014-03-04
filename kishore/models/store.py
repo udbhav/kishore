@@ -583,14 +583,34 @@ class CartItemForm(forms.ModelForm):
             data = 1
         return data
 
-PAYMENT_PROCESSORS = [[x, utils.load_class(x).human_name] for x in kishore_settings.KISHORE_PAYMENT_BACKENDS]
+
 
 text_widget = forms.TextInput(attrs={'class': 'form-control'})
 
 class PaymentForm(forms.Form):
     name = forms.CharField(max_length=100, widget=text_widget)
     email = forms.EmailField(widget=text_widget)
-    processor = forms.ChoiceField(choices=PAYMENT_PROCESSORS, label="Pay with", widget=forms.RadioSelect, initial=PAYMENT_PROCESSORS[0][0])
+    #processor = forms.ChoiceField(choices=PAYMENT_PROCESSORS, label="Pay with", widget=forms.RadioSelect, initial=PAYMENT_PROCESSORS[0][0])
+
+    def __init__(self, *args, **kwargs):
+        order = kwargs.pop("order", None)
+
+        super(PaymentForm, self).__init__(*args, **kwargs)
+
+        choices = self.get_choices()
+        self.fields['processor'] = forms.ChoiceField(choices=choices,
+                                                     label="Pay with",
+                                                     widget=forms.RadioSelect,
+                                                     initial=choices[0][0])
+
+    def get_choices(self):
+        choices = []
+        for backend in kishore_settings.KISHORE_PAYMENT_BACKENDS:
+            processor = utils.load_class(backend)(order)
+            if processor.valid:
+                choices.append([backend, processor.human_name])
+
+        return choices
 
 class DownloadLink(models.Model):
     item = models.ForeignKey(OrderItem)

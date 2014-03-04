@@ -11,7 +11,14 @@ from kishore import settings as kishore_settings
 class PaypalBackend(object):
     human_name = 'Paypal'
 
-    def get_response(self, request, order):
+    def __init__(self, order):
+        self.order = order
+
+    @property
+    def valid(self):
+        return self.order.shippable
+
+    def get_response(self, request):
         url = kishore_settings.KISHORE_PAYPAL_ENDPOINT + '/payments/payment'
         data = json.dumps({
             'intent': 'sale',
@@ -23,10 +30,10 @@ class PaypalBackend(object):
             'payer': {'payment_method':'paypal'},
             'transactions': [{
                     'amount': {
-                            'total': str(order.total),
+                            'total': str(self.order.total),
                             'currency': kishore_settings.KISHORE_CURRENCY.upper(),
                             },
-                    'description': "Order #: %s" % order.id,
+                    'description': "Order #: %s" % self.order.id,
                     }]
             })
 
@@ -37,8 +44,8 @@ class PaypalBackend(object):
 
         if r.ok and r.json()['state'] == 'created':
             data = r.json()
-            order.transaction_id = data["id"]
-            order.save()
+            self.order.transaction_id = data["id"]
+            self.order.save()
 
             link = [l["href"] for l in data["links"] if l["rel"] == "approval_url"][0]
             return redirect(link)
@@ -46,9 +53,9 @@ class PaypalBackend(object):
             r.raise_for_status()
             raise Exception('Problem with creating payment for Paypal')
 
-    def accept_payment(self, request, order):
+    def accept_payment(self, request):
         url = "%s/payments/payment/%s/execute" % (settings.KISHORE_PAYPAL_ENDPOINT,
-                                                  order.transaction_id)
+                                                  self.order.transaction_id)
         data = json.dumps({'payer_id': request.GET["PayerID"]})
         r = requests.post(url,data=data,headers={
                 'Content-Type': 'application/json',
@@ -57,13 +64,13 @@ class PaypalBackend(object):
 
         r.raise_for_status()
 
-        order.transaction_id = r.json()['transactions'][0]['related_resources'][0]['sale']['id']
-        order.save()
+        self.order.transaction_id = r.json()['transactions'][0]['related_resources'][0]['sale']['id']
+        self.order.save()
         return True
 
-    def refund_order(self, order):
+    def refund_order(self):
         url = "%s/payments/sale/%s/refund" % (settings.KISHORE_PAYPAL_ENDPOINT,
-                                              order.transaction_id)
+                                              self.order.transaction_id)
         r = requests.post(url,data='{}',headers={
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer %s" % self.get_access_token(),

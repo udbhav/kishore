@@ -10,37 +10,41 @@ class StripeForm(forms.Form):
 
 class StripeBackend(object):
     human_name = "Credit Card"
+    valid = True
 
-    def get_response(self, request, order):
+    def __init__(self, order):
+        self.order = order
+
+    def get_response(self, request):
         form = StripeForm()
         key = self.get_api_key(secret=False)
-        return render(request, "kishore/store/stripe.html",{'form':form,'key':key,'order':order})
+        return render(request, "kishore/store/stripe.html",{'form':form,'key':key,'order':self.order})
 
-    def accept_payment(self, request, order):
+    def accept_payment(self, request):
 
         token = request.POST["token"]
         stripe.api_key = self.get_api_key()
 
-        if order.total == 0:
+        if self.order.total == 0:
             return False
 
         try:
             charge = stripe.Charge.create(
-                amount=int(order.total*100),
+                amount=int(self.order.total*100),
                 currency=kishore_settings.KISHORE_CURRENCY,
                 card=token,
-                description=order.id
+                description=self.order.id
                 )
         except stripe.CardError, e:
             return False
         else:
-            order.transaction_id = charge.id
-            order.save()
+            self.order.transaction_id = charge.id
+            self.order.save()
             return True
 
-    def refund_order(self, order):
+    def refund_order(self):
         stripe.api_key = self.get_api_key()
-        charge = stripe.Charge.retrieve(order.transaction_id)
+        charge = stripe.Charge.retrieve(self.order.transaction_id)
         charge.refund()
 
     def get_api_key(self, secret=True):
