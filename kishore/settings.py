@@ -7,6 +7,8 @@ KISHORE_CURRENCY_SYMBOL = getattr(settings, "KISHORE_CURRENCY_SYMBOL", "$")
 KISHORE_AUDIO_BACKENDS = getattr(settings, "KISHORE_AUDIO_PLAYER", ["kishore.models.SoundcloudPlayer",
                                                                   ])
 
+KISHORE_USE_SOUNDCLOUD_EMBED = getattr(settings, "KISHORE_USE_SOUNDCLOUD_EMBED", True)
+
 KISHORE_LABEL_LAYOUT = getattr(settings, "KISHORE_LABEL_LAYOUT", True)
 
 KISHORE_STYLESHEETS = getattr(settings, "KISHORE_STYLESHEETS",

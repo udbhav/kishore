@@ -24,23 +24,44 @@
     }
 
     , getSounds: function() {
-      var self = this, song_ids = new Array();
+      var self = this, song_ids = new Array(), stream_urls = new Array();
+
       $("li", self.$elem).each(function() {
-        song_ids.push($(this).attr("data-song-id"));
+        var song_id = $(this).attr("data-song-id");
+        var stream_url = $(this).attr("data-stream-url");
+        if (song_id) {
+          song_ids.push(song_id);
+        } else if (stream_url) {
+          stream_urls.push([this, stream_url])
+        }
       });
 
-      $.post(self.$elem.attr("data-song-url"), {song_ids: JSON.stringify(song_ids)}, function(data) {
-        $.each(data, function(k,v) {
-          self.createSound(k, v);
+      if (song_ids.length) {
+        $.post(self.$elem.attr("data-song-url"), {song_ids: JSON.stringify(song_ids)}, function(data) {
+          $.each(data, function(k,v) {
+            var element = $("li[data-song-id=" + k + "]", self.$elem)[0];
+            self.createSound(element, v);
+          });
         });
-      });
+      }
+
+      if (stream_urls.length) {
+        $.each(stream_urls, function(i, v) {
+          self.createSound(v[0], v[1]);
+        });
+      }
     }
 
-    , createSound: function(id, url) {
-      var self = this;
+    , createSound: function(element, url) {
       var sound = soundManager.createSound({url: url});
-      $("li[data-song-id=" + id + "]", self.$elem).data("kishore_sound",sound);
+      $(element).data("kishore_sound",sound);
     }
+
+    // , createSound: function(id, url) {
+    //   var self = this;
+    //   var sound = soundManager.createSound({url: url});
+    //   $("li[data-song-id=" + id + "]", self.$elem).data("kishore_sound",sound);
+    // }
 
     , bindEvents: function() {
       var self = this;

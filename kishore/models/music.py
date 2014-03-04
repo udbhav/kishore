@@ -129,7 +129,7 @@ class Song(SlugModel, MusicBase, CachedModel):
                 }
 
     def get_cart_form(self):
-        from products import CartItemForm, Product
+        from store import CartItemForm, Product
 
         ids = [x.id for x in self.digitalsong_set.filter(visible=True)]
         if ids:

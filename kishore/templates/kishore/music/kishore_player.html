@@ -4,6 +4,8 @@
   <li data-song-id="{{ song.id }}" data-link="{{ song.get_absolute_url }}" data-title="{{ song }}">
     {{ song.title }}
   </li>
+  {% elif song.stream_url %}
+  <li data-stream-url="{{ song.stream_url }}">{{ song.title }}</li>
   {% endif %}
   {% endfor %}
 </ul>
