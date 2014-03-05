@@ -1,8 +1,9 @@
 from django.db import models
+from django.utils import timezone
 from datetime import datetime
 
 class CachedModel(models.Model):
-    last_modified = models.DateTimeField(default=datetime.now(),blank=True)
+    last_modified = models.DateTimeField(auto_now_add=True)
 
     @property
     def cache_key(self):
@@ -11,14 +12,15 @@ class CachedModel(models.Model):
                                       self.last_modified)
 
     def save(self, *args, **kwargs):
-        self.last_modified = datetime.now()
+        self.last_modified = timezone.now()
 
         if hasattr(self, 'get_cached_siblings'):
             siblings = self.get_cached_siblings()
 
             for x in siblings:
-                x.last_modified = datetime.now()
-                x.save()
+                if x:
+                    x.last_modified = timezone.now()
+                    x.save()
 
         super(CachedModel, self).save(*args, **kwargs)
 

@@ -3,9 +3,10 @@ import re
 import json
 
 from django.http import HttpResponse
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from django.core.urlresolvers import reverse
 from taggit.models import Tag
 
@@ -120,20 +121,22 @@ def payment(request):
     order = utils.get_or_create_order(request)
 
     if request.method == "POST":
-        form = PaymentForm(request.POST)
+        form = PaymentForm(request.POST, order=order)
         if form.is_valid():
             order.customer_name = form.cleaned_data['name']
             order.customer_email = form.cleaned_data['email']
             order.payment_processor = form.cleaned_data['processor']
             order.save()
 
-            processor = utils.load_class(form.cleaned_data["processor"])()
-            return processor.get_response(request, order)
+            p = form.cleaned_data["processor"]
+            klass = utils.load_class(p)
+            processor = klass(order)
+            return processor.get_response(request)
     else:
         cart = utils.get_or_create_cart(request)
         order.add_from_cart(cart)
         cart.delete()
-        form = PaymentForm()
+        form = PaymentForm(order=order)
 
     return render(request, "kishore/store/payment.html",{'form':form,'order':order})
 
@@ -144,11 +147,12 @@ def process_payment(request):
         return redirect("kishore_cart")
 
     klass = utils.load_class(order.payment_processor)
-    payment_processor = klass()
-    valid = payment_processor.accept_payment(request, order)
+    payment_processor = klass(order)
+    valid = payment_processor.accept_payment(request)
 
     if valid:
         order.complete()
+        utils.clear_session_vars(request)
         return render(request, "kishore/store/success.html",{'order':order})
     else:
         error = "We're sorry, there was a problem charging your card, please try again."
@@ -171,7 +175,7 @@ def _validate_key(download_key):
         return (False, None)
 
     if link.first_accessed:
-        if datetime.now() - link.first_accessed > timedelta(hours=6):
+        if timezone.now() - link.first_accessed > timedelta(hours=6):
             link.active = False
             link.save()
             return (False, None)
@@ -203,7 +207,7 @@ def process_download(request, download_key, product_id):
     valid, link = _validate_key(download_key)
 
     if not link.first_accessed:
-        link.first_accessed = datetime.now()
+        link.first_accessed = timezone.now()
         link.save()
 
     if not valid:
@@ -215,3 +219,13 @@ def process_download(request, download_key, product_id):
 
         release = releases[0]
         return redirect(release.get_download_url())
+
+class BuyNow(View):
+    def get(self, request, *args, **kwargs):
+        product = get_object_or_404(Product, slug=self.kwargs['slug'])
+
+        # create an empty cart and add a single item
+        cart = utils.get_or_create_cart(request, force_create=True)
+        cart.add_product(product)
+
+        return redirect("kishore_checkout")

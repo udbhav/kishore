@@ -4,16 +4,15 @@ from django.conf import settings
 import stripe
 
 from kishore import settings as kishore_settings
+from base import BaseBackend
 
 class StripeForm(forms.Form):
     token = forms.CharField(widget=forms.HiddenInput)
 
-class StripeBackend(object):
+class StripeBackend(BaseBackend):
     human_name = "Credit Card"
     valid = True
-
-    def __init__(self, order):
-        self.order = order
+    priority = 2
 
     def get_response(self, request):
         form = StripeForm()
@@ -22,7 +21,10 @@ class StripeBackend(object):
 
     def accept_payment(self, request):
 
-        token = request.POST["token"]
+        token = request.POST.get("token", None)
+        if not token:
+            return False
+
         stripe.api_key = self.get_api_key()
 
         if self.order.total == 0:

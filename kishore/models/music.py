@@ -142,6 +142,14 @@ class Song(SlugModel, MusicBase, CachedModel):
         else:
             return None
 
+    def get_buy_now_link(self):
+        try:
+            product = self.digitalsong_set.all()[0]
+        except KeyError:
+            return ""
+        else:
+            return reverse("kishore_buy_now", kwargs={'slug': product.slug})
+
     class Meta:
         db_table = 'kishore_songs'
         app_label = 'kishore'

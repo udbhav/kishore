@@ -15,6 +15,7 @@ from django.utils.encoding import smart_str
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
 from django.db.models import Sum, Count
+from django.utils import timezone
 
 from kishore.templatetags.kishore_tags import kishore_currency
 from kishore import settings as kishore_settings
@@ -372,7 +373,7 @@ class Order(models.Model):
         return "#%i %s" % (self.id, self.customer_name)
 
     @classmethod
-    def sales_data(self, start, end=datetime.now()):
+    def sales_data(self, start, end=timezone.now()):
         return self.objects.filter(
             timestamp__lte=end).filter(
             timestamp__gte=start).aggregate(total=Sum('subtotal'), count=Count('id'))
@@ -499,7 +500,7 @@ class OrderItem(models.Model):
             self.product.save()
 
 class Cart(models.Model):
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return str(self.timestamp)
@@ -535,15 +536,25 @@ class Cart(models.Model):
         valid = True
 
         for item in self.cartitem_set.all():
-            if not item.product.in_stock:
-                valid = False
-                item.delete()
-            elif item.quantity > item.product.inventory:
-                valid = False
-                item.quantity = item.product.inventory
-                item.save()
+            if item.product.track_inventory:
+                if not item.product.in_stock:
+                    valid = False
+                    item.delete()
+                elif item.quantity > item.product.inventory:
+                    valid = False
+                    item.quantity = item.product.inventory
+                    item.save()
 
         return valid
+
+    def add_product(self, product, quantity=1):
+        # check to see we don't already have this product in the cart
+        if self.cartitem_set.filter(product=product).count() > 0:
+            item_to_update = self.cartitem_set.filter(product=product)[0]
+            item_to_update.quantity = item_to_update.quantity + quantity
+            item_to_update.save()
+        else:
+            CartItem.objects.create(cart=self,product=product,quantity=quantity)
 
     class Meta:
         db_table = 'kishore_carts'
@@ -593,7 +604,7 @@ class PaymentForm(forms.Form):
     #processor = forms.ChoiceField(choices=PAYMENT_PROCESSORS, label="Pay with", widget=forms.RadioSelect, initial=PAYMENT_PROCESSORS[0][0])
 
     def __init__(self, *args, **kwargs):
-        order = kwargs.pop("order", None)
+        self.order = kwargs.pop("order", None)
 
         super(PaymentForm, self).__init__(*args, **kwargs)
 
@@ -606,11 +617,11 @@ class PaymentForm(forms.Form):
     def get_choices(self):
         choices = []
         for backend in kishore_settings.KISHORE_PAYMENT_BACKENDS:
-            processor = utils.load_class(backend)(order)
+            processor = utils.load_class(backend)(self.order)
             if processor.valid:
-                choices.append([backend, processor.human_name])
+                choices.append([backend, processor.human_name, processor.priority])
 
-        return choices
+        return [[x[0], x[1]] for x in sorted(choices, key=lambda y: y[2])]
 
 class DownloadLink(models.Model):
     item = models.ForeignKey(OrderItem)

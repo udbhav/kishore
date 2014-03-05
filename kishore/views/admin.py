@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Sum
+from django.utils import timezone
 
 from kishore.models import (Order, KishorePaginator, Artist, ArtistForm, Image, ImageForm, Song,
                             SongForm, Release, ReleaseForm, UserForm, KishoreUserCreationForm,
@@ -299,7 +300,7 @@ def dashboard(request):
                                   refunded=False).exclude(shipment_processor='')
 
     # sales data
-    now = datetime.now()
+    now = timezone.now()
 
     weekly_sales = Order.sales_data(now-timedelta(days=7))
     monthly_sales = Order.sales_data(now-timedelta(days=30))

@@ -1,6 +1,8 @@
 * TODO Paypal Digital Goods
 * TODO Debug player
 * TODO Timezone aware datetimes
+* TODO Should checkout be a post??
+* TODO S3 direct upload
 * TODO Create new image from Image picker
 * TODO Admin Dashboard
 * TODO Celery Tasks

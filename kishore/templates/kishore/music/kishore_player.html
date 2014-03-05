@@ -2,10 +2,10 @@
   {% for song in songs %}
   {% if song.audio_file %}
   <li data-song-id="{{ song.id }}" data-link="{{ song.get_absolute_url }}" data-title="{{ song }}">
-    {{ song.title }}
+    <span class="title">{{ song.title }}</span>
   </li>
   {% elif song.stream_url %}
-  <li data-stream-url="{{ song.stream_url }}">{{ song.title }}</li>
+  <li data-stream-url="{{ song.stream_url }}"><span class="title">{{ song.title }}</span></li>
   {% endif %}
   {% endfor %}
 </ul>

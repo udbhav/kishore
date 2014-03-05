@@ -7,12 +7,10 @@ from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 
 from kishore import settings as kishore_settings
+from base import BaseBackend
 
-class PaypalBackend(object):
+class PaypalBackend(BaseBackend):
     human_name = 'Paypal'
-
-    def __init__(self, order):
-        self.order = order
 
     @property
     def valid(self):

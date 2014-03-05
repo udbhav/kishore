@@ -22,10 +22,14 @@ def get_cart(request):
             request.session['kishore_cart_id'] = None
             return None
 
-def get_or_create_cart(request):
+def get_or_create_cart(request, force_create=False):
     from kishore.models import Cart
 
-    cart, created = Cart.objects.get_or_create(pk=request.session.get('kishore_cart_id', None))
+    cart_id = request.session.get('kishore_cart_id', None)
+    if force_create:
+        cart_id = None
+
+    cart, created = Cart.objects.get_or_create(pk=cart_id)
 
     if created:
         request.session['kishore_cart_id'] = cart.id

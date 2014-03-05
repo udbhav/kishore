@@ -1,13 +1,14 @@
 from django.conf.urls import *
 from kishore.views import (ProductDetail, ProductList, ProductsByTag, add_to_cart, cart, update_cart,
                            remove_from_cart, checkout, shipping, shipping_methods, payment,
-                           process_payment, download, process_download)
+                           process_payment, download, process_download, BuyNow)
 
 urlpatterns = patterns(
     '',
     url(r'^$', ProductList.as_view(), name='kishore_store'),
 
     url(r'^products/(?P<slug>[-\w]+)/$', ProductDetail.as_view(), name='kishore_product_detail'),
+    url(r'^products/(?P<slug>[-\w]+)/buy/$', BuyNow.as_view(), name='kishore_buy_now'),
     url(r'^products/tagged/(?P<tag>[-\w]+)/$', ProductsByTag.as_view(),
         name='kishore_products_by_tag'),
 

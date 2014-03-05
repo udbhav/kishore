@@ -1,2 +1,3 @@
 from kishore_stripe import StripeBackend
 from paypal import PaypalBackend
+from paypal_digital import PaypalDigitalBackend

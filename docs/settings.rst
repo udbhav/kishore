@@ -32,7 +32,9 @@ artist data::
 KISHORE_PAYMENT_BACKENDS
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Default: ["kishore.payment.StripeBackend","kishore.payment.PaypalBackend"]
+Default: ["kishore.payment.StripeBackend",
+          "kishore.payment.PaypalBackend",
+          "kishore.payment.PaypalDigitalBackend"]
 
 If you're using `Stripe <https://stripe.com/>`_, you must set STRIPE_SECRET_KEY and
 STRIPE_PUBLISHABLE_KEY.

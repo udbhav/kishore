@@ -42,7 +42,9 @@ KISHORE_ADMIN_JAVASCRIPT = getattr(settings, "KISHORE_ADMIN_JAVASCRIPT",
 
 KISHORE_PAYMENT_BACKENDS = getattr(settings, "KISHORE_PAYMENT_BACKENDS",
                                    ["kishore.payment.StripeBackend",
-                                    "kishore.payment.PaypalBackend"])
+                                    "kishore.payment.PaypalBackend",
+                                    "kishore.payment.PaypalDigitalBackend",
+                                ])
 
 KISHORE_SHIPPING_BACKEND = getattr(settings, "KISHORE_SHIPPING_BACKEND",
                                    "kishore.shipping.EasyPostBackend")
