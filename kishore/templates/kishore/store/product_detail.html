@@ -1,6 +1,9 @@
 {% extends "kishore/base.html" %}
 {% load markup %}
 {% load cache %}
+
+{% block body_class %}product-detail{% endblock %}
+
 {% block kishore_content %}
 {% cache 9999999 product_detail product.cache_key %}
 <div class="page-header">

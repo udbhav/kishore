@@ -23,7 +23,7 @@
 
   $.fn.kishoreEditor = function(option) {
     return this.each(function(i) {
-      var $elem = $(this), converter = Markdown.getSanitizingConverter()
+      var $elem = $(this), converter = Markdown.getSanitizingConverter();
       suffix = "-kishore-editor-" + i, initial = $elem.val();
 
       $elem.hide();

@@ -605,16 +605,15 @@ class PaymentForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.order = kwargs.pop("order", None)
+        self.choices = self._choices()
 
         super(PaymentForm, self).__init__(*args, **kwargs)
-
-        choices = self.get_choices()
-        self.fields['processor'] = forms.ChoiceField(choices=choices,
+        self.fields['processor'] = forms.ChoiceField(choices=self.choices,
                                                      label="Pay with",
                                                      widget=forms.RadioSelect,
-                                                     initial=choices[0][0])
+                                                     initial=self.choices[0][0])
 
-    def get_choices(self):
+    def _choices(self):
         choices = []
         for backend in kishore_settings.KISHORE_PAYMENT_BACKENDS:
             processor = utils.load_class(backend)(self.order)

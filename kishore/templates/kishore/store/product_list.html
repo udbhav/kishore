@@ -18,7 +18,7 @@
     <a href="{{ product.get_absolute_url }}">
       <img src="{{ product.get_primary_image.cropped_square.url }}">
     </a>
-    <p><a href="{{ product.get_absolute_url }}">{{ product }}</a></p>
+    <p class="product-title monospaced"><a href="{{ product.get_absolute_url }}">{{ product }}</a></p>
   </div>
   {% endcache %}
   {% endfor %}

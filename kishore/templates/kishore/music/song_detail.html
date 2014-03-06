@@ -2,6 +2,8 @@
 {% load markup %}
 {% load cache %}
 
+{% block body_class %}song-detail{% endblock %}
+
 {% block kishore_content %}
 {% cache 9999999 song_detail song.cache_key %}
 <div class="page-header"><h1>{{ song }}</h1></div>

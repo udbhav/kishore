@@ -1,0 +1,28 @@
+{% extends "kishore/base.html" %}
+{% load kishore_tags %}
+
+{% block kishore_content %}
+<article class="payment">
+  <header><h1>Payment</h1></header>
+  <form action="{% url 'kishore_process_payment' %}" method="post">
+    {% csrf_token %}
+    <input name="paypal_submit" id="paypal_submit" type="submit" />
+  </form>
+</article>
+
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script src="https://www.paypalobjects.com/js/external/dg.js"></script>
+<script src="https://www.paypalobjects.com/js/external/dg.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+var dg = new PAYPAL.apps.DGFlow({
+// the HTML ID ofp the form submit button which calls setEC
+trigger: 'paypal_submit',
+// the experience type: instant or mini
+expType: 'instant'
+});
+</script>
+{% endblock javascript %}

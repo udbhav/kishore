@@ -11,13 +11,14 @@ from base import BaseBackend
 
 class PaypalBackend(BaseBackend):
     human_name = 'Paypal'
+    paypal_endpoint = kishore_settings.KISHORE_PAYPAL_ENDPOINT
 
     @property
     def valid(self):
         return self.order.shippable
 
     def get_response(self, request):
-        url = kishore_settings.KISHORE_PAYPAL_ENDPOINT + '/payments/payment'
+        url = self.paypal_endpoint + '/payments/payment'
         data = json.dumps({
             'intent': 'sale',
             'redirect_urls': {
@@ -52,7 +53,7 @@ class PaypalBackend(BaseBackend):
             raise Exception('Problem with creating payment for Paypal')
 
     def accept_payment(self, request):
-        url = "%s/payments/payment/%s/execute" % (settings.KISHORE_PAYPAL_ENDPOINT,
+        url = "%s/payments/payment/%s/execute" % (self.paypal_endpoint,
                                                   self.order.transaction_id)
         data = json.dumps({'payer_id': request.GET["PayerID"]})
         r = requests.post(url,data=data,headers={
@@ -67,7 +68,7 @@ class PaypalBackend(BaseBackend):
         return True
 
     def refund_order(self):
-        url = "%s/payments/sale/%s/refund" % (settings.KISHORE_PAYPAL_ENDPOINT,
+        url = "%s/payments/sale/%s/refund" % (self.paypal_endpoint,
                                               self.order.transaction_id)
         r = requests.post(url,data='{}',headers={
                 'Content-Type': 'application/json',
@@ -79,11 +80,12 @@ class PaypalBackend(BaseBackend):
 
     def get_access_token(self):
         client_id, secret = self.get_credentials()
-        url = kishore_settings.KISHORE_PAYPAL_ENDPOINT + '/oauth2/token'
+        url =  self.paypal_endpoint + '/oauth2/token'
         r = requests.post(url,
                           auth=requests.auth.HTTPBasicAuth(client_id, secret),
                           params={'grant_type': 'client_credentials'},
-                          headers={'Content-Type':'application/x-www-form-urlencoded'})
+                          headers={'Accept':'application/json',
+                                   'Content-Type':'application/x-www-form-urlencoded'})
 
         if r.ok:
             return r.json()['access_token']

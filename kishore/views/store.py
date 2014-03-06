@@ -144,7 +144,7 @@ def process_payment(request):
     order = utils.get_or_create_order(request)
 
     if order.total == 0:
-        return redirect("kishore_cart")
+        return redirect("kishore_store")
 
     klass = utils.load_class(order.payment_processor)
     payment_processor = klass(order)
