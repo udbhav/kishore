@@ -106,7 +106,7 @@ class Song(SlugModel, MusicBase, CachedModel):
 
     def download_link(self):
         if self.audio_file and self.downloadable:
-            return self.audio_file.url
+            return self.audio_file.storage.download_url(self.audio_file.name)
         else:
             return None
 

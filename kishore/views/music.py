@@ -1,8 +1,8 @@
 import json
 
-from django.views.generic import DetailView, ListView
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.views.generic import DetailView, ListView, View
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect
 from taggit.models import Tag
 
 from kishore.models import Artist, Song, Release, Product, CartItemForm, KishorePaginator
@@ -118,3 +118,12 @@ def play_song(request):
         return HttpResponse(data,mimetype)
     else:
         return HttpResponse("Bad request", status=400)
+
+class DownloadSong(View):
+    def get(self, *args, **kwargs):
+        song = get_object_or_404(Song, pk=self.kwargs['pk'])
+        link = song.download_link()
+        if link:
+            return redirect(link)
+        else:
+            return HttpResponseBadRequest("no no no")
