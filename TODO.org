@@ -1,7 +1,9 @@
 * TODO Paypal Digital Goods
 * TODO Debug player
 * TODO Timezone aware datetimes
+* TODO Caching kinks, for example download link
 * TODO Should checkout be a post??
+* TODO Markdown keeps escaping links and all other formatting.
 * TODO S3 direct upload
 * TODO Create new image from Image picker
 * TODO Admin Dashboard
