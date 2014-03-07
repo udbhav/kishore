@@ -2,7 +2,7 @@
   $.fn.kishoreConfirmForm = function(option) {
     return this.each(function () {
       $(this).on("submit", function() {
-        if (confirm("Aure you sure")) {
+        if (confirm("Are you sure")) {
           return true;
         } else {
           return false;
