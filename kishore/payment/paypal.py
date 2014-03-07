@@ -61,11 +61,12 @@ class PaypalBackend(BaseBackend):
                 'Authorization': "Bearer %s" % self.get_access_token(),
                 })
 
-        r.raise_for_status()
-
-        self.order.transaction_id = r.json()['transactions'][0]['related_resources'][0]['sale']['id']
-        self.order.save()
-        return True
+        if r.ok:
+            self.order.transaction_id = r.json()['transactions'][0]['related_resources'][0]['sale']['id']
+            self.order.save()
+            return True
+        else:
+            return False
 
     def refund_order(self):
         url = "%s/payments/sale/%s/refund" % (self.paypal_endpoint,
@@ -76,7 +77,7 @@ class PaypalBackend(BaseBackend):
                 })
 
         r.raise_for_status()
-        return r
+        return True
 
     def get_access_token(self):
         client_id, secret = self.get_credentials()

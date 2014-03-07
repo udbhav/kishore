@@ -416,6 +416,10 @@ class Order(models.Model):
             if item.downloadable:
                 return True
 
+    @property
+    def processor_name(self):
+        return self.get_payment_processor().human_name
+
     def get_absolute_url(self):
         return reverse('kishore_admin_order_detail', kwargs={'pk':self.pk})
 
@@ -457,10 +461,16 @@ class Order(models.Model):
         msg.send()
 
     def refund(self):
-        processor = utils.load_class(self.payment_processor)()
-        processor.refund_order(self)
-        self.refunded = True
-        self.save()
+        processor = self.get_payment_processor()
+        valid = processor.refund_order()
+
+        if valid:
+            self.refunded = True
+            self.save()
+
+    def get_payment_processor(self):
+        klass = utils.load_class(self.payment_processor)
+        return klass(self)
 
     def get_shippable_items(self):
         return [i for i in self.orderitem_set.all() if i.product.subclass.shippable]

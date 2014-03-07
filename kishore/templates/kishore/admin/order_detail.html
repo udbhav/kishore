@@ -25,6 +25,11 @@
 
 {% include "kishore/store/order_price_details.html" %}
 
+<div class="order-processor pull-right monospaced text-right">
+  Processed with: {{ order.processor_name }}<br/>
+  Transaction ID: {{ order.transaction_id }}
+</div>
+
 <div class="btn-toolbar">
   {% if order.shippable %}
   <a href="{% url 'kishore_admin_ship_order' pk=order.pk %}" class="btn btn-primary">Shipping</a>

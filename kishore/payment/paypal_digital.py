@@ -1,7 +1,7 @@
 from urllib import urlencode
 from urlparse import parse_qs
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -18,47 +18,6 @@ class PaypalDigitalBackend(BaseBackend):
         return not self.order.shippable
 
     def get_response(self, request):
-        # site = Site.objects.get_current()
-        # root = "http://%s" % site.domain
-
-        # paypal_dict = {
-        #     "cmd": "_xclick",
-        #     "business": settings.KISHORE_PAYPAL_EMAIL,
-        #     "amount": str(self.order.total),
-        #     "item_name": "Order #: %s" % self.order.id,
-        #     "return": "%s%s" % (root, reverse('kishore_process_payment')),
-        #     "cancel_return": root,
-        #     "item_number": self.order.id,
-        #     "no_shipping": 1,
-        #     "shipping": 0,
-        # }
-
-        # url = kishore_settings.KISHORE_PAYPAL_SUBMIT_URL + "?" + urlencode(paypal_dict)
-        # return url
-
-        return render(request, "kishore/store/paypal_digital.html")
-
-    def accept_payment(self, request):
-        self.order.transaction
-
-    def make_request(self, method, params=None):
-        credentials = self.get_credentials()
-        request_params = (
-            ('METHOD', method),
-            ('USER', credentials['username']),
-            ('PWD', credentials['password']),
-            ('SIGNATURE', credentials['signature']),
-            ('VERSION', 89),
-        )
-
-        if params:
-            request_params += params
-
-        r = requests.post(kishore_settings.KISHORE_PAYPAL_CLASSIC_ENDPOINT,
-                          data=urlencode(request_params))
-        return r
-
-    def test_request(self):
         site = Site.objects.get_current()
         root = "http://%s" % site.domain
         name = 'Order #%s' % self.order.id
@@ -75,7 +34,6 @@ class PaypalDigitalBackend(BaseBackend):
             ('PAYMENTREQUEST_0_INVNUM', self.order.id),
             ('cancelUrl', root),
             ('returnUrl', "%s%s" % (root, reverse('kishore_process_payment'))),
-
             ('L_PAYMENTREQUEST_0_NAME0', name),
             ('L_PAYMENTREQUEST_0_AMT0', total),
             ('L_PAYMENTREQUEST_0_QTY0', 1),
@@ -90,30 +48,45 @@ class PaypalDigitalBackend(BaseBackend):
                 url = "%s%s%s" % (kishore_settings.KISHORE_PAYPAL_SUBMIT_URL,
                                   "?cmd=_express-checkout&token=",
                                   response['TOKEN'][0])
-                return url
+                return redirect(url)
 
-        return r
+        return render(request, "kishore/store/paypal_digital.html",
+                      {'error': True})
 
-    def set_express_checkout(self):
-        site = Site.objects.get_current()
-        root = "http://%s" % site.domain
+    def accept_payment(self, request):
+        token = request.GET.get("token", None)
+        payer_id = request.GET.get("PayerID", None)
 
-        params = (
-            ('cancelUrl', root),
-            ('returnUrl', "%s%s" % (root, reverse('kishore_process_payment'))),
-            ('PAYMENTREQUEST_0_CURRENCYCODE', kishore_settings.KISHORE_CURRENCY.upper()),
-            ('PAYMENTREQUEST_0_AMT', str(self.order.total)),
-            ('PAYMENTREQUEST_0_PAYMENTACTION', 'SALE'),
-            ('PAYMENTREQUEST_0_ITEMAMT', str(self.order.total)),
-            ('L_PAYMENTREQUEST_0_ITEMCATEGORY0', 'Digital'),
-            ('L_PAYMENTREQUEST_0_NAME0', 'Order #%s' % self.order.id),
-            ('L_PAYMENTREQUEST_0_QTY',1),
-            ('L_PAYMENTREQUEST_0_AMT0', str(self.order.total)),
-        )
+        if token and payer_id:
+            params = (
+                ('TOKEN', token),
+                ('PAYMENTACTION', 'Sale'),
+                ('PAYERID', payer_id),
+                ('PAYMENTREQUEST_0_AMT', self.order.total),
+            )
+            r = self.make_request('DoExpressCheckoutPayment', params)
+            if r.ok:
+                response = parse_qs(r.text)
+                if response['ACK'][0] == 'Success':
+                    self.order.transaction_id = response['PAYMENTINFO_0_TRANSACTIONID'][0]
+                    self.order.save()
+                    return True
 
-        return self.make_request('SetExpressCheckout', params)
+        return False
 
-    def get_credentials(self):
+    def refund_order(self):
+        r = self.make_request('RefundTransaction', (
+            ('TRANSACTIONID', self.order.transaction_id),
+        ))
+        r.raise_for_status()
+        response = parse_qs(r.text)
+
+        if response['ACK'][0] == 'Success':
+            return True
+        else:
+            raise Exception("Problem with refund")
+
+    def make_request(self, method, params=None):
         username = getattr(settings, 'KISHORE_PAYPAL_CLASSIC_USERNAME', None)
         password = getattr(settings, 'KISHORE_PAYPAL_CLASSIC_PASSWORD', None)
         signature = getattr(settings, 'KISHORE_PAYPAL_CLASSIC_SIGNATURE', None)
@@ -121,14 +94,27 @@ class PaypalDigitalBackend(BaseBackend):
 
         if not username or not password or not signature or not email:
             raise Exception("Please set KISHORE_PAYPAL_CLASSIC_USERNAME "
-                            "KISHORE_PAYPAL_CLASSIC_PASSWORD, KISHORE_PAYPAL_EMAIL, and "
+                            "KISHORE_PAYPAL_CLASSIC_PASSWORD, "
+                            "KISHORE_PAYPAL_EMAIL, and "
                             "KISHORE_PAYPAL_CLASSIC_SIGNATURE")
 
-        return {'username': username, 'password': password, 'signature': signature, 'email': email}
+        request_params = (
+            ('METHOD', method),
+            ('USER', username),
+            ('PWD', password),
+            ('SIGNATURE', signature),
+            ('VERSION', kishore_settings.KISHORE_PAYPAL_CLASSIC_VERSION),
+        )
 
+        if params:
+            request_params += params
+
+        r = requests.post(kishore_settings.KISHORE_PAYPAL_CLASSIC_ENDPOINT,
+                          data=urlencode(request_params))
+        return r
 
 def test():
     from kishore.models import Order
     o = Order.objects.get(pk=9)
     p = PaypalDigitalBackend(o)
-    return p.test_request()
+    return p.accept_payment('x')

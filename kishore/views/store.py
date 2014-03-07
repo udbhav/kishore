@@ -155,7 +155,7 @@ def process_payment(request):
         utils.clear_session_vars(request)
         return render(request, "kishore/store/success.html",{'order':order})
     else:
-        error = "We're sorry, there was a problem charging your card, please try again."
+        error = "We're sorry, there was a problem charging you, please try again."
         return render(request, "kishore/store/error.html",{'error':error})
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')

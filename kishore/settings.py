@@ -57,6 +57,7 @@ KISHORE_PAYPAL_CLASSIC_ENDPOINT = getattr(settings, "KISHORE_PAYPAL_CLASSIC_ENDP
                                           "https://api-3t.sandbox.paypal.com/nvp")
 KISHORE_PAYPAL_SUBMIT_URL = getattr(settings, "KISHORE_PAYPAL_SUBMIT_URL",
                                     "https://www.sandbox.paypal.com/cgi-bin/webscr")
+KISHORE_PAYPAL_CLASSIC_VERSION = getattr(settings, "KISHORE_PAYPAL_CLASSIC_VERSION", 89)
 
 KISHORE_FROM_EMAIL = getattr(settings, "KISHORE_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL)
 KISHORE_SUPPORT_EMAIL = getattr(settings, "KISHORE_SUPPORT_EMAIL", KISHORE_FROM_EMAIL)

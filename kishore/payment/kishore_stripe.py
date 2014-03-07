@@ -48,6 +48,7 @@ class StripeBackend(BaseBackend):
         stripe.api_key = self.get_api_key()
         charge = stripe.Charge.retrieve(self.order.transaction_id)
         charge.refund()
+        return True
 
     def get_api_key(self, secret=True):
         if secret:
