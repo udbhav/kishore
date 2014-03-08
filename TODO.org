@@ -1,7 +1,7 @@
-* TODO Paypal Digital Goods
 * TODO Debug player
-* TODO Timezone aware datetimes
 * TODO Caching kinks, for example download link
+* TODO Chef memcached setup
+* TODO switch search to ElasticSearch from Whoosh
 * TODO Should checkout be a post??
 * TODO Markdown keeps escaping links and all other formatting.
 * TODO S3 direct upload

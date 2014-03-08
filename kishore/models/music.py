@@ -145,8 +145,8 @@ class Song(SlugModel, MusicBase, CachedModel):
     def get_buy_now_link(self):
         try:
             product = self.digitalsong_set.all()[0]
-        except KeyError:
-            return ""
+        except IndexError:
+            return None
         else:
             return reverse("kishore_buy_now", kwargs={'slug': product.slug})
 
