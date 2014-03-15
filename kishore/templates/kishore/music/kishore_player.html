@@ -1,11 +1,7 @@
 <ul class="kishore-audio-player list-unstyled" data-song-url="{% url 'kishore_song_play' %}">
   {% for song in songs %}
-  {% if song.audio_file %}
-  <li data-song-id="{{ song.id }}" data-link="{{ song.get_absolute_url }}" data-title="{{ song }}">
+  <li data-song-id="{{ song.id }}" data-title="{{ song.title }}" {% if song.stream_url %}data-stream-url="{{ song.stream_url }}"{% endif %}>
     <span class="title">{{ song.title }}</span>
   </li>
-  {% elif song.stream_url %}
-  <li data-stream-url="{{ song.stream_url }}"><span class="title">{{ song.title }}</span></li>
-  {% endif %}
   {% endfor %}
 </ul>

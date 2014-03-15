@@ -1,3 +1,4 @@
+from lxml import etree
 from django.conf import settings
 from django.template.loader import render_to_string
 from requests.exceptions import HTTPError
@@ -21,20 +22,26 @@ class SoundcloudPlayer(BasePlayer):
     def get_player_html(self):
         client = self.get_soundcloud_client()
 
-        if kishore_settings.KISHORE_USE_SOUNDCLOUD_EMBED:
-            r = client.get("/oembed", url=self.music_data.remote_url)
-            if r.status_code == 200:
-                return r.html
-            else:
-                return ""
+        r = client.get("/oembed", url=self.music_data.remote_url)
+        if r.status_code == 200:
+            tree = etree.HTML(r.html)
+            iframe = tree.xpath('//iframe')[0]
+            url = iframe.get('src')
+
+            if not kishore_settings.KISHORE_SOUNDCLOUD_VISUAL:
+                url = url.replace("visual=true","visual=false")
+
+                if self.music_data.__class__.__name__ == 'Song':
+                    iframe.set('height', '155')
+
+            if not kishore_settings.KISHORE_SOUNDCLOUD_SHOW_ARTWORK:
+                url = url.replace("show_artwork=true","show_artwork=false")
+
+            iframe.set('src', url)
+
+            return etree.tostring(iframe,method="html")
         else:
-            r = client.get("/resolve", url=self.music_data.remote_url)
-            if r.status_code == 200:
-                url = "%s?client_id=%s" % (r.obj['stream_url'], settings.SOUNDCLOUD_CLIENT_ID)
-                songs = [{'stream_url': url, 'title': self.music_data.__unicode__}]
-                return render_to_string("kishore/music/kishore_player.html", {'songs':songs})
-            else:
-                return ""
+            return ""
 
     def accepts_remote_url(self, url):
         try:

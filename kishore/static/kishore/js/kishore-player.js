@@ -40,20 +40,24 @@
         $.post(self.$elem.attr("data-song-url"), {song_ids: JSON.stringify(song_ids)}, function(data) {
           $.each(data, function(k,v) {
             var element = $("li[data-song-id=" + k + "]", self.$elem)[0];
-            self.createSound(element, v);
+            $("li[data-song-id=" + k + "]", self.$elem).data("kishre_stream_url",v);
+            //self.createSound(element, v);
           });
         });
       }
 
       if (stream_urls.length) {
         $.each(stream_urls, function(i, v) {
-          self.createSound(v[0], v[1]);
+          $(v[0]).data("kishore_stream_url", v[1]);
         });
       }
     }
 
     , createSound: function(element, url) {
-      var sound = soundManager.createSound({url: url});
+      var sound = soundManager.createSound({
+        url: url,
+        multiShot: false
+      });
       $(element).data("kishore_sound",sound);
     }
 
@@ -70,41 +74,25 @@
     }
 
     , toggleSound: function(li) {
-      var self = this, $li = $(li), sound = $li.data("kishore_sound")
-      , state = $li.data("kishore_sound_state");
+      var self = this, $li = $(li),
+      state = $li.data("kishore_sound_state");
+      console.log(state);
 
       if (!state) { // stopped
-        $li.data("kishore_sound_state",1);
-        self.initialPlay($li, sound);
-        $li.addClass("playing");
+        self.initialPlay($li);
       } else if (state == 1) { // playing
         $li.data("kishore_sound_state",2);
-        sound.pause();
+        self.lastSound.pause();
         $li.addClass("paused");
       } else if (state == 2) { // paused
         $li.data("kishore_sound_state",1);
-        sound.play();
+        self.lastSound.resume();
         $li.removeClass("paused");
       }
 
-      // if ($li.hasClass("paused")) {
-
-      //   sound.play();
-      //   $li.removeClass("paused");
-
-      // } else if ($li.hasClass("playing")) {
-
-      //   sound.pause();
-      //   $li.addClass("paused");
-
-      // } else {
-
-      //   self.initialPlay($li, sound);
-
-      // }
     }
 
-    , initialPlay: function($li, sound) {
+    , initialPlay: function($li) {
       var self = this
       , $controls = $('<div id="song-controls"><div id="song-loading"></div></div>')
       , $loading = $("#song-loading", $controls)
@@ -119,35 +107,49 @@
       $("li", self.$elem).removeClass("playing", "paused");
       $("#song-controls, #song-time, #song-link").remove();
 
-      // $controls.append($position);
-      $li.append($controls).prepend($time).prepend($link);
+      // create sound
+      self.lastSound = soundManager.createSound({
+        url: $li.data('kishore_stream_url'),
+        multiShot: false
+      });
 
-      // $position.on("click", function(e) {
-      //   e.stopPropagation();
-      //   var position = (e.pageX - $(this).offset().left) / $(this).width() * sound.durationEstimate;
-      //   sound.setPosition(position);
-      // });
+      $controls.append($position);
+      $li.append($controls).prepend($time);
+
+      $position.on("click", function(e) {
+        e.stopPropagation();
+        // var duration = self.lastSound.loaded ? self.lastSound.duration : self.lastSound.durationEstimate;
+        // var position = (e.pageX - $(this).offset().left) / $(this).width() * duration;
+        // position = Math.min(Math.floor(position), duration);
+        // if (!isNaN(position)) {
+        //   self.lastSound.setPosition(position);
+        // }
+      });
 
       $link.on("click", function(e) { e.stopPropagation() });
 
-      sound.play({
+      self.lastSound.play({
         whileplaying: function() {
-          $progress.width(String(sound.position/sound.durationEstimate*100) + "%");
-          $time.html(self.getPosition(sound));
+          var duration = self.lastSound.loaded ? self.lastSound.duration : self.lastSound.durationEstimate;
+          $progress.width(String(self.lastSound.position/duration*100) + "%");
+          $time.html(self.getPosition(self.lastSound));
         },
+        onload: function() {},
         onfinish: function() {
           $("li", self.$elem).removeClass("playing paused");
           $controls.remove();
           $time.remove()
         }
       });
+      $li.addClass("playing");
+      $li.data("kishore_sound_state",1);
     }
 
     , getPosition: function(sound) {
       var self = this;
 
-      var position = Math.round(sound.position/1000);
-      var duration = Math.round(sound.durationEstimate/1000);
+      var position = Math.round(self.lastSound.position/1000);
+      var duration = self.lastSound.loaded ? self.lastSound.duration : self.lastSound.durationEstimate;
 
       return Math.floor(position/60) + ':' + self.padSeconds(position % 60) + ' / ' + Math.floor(duration/60) + ':' + self.padSeconds(duration % 60);
     }
