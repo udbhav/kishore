@@ -18,10 +18,10 @@ urlpatterns = patterns(
     url(r'^cart/remove/(?P<item_id>\d+)/$', remove_from_cart, name='kishore_remove_from_cart'),
 
     url(r'^checkout/$', checkout, name='kishore_checkout'),
-    url(r'^shipping/$', shipping, name='kishore_shipping'),
-    url(r'^shipping/methods/$', shipping_methods, name='kishore_shipping_methods'),
-    url(r'^payment/$', payment, name='kishore_payment'),
-    url(r'^payment/process/$', process_payment, name='kishore_process_payment'),
+    url(r'^checkout/shipping/$', shipping, name='kishore_shipping'),
+    url(r'^checkout/shipping/methods/$', shipping_methods, name='kishore_shipping_methods'),
+    url(r'^checkout/payment/$', payment, name='kishore_payment'),
+    url(r'^checkout/payment/process/$', process_payment, name='kishore_process_payment'),
 
     url(r'^download/(?P<download_key>\w+)/$', download, name='kishore_download'),
     url(r'^download/process/(?P<download_key>\w+)/(?P<product_id>\d+)/$', process_download, name='kishore_process_download'),
