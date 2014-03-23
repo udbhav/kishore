@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django import forms
 from django.conf import settings
@@ -5,6 +7,8 @@ import stripe
 
 from kishore import settings as kishore_settings
 from base import BaseBackend
+
+logger = logging.getLogger("kishore")
 
 class StripeForm(forms.Form):
     token = forms.CharField(widget=forms.HiddenInput)
@@ -23,11 +27,13 @@ class StripeBackend(BaseBackend):
 
         token = request.POST.get("token", None)
         if not token:
+            logger.error("No token in accept_payment")
             return False
 
         stripe.api_key = self.get_api_key()
 
         if self.order.total == 0:
+            logger.error("Order total 0 in accept_payment")
             return False
 
         try:
@@ -38,6 +44,7 @@ class StripeBackend(BaseBackend):
                 description=self.order.id
                 )
         except stripe.CardError, e:
+            logger.error("Stripe error in accept_payment: %s" % e)
             return False
         else:
             self.order.transaction_id = charge.id

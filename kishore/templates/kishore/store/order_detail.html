@@ -1,6 +1,6 @@
 {% if order.shippable %}
 <h3>Shipping To</h3>
-<div class="monospaced">{{ order.shipping_address|linebreaks }}</div>
+<div class="monospaced">{{ order.formatted_shipping_address|linebreaks }}</div>
 <p>You will be sent an email notification when your order ships.</p>
 {% endif %}
 

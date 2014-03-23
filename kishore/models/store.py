@@ -343,6 +343,34 @@ class Merch(Product):
         db_table = 'kishore_merch'
         app_label = 'kishore'
 
+class Address(models.Model):
+    name = models.CharField(max_length=200)
+    street_address = models.CharField(max_length=200)
+    street_address2 = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=40)
+    state = models.CharField(max_length=20)
+    country = models.CharField(max_length=20)
+    zipcode = models.CharField(max_length=20)
+
+    @property
+    def formatted_address(self):
+        string = "%s\n%s\n" % (self.name, self.street_address)
+
+        if self.street_address2:
+            string += "%s\n" % self.street_address2
+
+        string += "%s %s, %s %s" % (self.city, self.state, self.country,
+                                    self.zipcode)
+
+        return string
+
+    def __unicode__(self):
+        return self.formatted_address
+
+    class Meta:
+        db_table = 'kishore_address'
+        app_label = 'kishore'
+
 class Order(models.Model):
     customer_name = models.CharField(max_length=129,blank=True)
     customer_email = models.EmailField(blank=True)
@@ -353,7 +381,7 @@ class Order(models.Model):
     shipment_processor = models.CharField(max_length=100)
     shipment_id = models.CharField(max_length=50,blank=True)
     shipment_method_id = models.CharField(max_length=50,blank=True)
-    shipping_address = models.TextField(blank=True)
+    shipping_address = models.ForeignKey(Address, blank=True, null=True)
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -420,21 +448,40 @@ class Order(models.Model):
     def processor_name(self):
         return self.get_payment_processor().human_name
 
+    @property
+    def formatted_shipping_address(self):
+        if self.shipping_address:
+            return self.shipping_address.formatted_address
+        else:
+            return ""
+
     def get_absolute_url(self):
         return reverse('kishore_admin_order_detail', kwargs={'pk':self.pk})
 
     def get_admin_url(self):
         return self.get_absolute_url()
 
-    def add_from_cart(self, cart):
+    def prepare_from_cart(self, cart):
+        # delete old order items
+        self.orderitem_set.all().delete()
+
+        subtotal = 0
+
+        # create new ones
         for item in cart.cartitem_set.all():
-            OrderItem.objects.create(
+            order_item = OrderItem.objects.create(
                 order=self,
                 product=item.product,
                 quantity=item.quantity,
                 unit_price=item.unit_price)
+            subtotal += item.quantity * item.unit_price
 
-            self.subtotal += item.quantity * item.unit_price
+        self.subtotal = subtotal
+
+        # taxes
+        klass = utils.load_class(kishore_settings.KISHORE_TAX_BACKEND)
+        tax_processor = klass(self)
+        self.tax = tax_processor.calculate_tax()
 
         self.save()
 

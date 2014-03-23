@@ -131,3 +131,15 @@ Default: False
 
 If you want to customize the looks using less, set this to True, and install
 `django-less <https://github.com/andreyfedoseev/django-less>`_.
+
+KISHORE_TAX_BACKEND
+~~~~~~~~~~~~~~~~~
+
+Default: "kishore.tax.KishoreTax"
+
+Use to customize tax behavior.
+
+KISHORE_TAX_RATES
+~~~~~~~~~~~~~~~~~
+
+Dictionary of taxes and their corresponding rates

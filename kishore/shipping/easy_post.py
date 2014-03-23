@@ -1,12 +1,12 @@
 from django import forms
 from django.conf import settings
 from django.shortcuts import render, redirect
-from decimal import Decimal
+
 import easypost
 from easypost import Error as EasypostError
 
 from kishore.templatetags.kishore_tags import kishore_currency
-from kishore.models import Order
+from kishore.models import Order, Address
 from kishore import settings as kishore_settings
 from kishore import utils
 
@@ -138,12 +138,8 @@ class EasyPostBackend(object):
                     shipment_processor = kishore_settings.KISHORE_SHIPPING_BACKEND,
                     shipment_id = shipment_id,
                     shipment_method_id = rate_id,
-                    shipping_address = self.format_address(shipment.to_address),
-                    shipping_total = shipping_total,
-                    tax = self.calculate_tax(shipment, cart),
-                    )
-
-                order.save()
+                    shipping_address = self.create_shipping_address(shipment.to_address),
+                    shipping_total = shipping_total)
 
                 request.session['kishore_order_id'] = order.id
                 return redirect("kishore_payment")
@@ -166,29 +162,18 @@ class EasyPostBackend(object):
 
         return render(request, "kishore/admin/easypost_ship_order.html", {'order':order,'shipment':shipment})
 
+    def create_shipping_address(self, address):
+        street2 = address.get("street2","")
+        if not street2:
+            street2 = ""
 
-    def format_address(self, address):
-        keys = [
-            ["name","\n"],
-            ["street1","\n"],
-            ["street2","\n"],
-            ["city",", "],
-            ["state"," "],
-            ["zip", " "],
-            ["country",""],
-            ]
+        address = Address.objects.create(
+            name = address.get("name",""),
+            street_address = address.get("street1",""),
+            street_address2 = street2,
+            city = address.get("city",""),
+            state = address.get("state",""),
+            zipcode = address.get("zip",""),
+            country = address.get("country",""))
 
-        output = ""
-
-        for k in keys:
-            v = address.get(k[0], None)
-            if v:
-                output += "%s%s" % (v, k[1])
-
-        return output
-
-    def calculate_tax(self, shipment, cart):
-        if shipment.from_address.state == shipment.to_address.state and shipment.from_address.country == shipment.to_address.country:
-            return Decimal(kishore_settings.KISHORE_TAX_RATES[shipment.from_address.state]) * cart.total_price()
-        else:
-            return 0
+        return address

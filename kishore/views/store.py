@@ -53,9 +53,10 @@ def add_to_cart(request):
         if form.is_valid():
             item = form.save(commit=False)
 
+            cart_items = cart.cartitem_set.filter(product=item.product)
             # check to see we don't already have this product in the cart
-            if cart.cartitem_set.filter(product=item.product).count() > 0:
-                item_to_update = cart.cartitem_set.filter(product=item.product)[0]
+            if len(cart_items) > 0:
+                item_to_update = cart_items[0]
                 item_to_update.quantity = item_to_update.quantity + item.quantity
                 item_to_update.save()
             else:
@@ -134,8 +135,7 @@ def payment(request):
             return processor.get_response(request)
     else:
         cart = utils.get_or_create_cart(request)
-        order.add_from_cart(cart)
-        cart.delete()
+        order.prepare_from_cart(cart)
         form = PaymentForm(order=order)
 
     return render(request, "kishore/store/payment.html",{'form':form,'order':order})

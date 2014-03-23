@@ -5,7 +5,7 @@ Thanks for your order.
 Shipping To
 -----------
 
-{{ order.shipping_address }}
+{{ order.formatted_shipping_address }}
 
 You will be sent an email notification when your order ships.
 {% endif %}

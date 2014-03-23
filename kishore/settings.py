@@ -67,7 +67,10 @@ KISHORE_SITE_NAME = getattr(settings, "KISHORE_SITE_NAME", "Kishore")
 
 KISHORE_USE_LESS_FOR_CSS = getattr(settings, "KISHORE_USE_LESS_FOR_CSS", False)
 
-TAX_RATES = {
+KISHORE_TAX_BACKEND = getattr(settings, "KISHORE_TAX_BACKEND",
+                                   "kishore.tax.KishoreTax")
+
+KISHORE_TAX_RATES = getattr(settings, "KISHORE_TAX_RATES", {
     'AL': 0.04,
     'AK': 0,
     'AZ': 0.056,
@@ -119,6 +122,7 @@ TAX_RATES = {
     'WV': 0.06,
     'WI': 0.05,
     'WY': 0.04,
-    }
+})
 
-KISHORE_TAX_RATES = getattr(settings, "KISHORE_TAX_RATES", TAX_RATES)
+KISHORE_SALES_TAX_STATE = getattr(settings, "KISHORE_SALES_TAX_STATE", None)
+KISHORE_SALES_TAX_COUNTRY = getattr(settings, "KISHORE_SALES_TAX_COUNTRY", None)

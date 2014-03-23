@@ -21,11 +21,11 @@
       {% for item in cart.cartitem_set.all %}
       <tr>
         <td>
-          {{ item.product.name }}
-          <form method="post" action="{% url 'kishore_remove_from_cart' item_id=item.id %}">
+          <form method="post" action="{% url 'kishore_remove_from_cart' item_id=item.id %}" class="pull-right">
             {% csrf_token %}
             <input type="submit" value="Remove" class="btn btn-small btn-danger">
           </form>
+          {{ item.product.name }}
         </td>
         <td>{{ item.unit_price|kishore_currency }}</td>
         <td>
@@ -46,7 +46,7 @@
 
   <a href="{% url 'kishore_checkout' %}" class="btn btn-primary">Checkout</a>
   {% else %}
-  <p>Your cart is empty.</p>
+  <p class="monospaced">Your cart is empty.</p>
   {% endif %}
 </article>
 {% endblock %}
