@@ -1,5 +1,6 @@
 from urllib import urlencode
 from urlparse import parse_qs
+import logging
 
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -9,6 +10,8 @@ import requests
 
 from kishore import settings as kishore_settings
 from base import BaseBackend
+
+logger = logging.getLogger('kishore')
 
 class PaypalDigitalBackend(BaseBackend):
     human_name = 'Paypal'
@@ -49,9 +52,10 @@ class PaypalDigitalBackend(BaseBackend):
                                   "?cmd=_express-checkout&token=",
                                   response['TOKEN'][0])
                 return redirect(url)
-
-        return render(request, "kishore/store/paypal_digital.html",
-                      {'error': True})
+        else:
+            logger.error("problem with paypal digital: %s" % r.text)
+            return render(request, "kishore/store/paypal_digital.html",
+                          {'error': True})
 
     def accept_payment(self, request):
         token = request.GET.get("token", None)
