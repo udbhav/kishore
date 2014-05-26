@@ -124,6 +124,8 @@ class DownloadSong(View):
         song = get_object_or_404(Song, pk=self.kwargs['pk'])
         link = song.download_link()
         if link:
+            song.downloads = song.downloads + 1
+            song.save()
             return redirect(link)
         else:
             return HttpResponseBadRequest("no no no")

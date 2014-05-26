@@ -68,6 +68,7 @@ class MusicBase(TaggableModel):
     remote_url = models.CharField(max_length=100, blank=True, help_text="URL to external service hosting the audio, Soundcloud, etc")
     streamable = models.BooleanField(default=True)
     downloadable = models.BooleanField()
+    downloads = models.IntegerField(default=0)
     stream_url = None
 
     def __unicode__(self):
