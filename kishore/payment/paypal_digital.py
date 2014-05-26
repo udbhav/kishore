@@ -52,10 +52,10 @@ class PaypalDigitalBackend(BaseBackend):
                                   "?cmd=_express-checkout&token=",
                                   response['TOKEN'][0])
                 return redirect(url)
-        else:
-            logger.error("problem with paypal digital: %s" % r.text)
-            return render(request, "kishore/store/paypal_digital.html",
-                          {'error': True})
+
+        logger.error("problem with paypal digital: %s" % r.text)
+        return render(request, "kishore/store/paypal_digital.html",
+                      {'error': True})
 
     def accept_payment(self, request):
         token = request.GET.get("token", None)
