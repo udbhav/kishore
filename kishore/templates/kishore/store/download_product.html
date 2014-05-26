@@ -2,7 +2,7 @@
 <div class="download-product">
   <h2>Download</h2>
   {% for product in products %}
-  <a href="{{ product.get_download_url }}" class="btn btn-danger">{{ product.name }}</a>
+  <a href="{{ product.get_download_url }}" rel="nofollow" class="btn btn-danger">{{ product.name }}</a>
   {% endfor %}
 </div>
 {% endif %}
