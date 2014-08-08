@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name = 'django-kishore',
-    version = '1.0',
+    version = '1.0.1',
     packages = ['kishore'],
     install_requires = ['Django>=1.5','boto>=2.10.0','django-imagekit>=3.0.3',
                         'django-less>=0.7.2','django-storages>=1.1.8','easypost>=2.0.4',

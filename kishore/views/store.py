@@ -186,7 +186,7 @@ def download(request, download_key):
     valid, link = _validate_key(download_key)
 
     if not valid:
-        return render('store/download.html',{'error': True})
+        return render(request, 'kishore/store/download.html',{'error': True})
     else:
         request.session['kishore_download_key'] = download_key
 
