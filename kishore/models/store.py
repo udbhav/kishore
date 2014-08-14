@@ -2,6 +2,7 @@ from datetime import datetime, date, timedelta
 import random
 import re
 import json
+import hashlib
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -10,7 +11,6 @@ from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
-from django.utils.hashcompat import sha_constructor
 from django.utils.encoding import smart_str
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
@@ -689,9 +689,10 @@ class DownloadLink(models.Model):
         return self.item.__unicode__()
 
     def create_key(self):
-        salt = sha_constructor(str(random.random())).hexdigest()[:5]
-        download_key = sha_constructor(salt+smart_str(self.item.product.__unicode__())).hexdigest()
-        return download_key
+        md5 = hashlib.md5()
+        md5.update(str(random.random()))
+        md5.update(self.item.product.__unicode__())
+        return md5.hexdigest()
 
     def get_full_url(self):
         url = reverse('kishore_download', kwargs= {'download_key': self.key})
