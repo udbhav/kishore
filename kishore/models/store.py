@@ -40,7 +40,7 @@ class Product(CachedModel, TaggableModel):
                                 help_text="(%s) %s" % (kishore_settings.KISHORE_CURRENCY_SYMBOL,
                                                        kishore_settings.KISHORE_CURRENCY))
     description = models.TextField(blank=True)
-    track_inventory = models.BooleanField()
+    track_inventory = models.BooleanField(default=False)
     inventory = models.IntegerField(blank=True,null=True)
     images = models.ManyToManyField(Image, through='ProductImage', blank=True, null=True)
     visible = models.BooleanField(default=True)
@@ -389,9 +389,9 @@ class Order(models.Model):
     shipping_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    active = models.BooleanField()
-    shipped = models.BooleanField()
-    refunded = models.BooleanField()
+    active = models.BooleanField(default=False)
+    shipped = models.BooleanField(default=False)
+    refunded = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'kishore_orders'
