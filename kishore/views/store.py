@@ -158,14 +158,7 @@ def process_payment(request):
         error = "We're sorry, there was a problem charging you, please try again."
         return render(request, "kishore/store/error.html",{'error':error})
 
-SHA1_RE = re.compile('^[a-f0-9]{40}$')
-
 def _validate_key(download_key):
-    download_key = download_key.lower()
-
-    if not SHA1_RE.search(download_key):
-        return (False, None)
-
     try:
         link = DownloadLink.objects.get(key=download_key)
     except ObjectDoesNotExist:

@@ -528,6 +528,9 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=1)
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 
+    def __unicode__(self):
+        return "#%i %s" % (self.order.id, self.product.name)
+
     class Meta:
         db_table = 'kishore_orderitems'
         app_label = 'kishore'
